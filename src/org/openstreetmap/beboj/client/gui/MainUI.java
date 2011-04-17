@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.beboj.client.gui;
 
+import org.openstreetmap.beboj.client.Beboj;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -27,8 +29,11 @@ public class MainUI extends Composite {
     public MainUI() {
         canv = Canvas.createIfSupported();
         canv.getElement().setId("canvas");
-        canv.setWidth("400");
-        canv.setHeight("300");
+        // TODO could be better to set width / height HTML attributes instead of CSS
+        canv.setPixelSize(400, 350);
+
+        Beboj.canv = canv;
+
         initWidget(uiBinder.createAndBindUi(this));
     }
 }

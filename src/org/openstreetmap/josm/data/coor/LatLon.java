@@ -1,8 +1,6 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.coor;
 
-import static org.openstreetmap.josm.tools.I18n.trc;
-
 import static java.lang.Math.PI;
 import static java.lang.Math.asin;
 import static java.lang.Math.cos;
@@ -10,12 +8,15 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
-
-import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.Bounds;
+/**
+ * GWT
+ * 
+ * TODO:
+ *  several methods not implemented
+ * 
+ * note
+ *  added no-arg constructor (required for RPC)
+ */
 
 /**
  * LatLon are unprojected latitude / longitude coordinates.
@@ -32,16 +33,16 @@ public class LatLon extends Coordinate {
      */
     public static final double MAX_SERVER_PRECISION = 1e-7;
 
-    private static DecimalFormat cDmsMinuteFormatter = new DecimalFormat("00");
-    private static DecimalFormat cDmsSecondFormatter = new DecimalFormat("00.0");
-    private static DecimalFormat cDmMinuteFormatter = new DecimalFormat("00.000");
-    public static DecimalFormat cDdFormatter;
-    static {
-        // Don't use the localized decimal separator. This way we can present
-        // a comma separated list of coordinates.
-        cDdFormatter = (DecimalFormat) NumberFormat.getInstance(Locale.UK);
-        cDdFormatter.applyPattern("###0.0000000");
-    }
+//    private static DecimalFormat cDmsMinuteFormatter = new DecimalFormat("00");
+//    private static DecimalFormat cDmsSecondFormatter = new DecimalFormat("00.0");
+//    private static DecimalFormat cDmMinuteFormatter = new DecimalFormat("00.000");
+//    public static DecimalFormat cDdFormatter;
+//    static {
+//        // Don't use the localized decimal separator. This way we can present
+//        // a comma separated list of coordinates.
+//        cDdFormatter = (DecimalFormat) NumberFormat.getInstance(Locale.UK);
+//        cDdFormatter.applyPattern("###0.0000000");
+//    }
 
     /**
      * Replies true if lat is in the range [-90,90]
@@ -63,28 +64,28 @@ public class LatLon extends Coordinate {
         return lon >= -180d && lon <= 180d;
     }
 
-    /**
-     * Replies the coordinate in degrees/minutes/seconds format
-     */
-    public static String dms(double pCoordinate) {
-
-        double tAbsCoord = Math.abs(pCoordinate);
-        int tDegree = (int) tAbsCoord;
-        double tTmpMinutes = (tAbsCoord - tDegree) * 60;
-        int tMinutes = (int) tTmpMinutes;
-        double tSeconds = (tTmpMinutes - tMinutes) * 60;
-
-        return tDegree + "\u00B0" + cDmsMinuteFormatter.format(tMinutes) + "\'"
-        + cDmsSecondFormatter.format(tSeconds) + "\"";
-    }
-
-    public static String dm(double pCoordinate) {
-
-        double tAbsCoord = Math.abs(pCoordinate);
-        int tDegree = (int) tAbsCoord;
-        double tMinutes = (tAbsCoord - tDegree) * 60;
-        return tDegree + "\u00B0" + cDmMinuteFormatter.format(tMinutes) + "\'";
-    }
+//    /**
+//     * Replies the coordinate in degrees/minutes/seconds format
+//     */
+//    public static String dms(double pCoordinate) {
+//
+//        double tAbsCoord = Math.abs(pCoordinate);
+//        int tDegree = (int) tAbsCoord;
+//        double tTmpMinutes = (tAbsCoord - tDegree) * 60;
+//        int tMinutes = (int) tTmpMinutes;
+//        double tSeconds = (tTmpMinutes - tMinutes) * 60;
+//
+//        return tDegree + "\u00B0" + cDmsMinuteFormatter.format(tMinutes) + "\'"
+//        + cDmsSecondFormatter.format(tSeconds) + "\"";
+//    }
+//
+//    public static String dm(double pCoordinate) {
+//
+//        double tAbsCoord = Math.abs(pCoordinate);
+//        int tDegree = (int) tAbsCoord;
+//        double tMinutes = (tAbsCoord - tDegree) * 60;
+//        return tDegree + "\u00B0" + cDmMinuteFormatter.format(tMinutes) + "\'";
+//    }
 
     public LatLon(double lat, double lon) {
         super(lon, lat);
@@ -94,37 +95,39 @@ public class LatLon extends Coordinate {
         super(coor.lon(), coor.lat());
     }
 
+    protected LatLon() {}
+
     public double lat() {
         return y;
     }
 
-    public final static String SOUTH = trc("compass", "S");
-    public final static String NORTH = trc("compass", "N");
-    public String latToString(CoordinateFormat d) {
-        switch(d) {
-        case DECIMAL_DEGREES: return cDdFormatter.format(y);
-        case DEGREES_MINUTES_SECONDS: return dms(y) + ((y < 0) ? SOUTH : NORTH);
-        case NAUTICAL: return dm(y) + ((y < 0) ? SOUTH : NORTH);
-        case EAST_NORTH: return cDdFormatter.format(Main.proj.latlon2eastNorth(this).north());
-        default: return "ERR";
-        }
-    }
+//    public final static String SOUTH = trc("compass", "S");
+//    public final static String NORTH = trc("compass", "N");
+//    public String latToString(CoordinateFormat d) {
+//        switch(d) {
+//        case DECIMAL_DEGREES: return cDdFormatter.format(y);
+//        case DEGREES_MINUTES_SECONDS: return dms(y) + ((y < 0) ? SOUTH : NORTH);
+//        case NAUTICAL: return dm(y) + ((y < 0) ? SOUTH : NORTH);
+//        case EAST_NORTH: return cDdFormatter.format(Main.proj.latlon2eastNorth(this).north());
+//        default: return "ERR";
+//        }
+//    }
 
     public double lon() {
         return x;
     }
 
-    public final static String WEST = trc("compass", "W");
-    public final static String EAST = trc("compass", "E");
-    public String lonToString(CoordinateFormat d) {
-        switch(d) {
-        case DECIMAL_DEGREES: return cDdFormatter.format(x);
-        case DEGREES_MINUTES_SECONDS: return dms(x) + ((x < 0) ? WEST : EAST);
-        case NAUTICAL: return dm(x) + ((x < 0) ? WEST : EAST);
-        case EAST_NORTH: return cDdFormatter.format(Main.proj.latlon2eastNorth(this).east());
-        default: return "ERR";
-        }
-    }
+//    public final static String WEST = trc("compass", "W");
+//    public final static String EAST = trc("compass", "E");
+//    public String lonToString(CoordinateFormat d) {
+//        switch(d) {
+//        case DECIMAL_DEGREES: return cDdFormatter.format(x);
+//        case DEGREES_MINUTES_SECONDS: return dms(x) + ((x < 0) ? WEST : EAST);
+//        case NAUTICAL: return dm(x) + ((x < 0) ? WEST : EAST);
+//        case EAST_NORTH: return cDdFormatter.format(Main.proj.latlon2eastNorth(this).east());
+//        default: return "ERR";
+//        }
+//    }
 
     /**
      * @return <code>true</code> if the other point has almost the same lat/lon
@@ -136,22 +139,22 @@ public class LatLon extends Coordinate {
         return Math.abs(lat()-other.lat()) <= p && Math.abs(lon()-other.lon()) <= p;
     }
 
-    /**
-     * @return <code>true</code>, if the coordinate is outside the world, compared
-     * by using lat/lon.
-     */
-    public boolean isOutSideWorld() {
-        Bounds b = Main.proj.getWorldBoundsLatLon();
-        return lat() < b.getMin().lat() || lat() > b.getMax().lat() ||
-        lon() < b.getMin().lon() || lon() > b.getMax().lon();
-    }
-
-    /**
-     * @return <code>true</code> if this is within the given bounding box.
-     */
-    public boolean isWithin(Bounds b) {
-        return lat() >= b.getMin().lat() && lat() <= b.getMax().lat() && lon() > b.getMin().lon() && lon() < b.getMax().lon();
-    }
+//    /**
+//     * @return <code>true</code>, if the coordinate is outside the world, compared
+//     * by using lat/lon.
+//     */
+//    public boolean isOutSideWorld() {
+//        Bounds b = Main.proj.getWorldBoundsLatLon();
+//        return lat() < b.getMin().lat() || lat() > b.getMax().lat() ||
+//        lon() < b.getMin().lon() || lon() > b.getMax().lon();
+//    }
+//
+//    /**
+//     * @return <code>true</code> if this is within the given bounding box.
+//     */
+//    public boolean isWithin(Bounds b) {
+//        return lat() >= b.getMin().lat() && lat() <= b.getMax().lat() && lon() > b.getMin().lon() && lon() < b.getMax().lon();
+//    }
 
     /**
      * Computes the distance between this lat/lon and another point on the earth.
@@ -199,16 +202,16 @@ public class LatLon extends Coordinate {
         return rv;
     }
 
-    /**
-     * Returns this lat/lon pair in human-readable format.
-     *
-     * @return String in the format "lat=1.23456 deg, lon=2.34567 deg"
-     */
-    public String toDisplayString() {
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMaximumFractionDigits(5);
-        return "lat=" + nf.format(lat()) + "\u00B0, lon=" + nf.format(lon()) + "\u00B0";
-    }
+//    /**
+//     * Returns this lat/lon pair in human-readable format.
+//     *
+//     * @return String in the format "lat=1.23456 deg, lon=2.34567 deg"
+//     */
+//    public String toDisplayString() {
+//        NumberFormat nf = NumberFormat.getInstance();
+//        nf.setMaximumFractionDigits(5);
+//        return "lat=" + nf.format(lat()) + "\u00B0, lon=" + nf.format(lon()) + "\u00B0";
+//    }
 
     public LatLon interpolate(LatLon ll2, double proportion) {
         return new LatLon(this.lat() + proportion * (ll2.lat() - this.lat()),
@@ -236,31 +239,31 @@ public class LatLon extends Coordinate {
         );
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = java.lang.Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = java.lang.Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = super.hashCode();
+//        long temp;
+//        temp = java.lang.Double.doubleToLongBits(x);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        temp = java.lang.Double.doubleToLongBits(y);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        return result;
+//    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Coordinate other = (Coordinate) obj;
-        if (java.lang.Double.doubleToLongBits(x) != java.lang.Double.doubleToLongBits(other.x))
-            return false;
-        if (java.lang.Double.doubleToLongBits(y) != java.lang.Double.doubleToLongBits(other.y))
-            return false;
-        return true;
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj)
+//            return true;
+//        if (!super.equals(obj))
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Coordinate other = (Coordinate) obj;
+//        if (java.lang.Double.doubleToLongBits(x) != java.lang.Double.doubleToLongBits(other.x))
+//            return false;
+//        if (java.lang.Double.doubleToLongBits(y) != java.lang.Double.doubleToLongBits(other.y))
+//            return false;
+//        return true;
+//    }
 }

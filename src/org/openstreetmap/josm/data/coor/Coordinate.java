@@ -1,8 +1,18 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.coor;
 
-import java.awt.geom.Point2D;
 import java.io.Serializable;
+
+/**
+ * GWT
+ * 
+ * FIXME
+ *  does not extend Point2D
+ *  hashCode & equals not implemented
+ *
+ * notes
+ *  added no-arg constructor (required for RPC)
+ */
 
 /**
  * Base class of points of both coordinate systems.
@@ -16,7 +26,7 @@ import java.io.Serializable;
  *
  * @author imi
  */
-abstract class Coordinate extends Point2D implements Serializable {
+abstract class Coordinate implements Serializable {
 
     protected double x;
     protected double y;
@@ -30,6 +40,8 @@ abstract class Coordinate extends Point2D implements Serializable {
     Coordinate(double x, double y) {
         this.x = x; this.y = y;
     }
+
+    protected Coordinate() {}
 
     public double getX() {
         return x;
@@ -46,29 +58,31 @@ abstract class Coordinate extends Point2D implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = java.lang.Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = java.lang.Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        throw new RuntimeException("unsupported");
+//        final int prime = 31;
+//        int result = super.hashCode();
+//        long temp;
+//        temp = java.lang.Double.doubleToLongBits(x);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        temp = java.lang.Double.doubleToLongBits(y);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Coordinate other = (Coordinate) obj;
-        if (java.lang.Double.doubleToLongBits(x) != java.lang.Double.doubleToLongBits(other.x))
-            return false;
-        if (java.lang.Double.doubleToLongBits(y) != java.lang.Double.doubleToLongBits(other.y))
-            return false;
-        return true;
+        throw new RuntimeException("unsupported");
+//        if (this == obj)
+//            return true;
+//        if (!super.equals(obj))
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Coordinate other = (Coordinate) obj;
+//        if (java.lang.Double.doubleToLongBits(x) != java.lang.Double.doubleToLongBits(other.x))
+//            return false;
+//        if (java.lang.Double.doubleToLongBits(y) != java.lang.Double.doubleToLongBits(other.y))
+//            return false;
+//        return true;
     }
 }

@@ -2,6 +2,10 @@
 package org.openstreetmap.josm.data.coor;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Northing, Easting of the projected coordinates.
  *
  * This class is immutable.

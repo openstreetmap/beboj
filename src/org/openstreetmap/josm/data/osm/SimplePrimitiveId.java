@@ -3,6 +3,10 @@ package org.openstreetmap.josm.data.osm;
 
 import java.io.Serializable;
 
+/**
+ * GWT ok
+ */
+
 public class SimplePrimitiveId implements PrimitiveId, Serializable {
     private final long id;
     private final OsmPrimitiveType type;

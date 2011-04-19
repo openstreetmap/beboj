@@ -3,6 +3,11 @@ package org.openstreetmap.josm.data.osm;
 
 import java.util.Collection;
 import java.util.Map;
+
+/**
+ * GWT ok
+ */
+
 /**
  * Objects implement Tagged if they provide a map of key/value pairs.
  *

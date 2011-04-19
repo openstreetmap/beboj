@@ -4,6 +4,10 @@ package org.openstreetmap.josm.data.osm;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GWT ok
+ */
+
 public class RelationData extends PrimitiveData {
 
     private List<RelationMemberData> members = new ArrayList<RelationMemberData>();

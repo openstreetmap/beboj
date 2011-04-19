@@ -2,6 +2,10 @@
 package org.openstreetmap.josm.data.osm;
 
 /**
+ * GWT ok
+ */
+
+/**
  * A linkage class that can be used by an relation to keep a list of
  * members. Since membership may be qualified by a "role", a simple
  * list is not sufficient.

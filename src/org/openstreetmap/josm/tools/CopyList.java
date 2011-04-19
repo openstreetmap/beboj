@@ -27,6 +27,15 @@ import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
 /**
+ * GWT
+ *
+ * changelog
+ *  replaced modCount field from AbstractList by new field (modCount it is not present in gwt implementation)
+ *  removed @Override for clone
+ *  replaced array.clone by System.arraycopy
+ */
+
+/**
  * A List implementation initially based on given array, but never modifying
  * the array directly. On the first modification, the implementation will
  * create its own copy of the array, and after that it behaves mostly as
@@ -38,6 +47,8 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
     private E[] array;
     private int size;
     private boolean pristine;
+
+    int modCnt;
 
     /**
      * Create a List over given array.
@@ -89,7 +100,7 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
         rangeCheck(index);
         changeCheck();
 
-        modCount++;
+        modCnt++;
         E element = array[index];
         if (index < size-1) {
             System.arraycopy(array, index+1, array, index, size-index-1);
@@ -109,7 +120,7 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
     }
 
     public @Override void clear() {
-        modCount++;
+        modCnt++;
 
         // clean up the array
         while (size > 0) {
@@ -124,7 +135,7 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
      *
      * @return a clone of this <tt>CopyList</tt> instance
      */
-    public @Override Object clone() {
+    public Object clone() {
         return new CopyList<E>(array, size);
     }
 
@@ -132,16 +143,19 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
         if (index >= size || index < 0) throw new IndexOutOfBoundsException("Index:" + index + " Size:" + size);
     }
 
+    @SuppressWarnings("unchecked")
     private void changeCheck() {
         if (pristine) {
-            array = array.clone();
+            E[] old = array;
+            array = (E[]) new Object[array.length];
+            System.arraycopy(old, 0, array, 0, size);
             pristine = false;
         }
     }
 
     @SuppressWarnings("unchecked")
     private void ensureCapacity(int target) {
-        modCount++;
+        modCnt++;
         if (target > array.length) {
             E[] old = array;
 
@@ -175,7 +189,7 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
          * List should have.  If this expectation is violated, the iterator
          * has detected concurrent modification.
          */
-        int expectedModCount = modCount;
+        int expectedModCount = modCnt;
 
         public boolean hasNext() {
             return cursor != size;
@@ -204,14 +218,14 @@ public final class CopyList<E> extends AbstractList<E> implements RandomAccess, 
                     cursor--;
                 }
                 lastRet = -1;
-                expectedModCount = modCount;
+                expectedModCount = modCnt;
             } catch (IndexOutOfBoundsException e) {
                 throw new ConcurrentModificationException();
             }
         }
 
         final void checkForComodification() {
-            if (modCount != expectedModCount)
+            if (modCnt != expectedModCount)
                 throw new ConcurrentModificationException();
         }
     }

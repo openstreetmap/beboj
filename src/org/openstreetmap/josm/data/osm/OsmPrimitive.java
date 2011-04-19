@@ -11,23 +11,29 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.actions.search.SearchCompiler;
-import org.openstreetmap.josm.actions.search.SearchCompiler.Match;
-import org.openstreetmap.josm.actions.search.SearchCompiler.ParseError;
 import org.openstreetmap.josm.data.osm.visitor.Visitor;
-import org.openstreetmap.josm.gui.mappaint.StyleCache;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 import org.openstreetmap.josm.tools.Predicate;
+
+/**
+ * GWT
+ *
+ * TODO
+ *  missing methods: getFilteredList, getFilteredSet, clearCachedStyle, updateDirectionFlags
+ *  (getFilteredList & getFilteredSet do not work like this since
+ *   Class.isInstance() is not supported in gwt)
+ *  idCounter to double (?)
+ *
+ * change log
+ *  idCounter to long
+ */
 
 /**
  * An OSM primitive can be associated with a key/value pair. It can be created, deleted
@@ -41,10 +47,10 @@ import org.openstreetmap.josm.tools.Predicate;
  */
 abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, PrimitiveId {
 
-    private static final AtomicLong idCounter = new AtomicLong(0);
+    private static long idCounter = 0l;
 
     static long generateUniqueId() {
-        return idCounter.decrementAndGet();
+        return --idCounter;
     }
 
     /**
@@ -122,50 +128,50 @@ abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, 
      */
     private static final int FLAG_INCOMPLETE = 1 << 9;
 
-    /**
-     * Replies the sub-collection of {@see OsmPrimitive}s of type <code>type</code> present in
-     * another collection of {@see OsmPrimitive}s. The result collection is a list.
-     *
-     * If <code>list</code> is null, replies an empty list.
-     *
-     * @param <T>
-     * @param list  the original list
-     * @param type the type to filter for
-     * @return the sub-list of OSM primitives of type <code>type</code>
-     */
-    static public <T extends OsmPrimitive>  List<T> getFilteredList(Collection<OsmPrimitive> list, Class<T> type) {
-        if (list == null) return Collections.emptyList();
-        List<T> ret = new LinkedList<T>();
-        for(OsmPrimitive p: list) {
-            if (type.isInstance(p)) {
-                ret.add(type.cast(p));
-            }
-        }
-        return ret;
-    }
+//    /**
+//     * Replies the sub-collection of {@see OsmPrimitive}s of type <code>type</code> present in
+//     * another collection of {@see OsmPrimitive}s. The result collection is a list.
+//     *
+//     * If <code>list</code> is null, replies an empty list.
+//     *
+//     * @param <T>
+//     * @param list  the original list
+//     * @param type the type to filter for
+//     * @return the sub-list of OSM primitives of type <code>type</code>
+//     */
+//    static public <T extends OsmPrimitive>  List<T> getFilteredList(Collection<OsmPrimitive> list, Class<T> type) {
+//        if (list == null) return Collections.emptyList();
+//        List<T> ret = new LinkedList<T>();
+//        for(OsmPrimitive p: list) {
+//            if (type.isInstance(p)) {
+//                ret.add(type.cast(p));
+//            }
+//        }
+//        return ret;
+//    }
 
-    /**
-     * Replies the sub-collection of {@see OsmPrimitive}s of type <code>type</code> present in
-     * another collection of {@see OsmPrimitive}s. The result collection is a set.
-     *
-     * If <code>list</code> is null, replies an empty set.
-     *
-     * @param <T>
-     * @param list  the original collection
-     * @param type the type to filter for
-     * @return the sub-set of OSM primitives of type <code>type</code>
-     */
-    static public <T extends OsmPrimitive>  LinkedHashSet<T> getFilteredSet(Collection<OsmPrimitive> set, Class<T> type) {
-        LinkedHashSet<T> ret = new LinkedHashSet<T>();
-        if (set != null) {
-            for(OsmPrimitive p: set) {
-                if (type.isInstance(p)) {
-                    ret.add(type.cast(p));
-                }
-            }
-        }
-        return ret;
-    }
+//    /**
+//     * Replies the sub-collection of {@see OsmPrimitive}s of type <code>type</code> present in
+//     * another collection of {@see OsmPrimitive}s. The result collection is a set.
+//     *
+//     * If <code>list</code> is null, replies an empty set.
+//     *
+//     * @param <T>
+//     * @param list  the original collection
+//     * @param type the type to filter for
+//     * @return the sub-set of OSM primitives of type <code>type</code>
+//     */
+//    static public <T extends OsmPrimitive>  LinkedHashSet<T> getFilteredSet(Collection<OsmPrimitive> set, Class<T> type) {
+//        LinkedHashSet<T> ret = new LinkedHashSet<T>();
+//        if (set != null) {
+//            for(OsmPrimitive p: set) {
+//                if (type.isInstance(p)) {
+//                    ret.add(type.cast(p));
+//                }
+//            }
+//        }
+//        return ret;
+//    }
 
     /**
      * Replies the collection of referring primitives for the primitives in <code>primitives</code>.
@@ -298,7 +304,7 @@ abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, 
     /*----------
      * MAPPAINT
      *--------*/
-    public StyleCache mappaintStyle = null;
+//    public StyleCache mappaintStyle = null;
     public int mappaintCacheIdx;
 
     /* This should not be called from outside. Fixing the UI to add relevant
@@ -306,7 +312,7 @@ abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, 
        transparent cache handling in the future. */
     public void clearCachedStyle()
     {
-        mappaintStyle = null;
+//        mappaintStyle = null;
     }
     /* end of mappaint data */
 
@@ -872,59 +878,59 @@ abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, 
         return false;
     }
 
-    private static volatile Match directionKeys = null;
-    private static volatile Match reversedDirectionKeys = null;
+//    private static volatile Match directionKeys = null;
+//    private static volatile Match reversedDirectionKeys = null;
 
-    /**
-     * Contains a list of direction-dependent keys that make an object
-     * direction dependent.
-     * Initialized by checkDirectionTagged()
-     */
-    static {
-        // Legacy support - convert list of keys to search pattern
-        if (Main.pref.isCollection("tags.direction", false)) {
-            System.out.println("Collection of keys in tags.direction is no longer supported, value will converted to search pattern");
-            Collection<String> keys = Main.pref.getCollection("tags.direction", null);
-            StringBuilder builder = new StringBuilder();
-            for (String key:keys) {
-                builder.append(key);
-                builder.append("=* | ");
-            }
-            builder.delete(builder.length() - 3, builder.length());
-            Main.pref.put("tags.direction", builder.toString());
-        }
-
-        // FIXME: incline=\"-*\" search pattern does not work.
-        String reversedDirectionDefault = "oneway=\"-1\" | incline=down | incline=\"-*\"";
-
-        String directionDefault = "oneway? | incline=* | aerialway=* | "+
-        "waterway=stream | waterway=river | waterway=canal | waterway=drain | waterway=rapids | "+
-        "\"piste:type\"=downhill | \"piste:type\"=sled | man_made=\"piste:halfpipe\" | "+
-        "junction=roundabout";
-
-        try {
-            reversedDirectionKeys = SearchCompiler.compile(Main.pref.get("tags.reversed_direction", reversedDirectionDefault), false, false);
-        } catch (ParseError e) {
-            System.err.println("Unable to compile pattern for tags.reversed_direction, trying default pattern: " + e.getMessage());
-
-            try {
-                reversedDirectionKeys = SearchCompiler.compile(reversedDirectionDefault, false, false);
-            } catch (ParseError e2) {
-                throw new AssertionError("Unable to compile default pattern for direction keys: " + e2.getMessage());
-            }
-        }
-        try {
-            directionKeys = SearchCompiler.compile(Main.pref.get("tags.direction", directionDefault), false, false);
-        } catch (ParseError e) {
-            System.err.println("Unable to compile pattern for tags.direction, trying default pattern: " + e.getMessage());
-
-            try {
-                directionKeys = SearchCompiler.compile(directionDefault, false, false);
-            } catch (ParseError e2) {
-                throw new AssertionError("Unable to compile default pattern for direction keys: " + e2.getMessage());
-            }
-        }
-    }
+//    /**
+//     * Contains a list of direction-dependent keys that make an object
+//     * direction dependent.
+//     * Initialized by checkDirectionTagged()
+//     */
+//    static {
+//        // Legacy support - convert list of keys to search pattern
+//        if (Main.pref.isCollection("tags.direction", false)) {
+//            System.out.println("Collection of keys in tags.direction is no longer supported, value will converted to search pattern");
+//            Collection<String> keys = Main.pref.getCollection("tags.direction", null);
+//            StringBuilder builder = new StringBuilder();
+//            for (String key:keys) {
+//                builder.append(key);
+//                builder.append("=* | ");
+//            }
+//            builder.delete(builder.length() - 3, builder.length());
+//            Main.pref.put("tags.direction", builder.toString());
+//        }
+//
+//        // FIXME: incline=\"-*\" search pattern does not work.
+//        String reversedDirectionDefault = "oneway=\"-1\" | incline=down | incline=\"-*\"";
+//
+//        String directionDefault = "oneway? | incline=* | aerialway=* | "+
+//        "waterway=stream | waterway=river | waterway=canal | waterway=drain | waterway=rapids | "+
+//        "\"piste:type\"=downhill | \"piste:type\"=sled | man_made=\"piste:halfpipe\" | "+
+//        "junction=roundabout";
+//
+//        try {
+//            reversedDirectionKeys = SearchCompiler.compile(Main.pref.get("tags.reversed_direction", reversedDirectionDefault), false, false);
+//        } catch (ParseError e) {
+//            System.err.println("Unable to compile pattern for tags.reversed_direction, trying default pattern: " + e.getMessage());
+//
+//            try {
+//                reversedDirectionKeys = SearchCompiler.compile(reversedDirectionDefault, false, false);
+//            } catch (ParseError e2) {
+//                throw new AssertionError("Unable to compile default pattern for direction keys: " + e2.getMessage());
+//            }
+//        }
+//        try {
+//            directionKeys = SearchCompiler.compile(Main.pref.get("tags.direction", directionDefault), false, false);
+//        } catch (ParseError e) {
+//            System.err.println("Unable to compile pattern for tags.direction, trying default pattern: " + e.getMessage());
+//
+//            try {
+//                directionKeys = SearchCompiler.compile(directionDefault, false, false);
+//            } catch (ParseError e2) {
+//                throw new AssertionError("Unable to compile default pattern for direction keys: " + e2.getMessage());
+//            }
+//        }
+//    }
 
     private void updateTagged() {
         if (keys != null) {
@@ -949,18 +955,18 @@ abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, 
     }
 
     private void updateDirectionFlags() {
-        boolean hasDirections = false;
-        boolean directionReversed = false;
-        if (reversedDirectionKeys.match(this)) {
-            hasDirections = true;
-            directionReversed = true;
-        }
-        if (directionKeys.match(this)) {
-            hasDirections = true;
-        }
-
-        updateFlagsNoLock(FLAG_DIRECTION_REVERSED, directionReversed);
-        updateFlagsNoLock(FLAG_HAS_DIRECTIONS, hasDirections);
+//        boolean hasDirections = false;
+//        boolean directionReversed = false;
+//        if (reversedDirectionKeys.match(this)) {
+//            hasDirections = true;
+//            directionReversed = true;
+//        }
+//        if (directionKeys.match(this)) {
+//            hasDirections = true;
+//        }
+//
+//        updateFlagsNoLock(FLAG_DIRECTION_REVERSED, directionReversed);
+//        updateFlagsNoLock(FLAG_HAS_DIRECTIONS, hasDirections);
     }
 
     /**
@@ -1321,7 +1327,7 @@ abstract public class OsmPrimitive implements Comparable<OsmPrimitive>, Tagged, 
           int counter=0;
           for (OsmPrimitive o : (OsmPrimitive[])referrers) {
             if (dataSet == o.dataSet && o instanceof Way) {
-              if (++counter >= n) 
+              if (++counter >= n)
                 return true;
             }
           }

@@ -11,6 +11,13 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.Visitor;
 
 /**
+ * GWT
+ *
+ * TODO
+ *  some methods missing
+ */
+
+/**
  * Represents a single changeset in JOSM. For now its only used during
  * upload but in the future we may do more.
  *
@@ -36,8 +43,8 @@ public final class Changeset implements Tagged {
      * incomplete changeset we only know its id
      */
     private boolean incomplete;
-    /** the changeset content */
-    private ChangesetDataSet content = null;
+//    /** the changeset content */
+//    private ChangesetDataSet content = null;
 
     /**
      * Creates a new changeset with id 0.
@@ -58,25 +65,25 @@ public final class Changeset implements Tagged {
         this.tags = new HashMap<String, String>();
     }
 
-    /**
-     * Creates a clone of <code>other</code>
-     *
-     * @param other the other changeset. If null, creates a new changeset with id 0.
-     */
-    public Changeset(Changeset other) {
-        if (other == null) {
-            this.id = 0;
-            this.tags = new HashMap<String, String>();
-        } else if (other.isIncomplete()) {
-            setId(other.getId());
-            this.incomplete = true;
-            this.tags = new HashMap<String, String>();
-        } else {
-            this.id = other.id;
-            mergeFrom(other);
-            this.incomplete = false;
-        }
-    }
+//    /**
+//     * Creates a clone of <code>other</code>
+//     *
+//     * @param other the other changeset. If null, creates a new changeset with id 0.
+//     */
+//    public Changeset(Changeset other) {
+//        if (other == null) {
+//            this.id = 0;
+//            this.tags = new HashMap<String, String>();
+//        } else if (other.isIncomplete()) {
+//            setId(other.getId());
+//            this.incomplete = true;
+//            this.tags = new HashMap<String, String>();
+//        } else {
+//            this.id = other.id;
+//            mergeFrom(other);
+//            this.incomplete = false;
+//        }
+//    }
 
     public void visit(Visitor v) {
         v.visit(this);
@@ -263,33 +270,33 @@ public final class Changeset implements Tagged {
         return id <= 0;
     }
 
-    public void mergeFrom(Changeset other) {
-        if (other == null)
-            return;
-        if (id != other.id)
-            return;
-        this.user = other.user;
-        this.createdAt = other.createdAt;
-        this.closedAt = other.closedAt;
-        this.open  = other.open;
-        this.min = other.min;
-        this.max = other.max;
-        this.tags = new HashMap<String, String>(other.tags);
-        this.incomplete = other.incomplete;
-
-        // FIXME: merging of content required?
-        this.content = other.content;
-    }
-
-    public boolean hasContent() {
-        return content != null;
-    }
-
-    public ChangesetDataSet getContent() {
-        return content;
-    }
-
-    public void setContent(ChangesetDataSet content) {
-        this.content = content;
-    }
+//    public void mergeFrom(Changeset other) {
+//        if (other == null)
+//            return;
+//        if (id != other.id)
+//            return;
+//        this.user = other.user;
+//        this.createdAt = other.createdAt;
+//        this.closedAt = other.closedAt;
+//        this.open  = other.open;
+//        this.min = other.min;
+//        this.max = other.max;
+//        this.tags = new HashMap<String, String>(other.tags);
+//        this.incomplete = other.incomplete;
+//
+//        // FIXME: merging of content required?
+//        this.content = other.content;
+//    }
+//
+//    public boolean hasContent() {
+//        return content != null;
+//    }
+//
+//    public ChangesetDataSet getContent() {
+//        return content;
+//    }
+//
+//    public void setContent(ChangesetDataSet content) {
+//        this.content = content;
+//    }
 }

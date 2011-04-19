@@ -6,6 +6,10 @@ import java.util.Collection;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 
 /**
+ * GWT ok
+ */
+
+/**
  * This is a listener for selection changes through the dataset's data. Whenever
  * a selection of any data member changes, the dataSet gets informed about this
  * and fires a selectionChanged event.

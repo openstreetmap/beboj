@@ -7,6 +7,10 @@ import java.util.List;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 
+/**
+ * GWT ok
+ */
+
 public class BBox {
 
     private double xmin = Double.POSITIVE_INFINITY;

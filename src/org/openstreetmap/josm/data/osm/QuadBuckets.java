@@ -1,15 +1,20 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.data.osm;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.coor.QuadTiling;
+/**
+ * GWT
+ *
+ * changelog
+ *  moved inner class QBLevel to separate file to work around gwt bug
+ *    (see http://code.google.com/p/google-web-toolkit/issues/detail?id=5483)
+ *  QBLevel now requires type parameter and reference to 'this' in constructor
+ *  search_cache: private -> package private
+ */
 
 /**
  * Note: bbox of primitives added to QuadBuckets has to stay the same. In case of coordinate change, primitive must
@@ -21,11 +26,6 @@ import org.openstreetmap.josm.data.coor.QuadTiling;
 public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
 {
     private static boolean debug = false;
-    private static final boolean consistency_testing = false;
-    private static final int NW_INDEX = 1;
-    private static final int NE_INDEX = 3;
-    private static final int SE_INDEX = 2;
-    private static final int SW_INDEX = 0;
 
     static void abort(String s)
     {
@@ -58,8 +58,8 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
 
     public static int MAX_OBJECTS_PER_LEVEL = 16;
 
-    private QBLevel root;
-    private QBLevel search_cache;
+    private QBLevel<T> root;
+    QBLevel<T> search_cache;
     private int size;
 
     public QuadBuckets()
@@ -67,7 +67,7 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
         clear();
     }
     public void clear()  {
-        root = new QBLevel();
+        root = new QBLevel<T>(this);
         search_cache = null;
         size = 0;
         if (debug) {
@@ -124,7 +124,7 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
     public boolean remove(Object o) {
         @SuppressWarnings("unchecked") T t = (T) o;
         search_cache = null; // Search cache might point to one of removed buckets
-        QBLevel bucket = root.findBucket(t.getBBox());
+        QBLevel<T> bucket = root.findBucket(t.getBBox());
         if (bucket.remove_content(t)) {
             size--;
             return true;
@@ -133,7 +133,7 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
     }
     public boolean contains(Object o) {
         @SuppressWarnings("unchecked") T t = (T) o;
-        QBLevel bucket = root.findBucket(t.getBBox());
+        QBLevel<T> bucket = root.findBucket(t.getBBox());
         return bucket != null && bucket.content != null && bucket.content.contains(t);
     }
 
@@ -158,15 +158,15 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
     }
     class QuadBucketIterator implements Iterator<T>
     {
-        QBLevel current_node;
+        QBLevel<T> current_node;
         int content_index;
         int iterated_over;
-        QBLevel next_content_node(QBLevel q)
+        QBLevel<T> next_content_node(QBLevel<T> q)
         {
             if (q == null)
                 return null;
-            QBLevel orig = q;
-            QBLevel next;
+            QBLevel<T> orig = q;
+            QBLevel<T> next;
             next = q.nextContentNode();
             //if (consistency_testing && (orig == next))
             if (orig == next) {
@@ -300,7 +300,7 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
         }
 
         // Save parent because search_cache might change during search call
-        QBLevel tmp = search_cache.parent;
+        QBLevel<T> tmp = search_cache.parent;
 
         search_cache.search(search_bbox, ret);
 
@@ -320,7 +320,7 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
         printTreeRecursive(root, 0);
     }
 
-    private void printTreeRecursive(QBLevel level, int indent) {
+    private void printTreeRecursive(QBLevel<T> level, int indent) {
         if (level == null) {
             printIndented(indent, "<empty child>");
             return;
@@ -331,7 +331,7 @@ public class QuadBuckets<T extends OsmPrimitive> implements Collection<T>
                 printIndented(indent, o);
             }
         }
-        for (QBLevel child:level.getChildren()) {
+        for (QBLevel<T> child:level.getChildren()) {
             printTreeRecursive(child, indent + 2);
         }
     }

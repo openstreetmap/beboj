@@ -2,6 +2,7 @@
 package org.openstreetmap.beboj.client;
 
 import org.openstreetmap.beboj.client.gui.MainUI;
+import org.openstreetmap.josm.Main;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
@@ -15,6 +16,8 @@ public class Beboj implements EntryPoint {
      * Entry point method.
      */
     public void onModuleLoad() {
+        Main.init();
+
         MainUI ui = new MainUI();
         ui.getElement().setId("content-inner");
 

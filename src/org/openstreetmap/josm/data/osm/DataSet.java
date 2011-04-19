@@ -3,7 +3,6 @@ package org.openstreetmap.josm.data.osm;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,10 +31,23 @@ import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
 import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
 import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
 import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
-import org.openstreetmap.josm.gui.tagging.ac.AutoCompletionManager;
 import org.openstreetmap.josm.tools.FilteredCollection;
 import org.openstreetmap.josm.tools.Predicate;
 import org.openstreetmap.josm.tools.SubclassFilteredCollection;
+
+/**
+ * GWT
+ *
+ * TODO
+ *  missing methods: getDataSourceArea, getAutoCompletionManager
+ *
+ * changelog
+ *  clone() -> no @Override (gwt does not have Object.clone())
+ *
+ * note
+ *  java.util.concurrent.* classes are emulated, but do not provide
+ *  any functionality (just to keep the source in sync with josm core)
+ */
 
 /**
  * DataSet is the data behind the application. It can consists of only a few points up to the whole
@@ -132,18 +144,18 @@ public class DataSet implements Cloneable {
         return highlightUpdateCount;
     }
 
-    /**
-     * Maintain a list of used tags for autocompletion
-     */
-    private AutoCompletionManager autocomplete;
-
-    public AutoCompletionManager getAutoCompletionManager() {
-        if (autocomplete == null) {
-            autocomplete = new AutoCompletionManager(this);
-            addDataSetListener(autocomplete);
-        }
-        return autocomplete;
-    }
+//    /**
+//     * Maintain a list of used tags for autocompletion
+//     */
+//    private AutoCompletionManager autocomplete;
+//
+//    public AutoCompletionManager getAutoCompletionManager() {
+//        if (autocomplete == null) {
+//            autocomplete = new AutoCompletionManager(this);
+//            addDataSetListener(autocomplete);
+//        }
+//        return autocomplete;
+//    }
 
     /**
      * The API version that created this data set, if any.
@@ -591,7 +603,7 @@ public class DataSet implements Cloneable {
         }
     }
 
-    @Override public DataSet clone() {
+    public DataSet clone() {
         getReadLock().lock();
         try {
             DataSet ds = new DataSet();
@@ -637,19 +649,19 @@ public class DataSet implements Cloneable {
         }
     }
 
-    /**
-     * Returns the total area of downloaded data (the "yellow rectangles").
-     * @return Area object encompassing downloaded data.
-     */
-    public Area getDataSourceArea() {
-        if (dataSources.isEmpty()) return null;
-        Area a = new Area();
-        for (DataSource source : dataSources) {
-            // create area from data bounds
-            a.add(new Area(source.bounds.asRect()));
-        }
-        return a;
-    }
+//    /**
+//     * Returns the total area of downloaded data (the "yellow rectangles").
+//     * @return Area object encompassing downloaded data.
+//     */
+//    public Area getDataSourceArea() {
+//        if (dataSources.isEmpty()) return null;
+//        Area a = new Area();
+//        for (DataSource source : dataSources) {
+//            // create area from data bounds
+//            a.add(new Area(source.bounds.asRect()));
+//        }
+//        return a;
+//    }
 
     /**
      * returns a  primitive with a given id from the data set. null, if no such primitive

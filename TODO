@@ -1,0 +1,4 @@
+* Some classes miss equals & hashCode, it should be checked if they are required or not.
+  E.g. data.Bounds
+  
+* Primitive type 'long' is expensive in gwt (simulated with 2 doubles), so we can try to replace it with int or double where this is possible.

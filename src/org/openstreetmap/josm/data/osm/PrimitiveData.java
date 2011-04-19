@@ -1,12 +1,17 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.data.osm;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+/**
+ * GWT
+ *
+ * TODO
+ *  missing method: getFilteredList
+ */
 
 /**
  *
@@ -169,16 +174,16 @@ public abstract class PrimitiveData implements Tagged, PrimitiveId {
         this.keys.putAll(keys);
     }
 
-    @SuppressWarnings("unchecked")
-    static public <T extends PrimitiveData>  List<T> getFilteredList(Collection<T> list, OsmPrimitiveType type) {
-        List<T> ret = new ArrayList<T>();
-        for(PrimitiveData p: list) {
-            if (type.getDataClass().isInstance(p)) {
-                ret.add((T)p);
-            }
-        }
-        return ret;
-    }
+//    @SuppressWarnings("unchecked")
+//    static public <T extends PrimitiveData>  List<T> getFilteredList(Collection<T> list, OsmPrimitiveType type) {
+//        List<T> ret = new ArrayList<T>();
+//        for(PrimitiveData p: list) {
+//            if (type.getDataClass().isInstance(p)) {
+//                ret.add((T)p);
+//            }
+//        }
+//        return ret;
+//    }
 
     protected void setKeysAsList(String... keys) {
         assert keys.length % 2 == 0;

@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.data.osm;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,37 +8,81 @@ import java.util.List;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.coor.QuadTiling;
 
-class QBLevel
+/**
+ * GWT
+ *
+ * note
+ *  in JOSM core, this is an inner class of QuadBuckets
+ *
+ * changelog
+ *  added generic type parameter
+ *  replaced reflection by cast
+ *      - QBLevel[] result = (QBLevel[]) Array.newInstance(this.getClass(), QuadTiling.TILES_PER_LEVEL);
+ *      + @SuppressWarnings("unchecked") QBLevel[] result = (QBLevel[]) new Object[QuadTiling.TILES_PER_LEVEL];
+ *  added reference to parent QuadBuckets object to constructor (required to set the search_cache field)
+ *  getChildren, search_contents and search: private -> package private
+ * 
+ */
+
+class QBLevel<T extends OsmPrimitive>
 {
+    private static boolean debug = false;
+    private static final boolean consistency_testing = false;
+    private static final int NW_INDEX = 1;
+    private static final int NE_INDEX = 3;
+    private static final int SE_INDEX = 2;
+    private static final int SW_INDEX = 0;
+    public static int MAX_OBJECTS_PER_LEVEL = 16;
+    static void abort(String s)
+    {
+        throw new AssertionError(s);
+    }
+    static void out(String s)
+    {
+        System.out.println(s);
+    }
+    // periodic output
+    long last_out = -1;
+    void pout(String s)
+    {
+        long now = System.currentTimeMillis();
+        if (now - last_out < 300)
+            return;
+        last_out = now;
+        System.out.print(s + "\r");
+    }
+
+
+    private final QuadBuckets<T> parentBuckets;
     final int level;
     private final BBox bbox;
     final long quad;
-    final QBLevel parent;
+    final QBLevel<T> parent;
     private boolean isLeaf = true;
 
     public List<T> content;
-    public QBLevel nw, ne, sw, se;
+    public QBLevel<T> nw, ne, sw, se;
 
-    private QBLevel getChild(int index) {
+    private QBLevel<T> getChild(int index) {
         switch (index) {
         case NE_INDEX:
             if (ne == null) {
-                ne = new QBLevel(this, index);
+                ne = new QBLevel<T>(parentBuckets, this, index);
             }
             return ne;
         case NW_INDEX:
             if (nw == null) {
-                nw = new QBLevel(this, index);
+                nw = new QBLevel<T>(parentBuckets, this, index);
             }
             return nw;
         case SE_INDEX:
             if (se == null) {
-                se = new QBLevel(this, index);
+                se = new QBLevel<T>(parentBuckets, this, index);
             }
             return se;
         case SW_INDEX:
             if (sw == null) {
-                sw = new QBLevel(this, index);
+                sw = new QBLevel<T>(parentBuckets, this, index);
             }
             return sw;
         default:
@@ -47,13 +90,13 @@ class QBLevel
         }
     }
 
-    private QBLevel[] getChildren() {
+    QBLevel<T>[] getChildren() {
         // This is ugly and hackish.  But, it seems to work,
         // and using an ArrayList here seems to cost us
         // a significant performance penalty -- 50% in my
         // testing.  Child access is one of the single
         // hottest code paths in this entire class.
-        QBLevel[] result = (QBLevel[]) Array.newInstance(this.getClass(), QuadTiling.TILES_PER_LEVEL);
+        @SuppressWarnings("unchecked") QBLevel<T>[] result = (QBLevel<T>[]) new Object[QuadTiling.TILES_PER_LEVEL];
         result[NW_INDEX] = nw;
         result[NE_INDEX] = ne;
         result[SW_INDEX] = sw;
@@ -68,14 +111,16 @@ class QBLevel
     /**
      * Constructor for root node
      */
-    public QBLevel() {
+    public QBLevel(QuadBuckets<T> parentBuckets) {
+        this.parentBuckets = parentBuckets;
         level = 0;
         quad = 0;
         parent = null;
         bbox = new BBox(-180, 90, 180, -90);
     }
 
-    public QBLevel(QBLevel parent, int parent_index) {
+    public QBLevel(QuadBuckets<T> parentBuckets, QBLevel<T> parent, int parent_index) {
+        this.parentBuckets = parentBuckets;
         this.parent = parent;
         this.level = parent.level + 1;
         int shift = (QuadTiling.NR_LEVELS - level) * 2;
@@ -105,7 +150,7 @@ class QBLevel
         return new BBox(bottom_left, top_right);
     }
 
-    QBLevel findBucket(BBox bbox) {
+    QBLevel<T> findBucket(BBox bbox) {
         if (!hasChildren())
             return this;
         else {
@@ -205,7 +250,7 @@ class QBLevel
         //return search_bbox.bounds(coor));
         return o.getBBox().intersects(search_bbox);
     }
-    private void search_contents(BBox search_bbox, List<T> result)
+    void search_contents(BBox search_bbox, List<T> result)
     {
         if (debug) {
             out("searching contents (size: " + content == null?"<null>":content.size() + ") for " + search_bbox);
@@ -239,13 +284,13 @@ class QBLevel
         return nw != null || ne != null || sw != null || se != null;
     }
 
-    QBLevel next_sibling()
+    QBLevel<T> next_sibling()
     {
         boolean found_me = false;
         if (parent == null)
             return null;
         int __nr = 0;
-        for (QBLevel sibling : parent.getChildren()) {
+        for (QBLevel<T> sibling : parent.getChildren()) {
             __nr++;
             int nr = __nr-1;
             if (sibling == null) {
@@ -279,10 +324,10 @@ class QBLevel
     {
         return content != null;
     }
-    QBLevel nextSibling()
+    QBLevel<T> nextSibling()
     {
-        QBLevel next = this;
-        QBLevel sibling = next.next_sibling();
+        QBLevel<T> next = this;
+        QBLevel<T> sibling = next.next_sibling();
         // Walk back up the tree to find the
         // next sibling node.  It may be either
         // a leaf or branch.
@@ -299,10 +344,10 @@ class QBLevel
         next = sibling;
         return next;
     }
-    QBLevel firstChild()
+    QBLevel<T> firstChild()
     {
-        QBLevel ret = null;
-        for (QBLevel child : getChildren()) {
+        QBLevel<T> ret = null;
+        for (QBLevel<T> child : getChildren()) {
             if (child == null) {
                 continue;
             }
@@ -311,15 +356,15 @@ class QBLevel
         }
         return ret;
     }
-    QBLevel nextNode()
+    QBLevel<T> nextNode()
     {
         if (!this.hasChildren())
             return this.nextSibling();
         return this.firstChild();
     }
-    QBLevel nextContentNode()
+    QBLevel<T> nextContentNode()
     {
-        QBLevel next = this.nextNode();
+        QBLevel<T> next = this.nextNode();
         if (next == null)
             return next;
         if (next.hasContent())
@@ -335,7 +380,7 @@ class QBLevel
                 get_index(o.getBBox(), level);
                 get_index(o.getBBox(), level-1);
                 int nr = 0;
-                for (QBLevel sibling : parent.getChildren()) {
+                for (QBLevel<T> sibling : parent.getChildren()) {
                     out("sibling["+ (nr++) +"]: " + sibling.bbox() + " this: " + (this==sibling));
                 }
                 abort("\nobject " + o + " does not belong in node at level: " + level + " bbox: " + this.bbox());
@@ -351,7 +396,7 @@ class QBLevel
         findBucket(o.getBBox()).doAdd(o);
     }
 
-    private void search(BBox search_bbox, List<T> result)
+    void search(BBox search_bbox, List<T> result)
     {
         if (debug) {
             System.out.print("[" + level + "] qb bbox: " + this.bbox() + " ");
@@ -363,7 +408,7 @@ class QBLevel
             }
             return;
         } else if (bbox().bounds(search_bbox)) {
-            search_cache = this;
+            parentBuckets.search_cache = this;
         }
 
         if (this.hasContent()) {
@@ -397,9 +442,9 @@ class QBLevel
     {
         return Long.toHexString(quad);
     }
-    int index_of(QBLevel find_this)
+    int index_of(QBLevel<T> find_this)
     {
-        QBLevel[] children = getChildren();
+        QBLevel<T>[] children = getChildren();
         for (int i = 0; i < QuadTiling.TILES_PER_LEVEL; i++) {
             if (children[i] == find_this)
                 return i;
@@ -457,3 +502,4 @@ class QBLevel
         return true;
     }
 }
+

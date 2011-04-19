@@ -29,6 +29,10 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
+ * GWT ok
+ */
+
+/**
  * A Set-like class that allows looking up equivalent preexising instance.
  * It is useful whereever one would use self-mapping construct like
  * <code>Map<T,T>.put(t,t), that is, for caches, uniqueness filters or similar.

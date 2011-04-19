@@ -7,6 +7,13 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.Visitor;
 
 /**
+ * GWT
+ *
+ * changelog
+ *  eliminated String.format(...)
+ */
+
+/**
  * One node data, consisting of one world coordinate waypoint.
  *
  * @author imi
@@ -244,7 +251,7 @@ public final class Node extends OsmPrimitive {
         if (coor == null) {
             builder.append("Coor is null\n");
         } else {
-            builder.append(String.format("EastNorth: %s\n", coor.getEastNorth()));
+            builder.append("EastNorth: "+coor.getEastNorth()+"\n");
             builder.append(coor.getProjection());
             builder.append("\n");
         }

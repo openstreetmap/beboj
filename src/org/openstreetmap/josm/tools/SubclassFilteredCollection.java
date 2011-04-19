@@ -6,6 +6,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Filtered view of a collection.
  * (read-only collection, but elements can be changed, of course)
  * Lets you iterate through those elements of a given collection that satisfy a

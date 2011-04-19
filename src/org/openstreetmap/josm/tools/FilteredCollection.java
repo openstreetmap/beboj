@@ -4,6 +4,10 @@ package org.openstreetmap.josm.tools;
 import java.util.Collection;
 
 /**
+ * GWT ok
+ */
+
+/**
  * The same as SubclassFilteredCollection, but does not restrict the type
  * of the collection to a certain subclass.
  */

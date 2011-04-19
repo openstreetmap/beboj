@@ -4,6 +4,10 @@ package org.openstreetmap.josm.data.coor;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.projection.Projection;
 
+/**
+ * GWT ok
+ */
+
 public class CachedLatLon extends LatLon {
     private EastNorth eastNorth;
     private Projection proj;

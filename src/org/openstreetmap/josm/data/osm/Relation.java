@@ -13,6 +13,13 @@ import org.openstreetmap.josm.data.osm.visitor.Visitor;
 import org.openstreetmap.josm.tools.CopyList;
 
 /**
+ * GWT
+ *
+ * changelog
+ *  eliminated String.format
+ */
+
+/**
  * An relation, having a set of tags and any number (0...n) of members.
  *
  * @author Frederik Ramm <frederik@remote.org>
@@ -446,7 +453,7 @@ public final class Relation extends OsmPrimitive {
             RelationMember[] members = this.members;
             for (RelationMember rm: members) {
                 if (rm.getMember().getDataSet() != dataSet)
-                    throw new DataIntegrityProblemException(String.format("Relation member must be part of the same dataset as relation(%s, %s)", getPrimitiveId(), rm.getMember().getPrimitiveId()));
+                    throw new DataIntegrityProblemException("Relation member must be part of the same dataset as relation("+getPrimitiveId()+", "+rm.getMember().getPrimitiveId()+")");
             }
             if (Main.pref.getBoolean("debug.checkDeleteReferenced", true)) {
                 for (RelationMember rm: members) {

@@ -21,6 +21,10 @@
 package org.openstreetmap.josm.data.osm;
 
 /**
+ * GWT ok
+ */
+
+/**
  * An interface allowing injection of hashcode and equality implementation
  * based on some inner state of an object for a set.
  * It supports two type parameters to implement effective foreign key implementation

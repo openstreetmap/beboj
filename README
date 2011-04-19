@@ -1,1 +1,14 @@
-todo
+
+dev notes
+---------
+
+Using gwt 2.2 (but might work with other versions as well).
+
+Tying keep the source in org.openstreetmap.josm.* packages as close to the original as possible. (for future syncronization) There is partial classpath emulation. Note that the code from this JavaEmulation module will only run in hosted mode. In developent mode, normal JRE classes are used instead. This is a limitation of the gwt framework. For workaround, one can rename the packages, so they no longer match classpath.
+
+Not all code can stay as is, of course. Here are some common things that need fixing:
+ * remove @Override for clone(): in gwt, 'Object' does not have a clone() method
+ * get rid of String.format: not implemented by gwt
+ * no 'Double.doubleToLongBits(d)' - replace by '(int) d' (bad hash) or '(""+d).hashCode()' (expensive)
+ 
+Concurrency is not an issue, so AtomicLong can by replaced by long and so forth.

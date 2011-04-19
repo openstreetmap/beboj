@@ -1,18 +1,22 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.osm;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.io.MirroredInputStream;
+/**
+ * GWT
+ *
+ * TODO
+ *  uidCounter: long to int or double
+ *  missing methods: loadRelicensingInformation
+ * 
+ * changelog
+ *  uidCounter: AtomicLong -> long
+ *  eliminated String.format
+ */
 
 /**
  * A simple class to keep a list of user names.
@@ -24,8 +28,8 @@ import org.openstreetmap.josm.io.MirroredInputStream;
  *
  */
 public class User {
-
-    static private AtomicLong uidCounter = new AtomicLong();
+    
+    static private long uidCounter = 0;    
 
     /**
      * the map of known users
@@ -35,7 +39,7 @@ public class User {
     private static HashSet<Long> nonRelicensingUsers = null;
 
     private static long getNextLocalUid() {
-        return uidCounter.decrementAndGet();
+        return --uidCounter;
     }
 
     /**
@@ -44,7 +48,7 @@ public class User {
      * @param name the name
      */
     public static User createLocalUser(String name) {
-        for(long i = -1; i >= uidCounter.get(); --i)
+        for(long i = -1; i >= uidCounter; --i)
         {
           User olduser = getById(i);
           if(olduser != null && olduser.hasName(name))
@@ -117,57 +121,57 @@ public class User {
     }
 
     public static void loadRelicensingInformation(boolean clean) {
-        relicensingUsers = new HashSet<Long>();
-        nonRelicensingUsers = new HashSet<Long>();
-        try {
-            MirroredInputStream stream = new MirroredInputStream(
-                 Main.pref.get("url.licensechange",
-                    "http://planet.openstreetmap.org/users_agreed/users_agreed.txt"),
-                 clean ? 1 : 7200);
-            try {
-                InputStreamReader r;
-                r = new InputStreamReader(stream);
-                BufferedReader reader = new BufferedReader(r);
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.startsWith("#")) continue;
-                    try {
-                        Long id = new Long(Long.parseLong(line.trim()));
-                        relicensingUsers.add(id);
-                    } catch (java.lang.NumberFormatException ex) {
-                    }
-                }
-            }
-            finally {
-                stream.close();
-            }
-        } catch (IOException ex) {
-        }
-
-        try {
-            MirroredInputStream stream = new MirroredInputStream(
-                Main.pref.get("url.licensechange_reject",
-                    "http://planet.openstreetmap.org/users_agreed/users_disagreed.txt"),
-                clean ? 1 : 7200);
-            try {
-                InputStreamReader r;
-                r = new InputStreamReader(stream);
-                BufferedReader reader = new BufferedReader(r);
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.startsWith("#")) continue;
-                    try {
-                        Long id = new Long(Long.parseLong(line.trim()));
-                        nonRelicensingUsers.add(id);
-                    } catch (java.lang.NumberFormatException ex) {
-                    }
-                }
-            }
-            finally {
-                stream.close();
-            }
-        } catch (IOException ex) {
-        }
+//        relicensingUsers = new HashSet<Long>();
+//        nonRelicensingUsers = new HashSet<Long>();
+//        try {
+//            MirroredInputStream stream = new MirroredInputStream(
+//                 Main.pref.get("url.licensechange",
+//                    "http://planet.openstreetmap.org/users_agreed/users_agreed.txt"),
+//                 clean ? 1 : 7200);
+//            try {
+//                InputStreamReader r;
+//                r = new InputStreamReader(stream);
+//                BufferedReader reader = new BufferedReader(r);
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    if (line.startsWith("#")) continue;
+//                    try {
+//                        Long id = new Long(Long.parseLong(line.trim()));
+//                        relicensingUsers.add(id);
+//                    } catch (java.lang.NumberFormatException ex) {
+//                    }
+//                }
+//            }
+//            finally {
+//                stream.close();
+//            }
+//        } catch (IOException ex) {
+//        }
+//
+//        try {
+//            MirroredInputStream stream = new MirroredInputStream(
+//                Main.pref.get("url.licensechange_reject",
+//                    "http://planet.openstreetmap.org/users_agreed/users_disagreed.txt"),
+//                clean ? 1 : 7200);
+//            try {
+//                InputStreamReader r;
+//                r = new InputStreamReader(stream);
+//                BufferedReader reader = new BufferedReader(r);
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    if (line.startsWith("#")) continue;
+//                    try {
+//                        Long id = new Long(Long.parseLong(line.trim()));
+//                        nonRelicensingUsers.add(id);
+//                    } catch (java.lang.NumberFormatException ex) {
+//                    }
+//                }
+//            }
+//            finally {
+//                stream.close();
+//            }
+//        } catch (IOException ex) {
+//        }
     }
 
     /** the user name */
@@ -289,7 +293,7 @@ public class User {
             s.append(" name:"+getName());
         }
         else if (names.size() > 1) {
-            s.append(String.format(" %d names:%s", names.size(), getName()));
+            s.append(" "+names.size()+" names:"+getName());
         }
         return s.toString();
     }

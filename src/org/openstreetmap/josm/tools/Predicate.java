@@ -1,6 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.tools;
 
+/**
+ * GWT ok
+ */
+
 // Used to identify objects that fulfill a certain condition, e.g. when filtering a collection
 public interface Predicate<T> {
     // @return whether the object passes the test or not

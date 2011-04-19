@@ -5,12 +5,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.SwingUtilities;
-
 import org.openstreetmap.josm.data.SelectionChangedListener;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.event.DatasetEventManager.FireMode;
+
+/**
+ * GWT
+ *
+ * changelog
+ *  SwingUtilities.invokeLater(edtRunnable) -> edtRunnable.run()
+ */
 
 /**
  * Similar like {@link DatasetEventManager}, just for selection events. Because currently selection changed
@@ -70,7 +75,7 @@ public class SelectionEventManager implements SelectionChangedListener {
     public void selectionChanged(Collection<? extends OsmPrimitive> newSelection) {
         fireEvents(normalListeners, newSelection);
         selection = newSelection;
-        SwingUtilities.invokeLater(edtRunnable);
+        edtRunnable.run();
     }
 
     private void fireEvents(List<ListenerInfo> listeners, Collection<? extends OsmPrimitive> newSelection) {

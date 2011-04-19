@@ -3,6 +3,10 @@ package org.openstreetmap.josm.tools;
 import java.util.ArrayList;
 
 /**
+ * GWT ok
+ */
+
+/**
  * A pair.
  */
 public final class Pair<A,B> {

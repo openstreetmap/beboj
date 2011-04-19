@@ -14,6 +14,10 @@ import org.openstreetmap.josm.tools.CopyList;
 import org.openstreetmap.josm.tools.Pair;
 
 /**
+ * GWT ok
+ */
+
+/**
  * One full way, consisting of a list of way nodes.
  *
  * @author imi

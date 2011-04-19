@@ -1,9 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.data.coor;
 
-
-import org.junit.Test;
-
 import com.google.gwt.junit.client.GWTTestCase;
 
 public class LatLonTest extends GWTTestCase {
@@ -13,19 +10,16 @@ public class LatLonTest extends GWTTestCase {
 
     final private double EPSILON = 1e-9;
 
-    @Test
     public void testIsValidLon() {
         assertFalse(LatLon.isValidLon(190));
     }
 
-    @Test
     public void testLatLonDoubleDouble() {
         LatLon ll = new LatLon(1.2, 3.4);
         assertTrue(ll.lat() == 1.2);
         assertTrue(ll.lon() == 3.4);
     }
 
-    @Test
     public void testGreatCircleDistance() {
         LatLon ll1 = new LatLon(35.2, 123.4);
         LatLon ll2 = new LatLon(50.1, 123.7);

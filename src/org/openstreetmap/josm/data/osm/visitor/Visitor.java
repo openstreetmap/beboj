@@ -7,6 +7,10 @@ import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.Way;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Implementation of the visitor scheme. Every OsmPrimitive can be visited by
  * several different visitors.
  *

@@ -5,6 +5,10 @@ import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
 
+/**
+ * GWT ok
+ */
+
 public class NodeData extends PrimitiveData {
 
     private final CachedLatLon coor = new CachedLatLon(0, 0);

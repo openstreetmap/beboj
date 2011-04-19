@@ -3,6 +3,10 @@ package org.openstreetmap.josm.data.osm;
 
 import org.openstreetmap.josm.data.Bounds;
 
+/**
+ * GWT ok
+ */
+
 public class DataSource {
     public final Bounds bounds;
     public final String origin;

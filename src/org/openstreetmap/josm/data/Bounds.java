@@ -3,12 +3,17 @@ package org.openstreetmap.josm.data;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.geom.Rectangle2D;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
+
+/**
+ * GWT
+ *
+ * TODO
+ *  some methods missing
+ */
 
 /**
  * This is a simple data class for "rectangular" areas of the world, given in
@@ -90,9 +95,9 @@ public class Bounds {
         this(other.getMin(), other.getMax());
     }
 
-    public Bounds(Rectangle2D rect) {
-        this(rect.getMinY(), rect.getMinX(), rect.getMaxY(), rect.getMaxX());
-    }
+//    public Bounds(Rectangle2D rect) {
+//        this(rect.getMinY(), rect.getMinX(), rect.getMaxY(), rect.getMaxX());
+//    }
 
     /**
      * Creates new bounds around a coordinate pair <code>center</code>. The
@@ -123,13 +128,13 @@ public class Bounds {
         return "Bounds["+minLat+","+minLon+","+maxLat+","+maxLon+"]";
     }
 
-    public String toShortString(DecimalFormat format) {
-        return
-        format.format(minLat) + " "
-        + format.format(minLon) + " / "
-        + format.format(maxLat) + " "
-        + format.format(maxLon);
-    }
+//    public String toShortString(DecimalFormat format) {
+//        return
+//        format.format(minLat) + " "
+//        + format.format(minLon) + " / "
+//        + format.format(maxLat) + " "
+//        + format.format(maxLon);
+//    }
 
     /**
      * @return Center of the bounding box.
@@ -184,13 +189,13 @@ public class Bounds {
     }
 
 
-    /**
-     * Converts the lat/lon bounding box to an object of type Rectangle2D.Double
-     * @return the bounding box to Rectangle2D.Double
-     */
-    public Rectangle2D.Double asRect() {
-        return new Rectangle2D.Double(minLon, minLat, maxLon-minLon, maxLat-minLat);
-    }
+//    /**
+//     * Converts the lat/lon bounding box to an object of type Rectangle2D.Double
+//     * @return the bounding box to Rectangle2D.Double
+//     */
+//    public Rectangle2D.Double asRect() {
+//        return new Rectangle2D.Double(minLon, minLat, maxLon-minLon, maxLat-minLat);
+//    }
 
     public double getArea() {
         return (maxLon - minLon) * (maxLat - minLat);
@@ -204,41 +209,41 @@ public class Bounds {
         return sb.toString();
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        long temp;
-        temp = Double.doubleToLongBits(maxLat);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(maxLon);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(minLat);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(minLon);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Bounds other = (Bounds) obj;
-        if (Double.doubleToLongBits(maxLat) != Double.doubleToLongBits(other.maxLat))
-            return false;
-        if (Double.doubleToLongBits(maxLon) != Double.doubleToLongBits(other.maxLon))
-            return false;
-        if (Double.doubleToLongBits(minLat) != Double.doubleToLongBits(other.minLat))
-            return false;
-        if (Double.doubleToLongBits(minLon) != Double.doubleToLongBits(other.minLon))
-            return false;
-        return true;
-    }
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        long temp;
+//        temp = Double.doubleToLongBits(maxLat);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        temp = Double.doubleToLongBits(maxLon);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        temp = Double.doubleToLongBits(minLat);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        temp = Double.doubleToLongBits(minLon);
+//        result = prime * result + (int) (temp ^ (temp >>> 32));
+//        return result;
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Bounds other = (Bounds) obj;
+//        if (Double.doubleToLongBits(maxLat) != Double.doubleToLongBits(other.maxLat))
+//            return false;
+//        if (Double.doubleToLongBits(maxLon) != Double.doubleToLongBits(other.maxLon))
+//            return false;
+//        if (Double.doubleToLongBits(minLat) != Double.doubleToLongBits(other.minLat))
+//            return false;
+//        if (Double.doubleToLongBits(minLon) != Double.doubleToLongBits(other.minLon))
+//            return false;
+//        return true;
+//    }
 
     /**
      * Returns the value rounded to OSM precisions, i.e. to

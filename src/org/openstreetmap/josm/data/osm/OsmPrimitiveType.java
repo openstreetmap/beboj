@@ -5,6 +5,10 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.text.MessageFormat;
 
+/**
+ * GWT ok
+ */
+
 public enum OsmPrimitiveType {
 
     NODE (marktr("node"), Node.class, NodeData.class),

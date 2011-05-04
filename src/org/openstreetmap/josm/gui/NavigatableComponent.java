@@ -3,10 +3,11 @@ package org.openstreetmap.josm.gui;
 
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
-import java.awt.Cursor;
+//import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,16 +16,17 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
+//import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JComponent;
+//import javax.swing.JComponent;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.beboj.CanvasView;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.ProjectionBounds;
 import org.openstreetmap.josm.data.coor.CachedLatLon;
@@ -38,9 +40,26 @@ import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.osm.WaySegment;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.projection.Projection;
-import org.openstreetmap.josm.gui.help.Helpful;
+//import org.openstreetmap.josm.gui.help.Helpful;
 import org.openstreetmap.josm.gui.preferences.ProjectionPreference;
 import org.openstreetmap.josm.tools.Predicate;
+
+/**
+ * GWT
+ *
+ * FIXME
+ *  support viewID
+ *  getNearestWaySegmentsImpl: 
+ *      there is some rounding, that cannot be done like this in gwt
+ *      (rounding is omitted for now)
+ * 
+ * note
+ *  NavigatableComponent does no longer subclass JComponent
+ *      Functionality needed from JComponent is extracted to a new interface CanvasView
+ *      and to a PropertyChangeSupport field
+ *      Constructor has a CanvasView argument
+ *  zoomNoUndoTo does not trigger repaint
+ */
 
 /**
  * An component that can be navigated by a mapmover. Used as map view and for the
@@ -48,7 +67,18 @@ import org.openstreetmap.josm.tools.Predicate;
  *
  * @author imi
  */
-public class NavigatableComponent extends JComponent implements Helpful {
+public class NavigatableComponent {//extends JComponent implements Helpful {
+    /*************
+     * GWT part
+     *************/
+
+    public CanvasView view;
+
+    public PropertyChangeSupport propertyChangeManager = new PropertyChangeSupport(this);
+
+    /*************
+     * JOSM part
+     *************/
 
     /**
      * Interface to notify listeners of the change of the zoom area.
@@ -101,8 +131,10 @@ public class NavigatableComponent extends JComponent implements Helpful {
      */
     protected EastNorth center = calculateDefaultCenter();
 
-    public NavigatableComponent() {
-        setLayout(null);
+    public NavigatableComponent(CanvasView view) {
+        this.view = view;
+
+//        setLayout(null);
     }
 
     protected DataSet getCurrentDataSet() {
@@ -128,8 +160,8 @@ public class NavigatableComponent extends JComponent implements Helpful {
 
     public double getDist100Pixel()
     {
-        int w = getWidth()/2;
-        int h = getHeight()/2;
+        int w = view.getWidth()/2;
+        int h = view.getHeight()/2;
         LatLon ll1 = getLatLon(w-50,h);
         LatLon ll2 = getLatLon(w+50,h);
         return ll1.greatCircleDistance(ll2);
@@ -152,18 +184,18 @@ public class NavigatableComponent extends JComponent implements Helpful {
      */
     public EastNorth getEastNorth(int x, int y) {
         return new EastNorth(
-                center.east() + (x - getWidth()/2.0)*scale,
-                center.north() - (y - getHeight()/2.0)*scale);
+                center.east() + (x - view.getWidth()/2.0)*scale,
+                center.north() - (y - view.getHeight()/2.0)*scale);
     }
 
     public ProjectionBounds getProjectionBounds() {
         return new ProjectionBounds(
                 new EastNorth(
-                        center.east() - getWidth()/2.0*scale,
-                        center.north() - getHeight()/2.0*scale),
+                        center.east() - view.getWidth()/2.0*scale,
+                        center.north() - view.getHeight()/2.0*scale),
                         new EastNorth(
-                                center.east() + getWidth()/2.0*scale,
-                                center.north() + getHeight()/2.0*scale));
+                                center.east() + view.getWidth()/2.0*scale,
+                                center.north() + view.getHeight()/2.0*scale));
     }
 
     /* FIXME: replace with better method - used by MapSlider */
@@ -177,11 +209,11 @@ public class NavigatableComponent extends JComponent implements Helpful {
     public Bounds getRealBounds() {
         return new Bounds(
                 getProjection().eastNorth2latlon(new EastNorth(
-                        center.east() - getWidth()/2.0*scale,
-                        center.north() - getHeight()/2.0*scale)),
+                        center.east() - view.getWidth()/2.0*scale,
+                        center.north() - view.getHeight()/2.0*scale)),
                         getProjection().eastNorth2latlon(new EastNorth(
-                                center.east() + getWidth()/2.0*scale,
-                                center.north() + getHeight()/2.0*scale)));
+                                center.east() + view.getWidth()/2.0*scale,
+                                center.north() + view.getHeight()/2.0*scale)));
     }
 
     /**
@@ -236,8 +268,8 @@ public class NavigatableComponent extends JComponent implements Helpful {
     public Point2D getPoint2D(EastNorth p) {
         if (null == p)
             return new Point();
-        double x = (p.east()-center.east())/scale + getWidth()/2;
-        double y = (center.north()-p.north())/scale + getHeight()/2;
+        double x = (p.east()-center.east())/scale + view.getWidth()/2;
+        double y = (center.north()-p.north())/scale + view.getHeight()/2;
         return new Point2D.Double(x, y);
     }
 
@@ -292,8 +324,8 @@ public class NavigatableComponent extends JComponent implements Helpful {
         if(changed) {
             newCenter = new CachedLatLon(lat, lon).getEastNorth();
         }
-        int width = getWidth()/2;
-        int height = getHeight()/2;
+        int width = view.getWidth()/2;
+        int height = view.getHeight()/2;
         LatLon l1 = new LatLon(b.getMin().lat(), lon);
         LatLon l2 = new LatLon(b.getMax().lat(), lon);
         EastNorth e1 = getProjection().latlon2eastNorth(l1);
@@ -332,15 +364,15 @@ public class NavigatableComponent extends JComponent implements Helpful {
         if (!newCenter.equals(center)) {
             EastNorth oldCenter = center;
             center = newCenter;
-            firePropertyChange("center", oldCenter, newCenter);
+            propertyChangeManager.firePropertyChange("center", oldCenter, newCenter);
         }
         if (scale != newScale) {
             double oldScale = scale;
             scale = newScale;
-            firePropertyChange("scale", oldScale, newScale);
+            propertyChangeManager.firePropertyChange("scale", oldScale, newScale);
         }
 
-        repaint();
+        //view.repaint();
         fireZoomChanged();
     }
 
@@ -356,51 +388,51 @@ public class NavigatableComponent extends JComponent implements Helpful {
         }
     }
 
-    public void smoothScrollTo(LatLon newCenter) {
-        if (newCenter instanceof CachedLatLon) {
-            smoothScrollTo(((CachedLatLon)newCenter).getEastNorth());
-        } else {
-            smoothScrollTo(getProjection().latlon2eastNorth(newCenter));
-        }
-    }
+//    public void smoothScrollTo(LatLon newCenter) {
+//        if (newCenter instanceof CachedLatLon) {
+//            smoothScrollTo(((CachedLatLon)newCenter).getEastNorth());
+//        } else {
+//            smoothScrollTo(getProjection().latlon2eastNorth(newCenter));
+//        }
+//    }
 
-    /**
-     * Create a thread that moves the viewport to the given center in an
-     * animated fashion.
-     */
-    public void smoothScrollTo(EastNorth newCenter) {
-        // fixme make these configurable.
-        final int fps = 20;     // animation frames per second
-        final int speed = 1500; // milliseconds for full-screen-width pan
-        if (!newCenter.equals(center)) {
-            final EastNorth oldCenter = center;
-            final double distance = newCenter.distance(oldCenter) / scale;
-            final double milliseconds = distance / getWidth() * speed;
-            final double frames = milliseconds * fps / 1000;
-            final EastNorth finalNewCenter = newCenter;
-
-            new Thread(
-                    new Runnable() {
-                        public void run() {
-                            for (int i=0; i<frames; i++)
-                            {
-                                // fixme - not use zoom history here
-                                zoomTo(oldCenter.interpolate(finalNewCenter, (i+1) / frames));
-                                try { Thread.sleep(1000 / fps); } catch (InterruptedException ex) { };
-                            }
-                        }
-                    }
-            ).start();
-        }
-    }
+//    /**
+//     * Create a thread that moves the viewport to the given center in an
+//     * animated fashion.
+//     */
+//    public void smoothScrollTo(EastNorth newCenter) {
+//        // fixme make these configurable.
+//        final int fps = 20;     // animation frames per second
+//        final int speed = 1500; // milliseconds for full-screen-width pan
+//        if (!newCenter.equals(center)) {
+//            final EastNorth oldCenter = center;
+//            final double distance = newCenter.distance(oldCenter) / scale;
+//            final double milliseconds = distance / getWidth() * speed;
+//            final double frames = milliseconds * fps / 1000;
+//            final EastNorth finalNewCenter = newCenter;
+//
+//            new Thread(
+//                new Runnable() {
+//                    public void run() {
+//                        for (int i=0; i<frames; i++)
+//                        {
+//                            // fixme - not use zoom history here
+//                            zoomTo(oldCenter.interpolate(finalNewCenter, (double) (i+1) / (double) frames));
+//                            try { Thread.sleep(1000 / fps); } catch (InterruptedException ex) { };
+//                        }
+//                    }
+//                }
+//            ).start();
+//        }
+//    }
 
     public void zoomToFactor(double x, double y, double factor) {
         double newScale = scale*factor;
         // New center position so that point under the mouse pointer stays the same place as it was before zooming
         // You will get the formula by simplifying this expression: newCenter = oldCenter + mouseCoordinatesInNewZoom - mouseCoordinatesInOldZoom
         zoomTo(new EastNorth(
-                center.east() - (x - getWidth()/2.0) * (newScale - scale),
-                center.north() + (y - getHeight()/2.0) * (newScale - scale)),
+                center.east() - (x - view.getWidth()/2.0) * (newScale - scale),
+                center.north() + (y - view.getHeight()/2.0) * (newScale - scale)),
                 newScale);
     }
 
@@ -414,11 +446,11 @@ public class NavigatableComponent extends JComponent implements Helpful {
 
     public void zoomTo(ProjectionBounds box) {
         // -20 to leave some border
-        int w = getWidth()-20;
+        int w = view.getWidth()-20;
         if (w < 20) {
             w = 20;
         }
-        int h = getHeight()-20;
+        int h = view.getHeight()-20;
         if (h < 20) {
             h = 20;
         }
@@ -706,14 +738,16 @@ public class NavigatableComponent extends JComponent implements Helpful {
                     double a = p.distanceSq(B);
                     double b = p.distanceSq(A);
 
-                    /* perpendicular distance squared
-                     * loose some precision to account for possible deviations in the calculation above
-                     * e.g. if identical (A and B) come about reversed in another way, values may differ
-                     * -- zero out least significant 32 dual digits of mantissa..
-                     */
-                    double perDistSq = Double.longBitsToDouble(
-                            Double.doubleToLongBits( a - (a - b + c) * (a - b + c) / 4 / c )
-                            >> 32 << 32); // resolution in numbers with large exponent not needed here..
+//                    /* perpendicular distance squared
+//                     * loose some precision to account for possible deviations in the calculation above
+//                     * e.g. if identical (A and B) come about reversed in another way, values may differ
+//                     * -- zero out least significant 32 dual digits of mantissa..
+//                     */
+//                    double perDistSq = Double.longBitsToDouble(
+//                            Double.doubleToLongBits( a - (a - b + c) * (a - b + c) / 4 / c )
+//                            >> 32 << 32); // resolution in numbers with large exponent not needed here..
+
+                    double perDistSq = a - (a - b + c) * (a - b + c) / 4 / c; // FIXME: GWT
 
                     if (perDistSq < snapDistanceSq && a < c + snapDistanceSq && b < c + snapDistanceSq) {
                         //System.err.println(Double.toHexString(perDistSq));
@@ -1152,15 +1186,18 @@ public class NavigatableComponent extends JComponent implements Helpful {
         return n.substring(n.lastIndexOf('.')+1);
     }
 
+
+    int viewID_FIXME = 0;
     /**
      * Return a ID which is unique as long as viewport dimensions are the same
      */
     public int getViewID() {
-        String x = center.east() + "_" + center.north() + "_" + scale + "_" +
-        getWidth() + "_" + getHeight() + "_" + getProjection().toString();
-        java.util.zip.CRC32 id = new java.util.zip.CRC32();
-        id.update(x.getBytes());
-        return (int)id.getValue();
+        return ++viewID_FIXME;
+//        String x = center.east() + "_" + center.north() + "_" + scale + "_" +
+//        getWidth() + "_" + getHeight() + "_" + getProjection().toString();
+//        java.util.zip.CRC32 id = new java.util.zip.CRC32();
+//        id.update(x.getBytes());
+//        return (int)id.getValue();
     }
 
     public static SystemOfMeasurement getSystemOfMeasurement() {
@@ -1190,14 +1227,15 @@ public class NavigatableComponent extends JComponent implements Helpful {
         }
 
         public String getDistText(double dist) {
-            double a = dist / aValue;
-            if (!Main.pref.getBoolean("system_of_measurement.use_only_lower_unit", false) && a > bValue / aValue) {
-                double b = dist / bValue;
-                return String.format(Locale.US, "%." + (b<10 ? 2 : 1) + "f %s", b, bName);
-            } else if (a < 0.01)
-                return "< 0.01 " + aName;
-            else
-                return String.format(Locale.US, "%." + (a<10 ? 2 : 1) + "f %s", a, aName);
+            throw new UnsupportedOperationException("gwt - implement me");
+//            double a = dist / aValue;
+//            if (!Main.pref.getBoolean("system_of_measurement.use_only_lower_unit", false) && a > bValue / aValue) {
+//                double b = dist / bValue;
+//                return String.format(Locale.US, "%." + (b<10 ? 2 : 1) + "f %s", b, bName);
+//            } else if (a < 0.01)
+//                return "< 0.01 " + aName;
+//            else
+//                return String.format(Locale.US, "%." + (a<10 ? 2 : 1) + "f %s", a, aName);
         }
     }
 
@@ -1213,58 +1251,57 @@ public class NavigatableComponent extends JComponent implements Helpful {
         SYSTEMS_OF_MEASUREMENT.put(marktr("Imperial"), IMPERIAL_SOM);
     }
 
-    private class CursorInfo {
-        public Cursor cursor;
-        public Object object;
-        public CursorInfo(Cursor c, Object o) {
-            cursor = c;
-            object = o;
-        }
-    }
-
-    private LinkedList<CursorInfo> Cursors = new LinkedList<CursorInfo>();
-    /**
-     * Set new cursor.
-     */
-    public void setNewCursor(Cursor cursor, Object reference) {
-        if(Cursors.size() > 0) {
-            CursorInfo l = Cursors.getLast();
-            if(l != null && l.cursor == cursor && l.object == reference)
-                return;
-            stripCursors(reference);
-        }
-        Cursors.add(new CursorInfo(cursor, reference));
-        setCursor(cursor);
-    }
-    public void setNewCursor(int cursor, Object reference) {
-        setNewCursor(Cursor.getPredefinedCursor(cursor), reference);
-    }
-    /**
-     * Remove the new cursor and reset to previous
-     */
-    public void resetCursor(Object reference) {
-        if(Cursors.size() == 0) {
-            setCursor(null);
-            return;
-        }
-        CursorInfo l = Cursors.getLast();
-        stripCursors(reference);
-        if(l != null && l.object == reference) {
-            if(Cursors.size() == 0) {
-                setCursor(null);
-            } else {
-                setCursor(Cursors.getLast().cursor);
-            }
-        }
-    }
-
-    private void stripCursors(Object reference) {
-        LinkedList<CursorInfo> c = new LinkedList<CursorInfo>();
-        for(CursorInfo i : Cursors) {
-            if(i.object != reference) {
-                c.add(i);
-            }
-        }
-        Cursors = c;
-    }
+//    private class CursorInfo {
+//        public Cursor cursor;
+//        public Object object;
+//        public CursorInfo(Cursor c, Object o) {
+//            cursor = c;
+//            object = o;
+//        }
+//    }
+//
+//    private LinkedList<CursorInfo> Cursors = new LinkedList<CursorInfo>();
+//    /**
+//     * Set new cursor.
+//     */
+//    public void setNewCursor(Cursor cursor, Object reference) {
+//        if(Cursors.size() > 0) {
+//            CursorInfo l = Cursors.getLast();
+//            if(l != null && l.cursor == cursor && l.object == reference) {
+//                return;
+//            }
+//            stripCursors(reference);
+//        }
+//        Cursors.add(new CursorInfo(cursor, reference));
+//        setCursor(cursor);
+//    }
+//    public void setNewCursor(int cursor, Object reference) {
+//        setNewCursor(Cursor.getPredefinedCursor(cursor), reference);
+//    }
+//    /**
+//     * Remove the new cursor and reset to previous
+//     */
+//    public void resetCursor(Object reference) {
+//        if(Cursors.size() == 0) {
+//            setCursor(null);
+//            return;
+//        }
+//        CursorInfo l = Cursors.getLast();
+//        stripCursors(reference);
+//        if(l != null && l.object == reference) {
+//            if(Cursors.size() == 0)
+//                setCursor(null);
+//            else
+//                setCursor(Cursors.getLast().cursor);
+//        }
+//    }
+//
+//    private void stripCursors(Object reference) {
+//        LinkedList<CursorInfo> c = new LinkedList<CursorInfo>();
+//        for(CursorInfo i : Cursors) {
+//            if(i.object != reference)
+//                c.add(i);
+//        }
+//        Cursors = c;
+//    }
 }

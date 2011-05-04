@@ -11,6 +11,10 @@ import org.openstreetmap.josm.data.osm.RelationMember;
 import org.openstreetmap.josm.data.osm.Way;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Collect all nodes a specific osm primitive has.
  *
  * @author imi

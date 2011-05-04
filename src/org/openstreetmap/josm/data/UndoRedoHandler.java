@@ -12,6 +12,15 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer.CommandQueueListener;
 
+/**
+ * GWT
+ * 
+ * notes
+ *  change in add():
+ *      after add, do not fire selection change 
+ *      (to prevent superfluous repaints)
+ */
+
 public class UndoRedoHandler implements MapView.LayerChangeListener {
 
     /**
@@ -56,7 +65,8 @@ public class UndoRedoHandler implements MapView.LayerChangeListener {
      */
     synchronized public void add(final Command c) {
         addNoRedraw(c);
-        afterAdd();
+        fireCommandsChanged();
+//        afterAdd();
     }
 
     /**

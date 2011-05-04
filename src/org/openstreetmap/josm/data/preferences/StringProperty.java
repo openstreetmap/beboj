@@ -3,6 +3,10 @@ package org.openstreetmap.josm.data.preferences;
 
 import org.openstreetmap.josm.Main;
 
+/**
+ * GWT ok
+ */
+
 public class StringProperty extends AbstractProperty {
 
     protected final String defaultValue;

@@ -1,12 +1,13 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.projection;
 
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
  * GWT
- * 
+ *
  * note
  *  for now support one projection only, so most
  *  methods are not needed
@@ -19,10 +20,10 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @author imi
  */
 public interface Projection {
-//    /**
-//     * Returns the default zoom scale in pixel per degree ({@see #NavigatableComponent#scale}))
-//     */
-//    double getDefaultZoomInPPD();
+    /**
+     * Returns the default zoom scale in pixel per degree ({@see #NavigatableComponent#scale}))
+     */
+    double getDefaultZoomInPPD();
 
     /**
      * Convert from lat/lon to northing/easting.
@@ -52,9 +53,9 @@ public interface Projection {
 //     * Get a filename compatible string (for the cache directory)
 //     */
 //    String getCacheDirectoryName();
-//
-//    /**
-//     * Get the bounds of the world
-//     */
-//    Bounds getWorldBoundsLatLon();
+
+    /**
+     * Get the bounds of the world
+     */
+    Bounds getWorldBoundsLatLon();
 }

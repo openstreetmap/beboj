@@ -2,6 +2,10 @@
 package org.openstreetmap.josm.data.osm;
 
 /**
+ * GWT ok
+ */
+
+/**
  * A segment consisting of 2 consecutive nodes out of a way.
  */
 public final class WaySegment {

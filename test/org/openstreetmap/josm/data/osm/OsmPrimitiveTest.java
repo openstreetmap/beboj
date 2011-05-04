@@ -24,7 +24,7 @@ public class OsmPrimitiveTest extends GWTTestCase {
 
     @Override
     protected void gwtSetUp() {
-        Main.init();
+//        Main.init(); FIXME
     }
 
     public void testSimpleReferrers() {

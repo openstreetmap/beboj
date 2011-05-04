@@ -1,7 +1,7 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.command;
 
-import static org.openstreetmap.josm.tools.I18n.trn;
+//import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.JLabel;
+//import javax.swing.JLabel;
 
 import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.EastNorth;
@@ -17,7 +17,14 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.AllNodesVisitor;
-import org.openstreetmap.josm.tools.ImageProvider;
+//import org.openstreetmap.josm.tools.ImageProvider;
+
+/**
+ * GWT
+ * 
+ * TODO
+ *  implement getDescription()
+ */
 
 /**
  * MoveCommand moves a set of OsmPrimitives along the map. It can be moved again
@@ -130,9 +137,9 @@ public class MoveCommand extends Command {
         }
     }
 
-    @Override public JLabel getDescription() {
-        return new JLabel(trn("Move {0} node", "Move {0} nodes", nodes.size(), nodes.size()), ImageProvider.get("data", "node"), JLabel.HORIZONTAL);
-    }
+//    @Override public JLabel getDescription() {
+//        return new JLabel(trn("Move {0} node", "Move {0} nodes", nodes.size(), nodes.size()), ImageProvider.get("data", "node"), JLabel.HORIZONTAL);
+//    }
 
     /**
      * @Deprecated use getParticipatingPrimitives() instead

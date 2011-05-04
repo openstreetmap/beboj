@@ -4,6 +4,10 @@ package org.openstreetmap.josm.data;
 import org.openstreetmap.josm.data.coor.EastNorth;
 
 /**
+ * GWT ok
+ */
+
+/**
  * This is a simple data class for "rectangular" areas of the world, given in
  * east/north min/max values.
  *

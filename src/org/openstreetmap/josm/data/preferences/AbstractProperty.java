@@ -4,6 +4,10 @@ package org.openstreetmap.josm.data.preferences;
 import org.openstreetmap.josm.Main;
 
 /**
+ * GWT ok
+ */
+
+/**
  * captures the common functionality of preference properties
  */
 public class AbstractProperty {

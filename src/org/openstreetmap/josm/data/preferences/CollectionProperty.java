@@ -5,6 +5,10 @@ import java.util.Collection;
 
 import org.openstreetmap.josm.Main;
 
+/**
+ * GWT ok
+ */
+
 public class CollectionProperty extends AbstractProperty {
     protected final Collection<String> defaultValue;
 

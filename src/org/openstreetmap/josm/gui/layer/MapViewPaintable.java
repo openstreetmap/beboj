@@ -6,6 +6,10 @@ import java.awt.Graphics2D;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 
+/**
+ * GWT ok
+ */
+
 public interface MapViewPaintable {
 
     /**

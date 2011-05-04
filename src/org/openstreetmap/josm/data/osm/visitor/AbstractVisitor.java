@@ -4,6 +4,10 @@ package org.openstreetmap.josm.data.osm.visitor;
 import org.openstreetmap.josm.data.osm.Changeset;
 
 /**
+ * GWT ok
+ */
+
+/**
  * This class serves as a base class for most simple visitors,
  * blocking out the "changeset" visit so as to avoid cluttering
  * the visitors which are not interested.

@@ -1,12 +1,13 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.projection;
 
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
  * GWT
- * 
+ *
  * note
  *  for now support one projection only, so most
  *  methods are not needed
@@ -56,16 +57,16 @@ public class Mercator implements Projection {
 //        public String getCacheDirectoryName() {
 //            return "mercator";
 //        }
-//
-//        public Bounds getWorldBoundsLatLon()
-//        {
-//            return new Bounds(
-//                    new LatLon(-85.05112877980659, -180.0),
-//                    new LatLon(85.05112877980659, 180.0));
-//        }
-//
-//        public double getDefaultZoomInPPD() {
-//            // This will set the scale bar to about 100 km
-//            return 1000.0;/*0.000158*/
-//        }
+
+        public Bounds getWorldBoundsLatLon()
+        {
+            return new Bounds(
+                    new LatLon(-85.05112877980659, -180.0),
+                    new LatLon(85.05112877980659, 180.0));
+        }
+
+        public double getDefaultZoomInPPD() {
+            // This will set the scale bar to about 100 km
+            return 1000.0;/*0.000158*/
+        }
 }

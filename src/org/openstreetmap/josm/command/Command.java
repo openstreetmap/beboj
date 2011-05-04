@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
+//import javax.swing.tree.DefaultMutableTreeNode;
+//import javax.swing.tree.MutableTreeNode;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.osm.Node;
@@ -21,6 +21,13 @@ import org.openstreetmap.josm.data.osm.visitor.AbstractVisitor;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
+
+/**
+ * GWT
+ * 
+ * TODO
+ *  excluded getDescription() and description() for now, since it uses swing classes
+ */
 
 /**
  * Classes implementing Command modify a dataset in a specific way. A command is
@@ -162,15 +169,16 @@ abstract public class Command extends PseudoCommand {
      * <code>description()</code> is removed.
      */
     @Override public Object getDescription() {
-        return ((DefaultMutableTreeNode) description()).getUserObject();
+        throw new UnsupportedOperationException("gwt not supported yet");
+//        return ((DefaultMutableTreeNode) description()).getUserObject();
     }
 
-    /**
-     * @deprecated use getDescription() and getChildren() instead
-     */
-    @Deprecated
-    public MutableTreeNode description() {
-        return null;
-    }
+//    /**
+//     * @deprecated use getDescription() and getChildren() instead
+//     */
+//    @Deprecated
+//    public MutableTreeNode description() {
+//        return null;
+//    }
 
 }

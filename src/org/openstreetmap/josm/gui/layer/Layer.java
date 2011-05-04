@@ -2,29 +2,36 @@
 
 package org.openstreetmap.josm.gui.layer;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
+//import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.Component;
+//import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
+//import java.io.File;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JSeparator;
+//import javax.swing.Action;
+//import javax.swing.Icon;
+//import javax.swing.JSeparator;
 
-import org.openstreetmap.josm.actions.GpxExportAction;
-import org.openstreetmap.josm.actions.SaveAction;
-import org.openstreetmap.josm.actions.SaveAsAction;
+//import org.openstreetmap.josm.actions.GpxExportAction;
+//import org.openstreetmap.josm.actions.SaveAction;
+//import org.openstreetmap.josm.actions.SaveAsAction;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.tools.Destroyable;
-import org.openstreetmap.josm.tools.ImageProvider;
+//import org.openstreetmap.josm.tools.ImageProvider;
+
+/**
+ * GWT
+ * 
+ * TODO
+ *  implement parts that are commented out
+ */
 
 /**
  * A layer encapsulates the gui component of one dataset and its representation.
@@ -45,7 +52,7 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
 
     public interface LayerAction {
         boolean supportLayers(List<Layer> layers);
-        Component createMenuComponent();
+//        Component createMenuComponent();
     }
 
     /**
@@ -58,10 +65,10 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
         public void actionPerformed(ActionEvent e) {
             throw new UnsupportedOperationException();
         }
-        @Override
-        public Component createMenuComponent() {
-            return new JSeparator();
-        }
+//        @Override
+//        public Component createMenuComponent() {
+//            return new JSeparator();
+//        }
         @Override
         public boolean supportLayers(List<Layer> layers) {
             return false;
@@ -100,10 +107,10 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
      */
     private  String name;
 
-    /**
-     * If a file is associated with this layer, this variable should be set to it.
-     */
-    private File associatedFile;
+//    /**
+//     * If a file is associated with this layer, this variable should be set to it.
+//     */
+//    private File associatedFile;
 
     /**
      * Create the layer and fill in the necessary components.
@@ -119,11 +126,11 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
      */
     @Override
     abstract public void paint(Graphics2D g, MapView mv, Bounds box);
-    /**
-     * Return a representative small image for this layer. The image must not
-     * be larger than 64 pixel in any dimension.
-     */
-    abstract public Icon getIcon();
+//    /**
+//     * Return a representative small image for this layer. The image must not
+//     * be larger than 64 pixel in any dimension.
+//     */
+//    abstract public Icon getIcon();
 
     /**
      * @return A small tooltip hint about some statistics for this layer.
@@ -147,17 +154,17 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
 
     abstract public void visitBoundingBox(BoundingXYVisitor v);
 
-    abstract public Object getInfoComponent();
+//    abstract public Object getInfoComponent();
 
-    /**
-     * Returns list of actions. Action can implement LayerAction interface when it needs to be represented by other
-     * menu component than JMenuItem or when it supports multiple layers. Actions that support multiple layers should also
-     * have correct equals implementation.
-     *
-     * Use SeparatorLayerAction.INSTANCE instead of new JSeparator
-     *
-     */
-    abstract public Action[] getMenuEntries();
+//    /**
+//     * Returns list of actions. Action can implement LayerAction interface when it needs to be represented by other
+//     * menu component than JMenuItem or when it supports multiple layers. Actions that support multiple layers should also
+//     * have correct equals implementation.
+//     *
+//     * Use SeparatorLayerAction.INSTANCE instead of new JSeparator
+//     *
+//     */
+//    abstract public Action[] getMenuEntries();
 
     /**
      * Called, when the layer is removed from the mapview and is going to be
@@ -170,8 +177,8 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
     @Override
     public void destroy() {}
 
-    public File getAssociatedFile() { return associatedFile; }
-    public void setAssociatedFile(File file) { associatedFile = file; }
+//    public File getAssociatedFile() { return associatedFile; }
+//    public void setAssociatedFile(File file) { associatedFile = file; }
 
     /**
      * Replies the name of the layer
@@ -313,52 +320,52 @@ abstract public class Layer implements Destroyable, MapViewPaintable {
         return true;
     }
 
-    /**
-     * The action to save a layer
-     *
-     */
-    public static class LayerSaveAction extends AbstractAction {
-        private Layer layer;
-        public LayerSaveAction(Layer layer) {
-            putValue(SMALL_ICON, ImageProvider.get("save"));
-            putValue(SHORT_DESCRIPTION, tr("Save the current data."));
-            putValue(NAME, tr("Save"));
-            setEnabled(true);
-            this.layer = layer;
-        }
+//    /**
+//     * The action to save a layer
+//     *
+//     */
+//    public static class LayerSaveAction extends AbstractAction {
+//        private Layer layer;
+//        public LayerSaveAction(Layer layer) {
+//            putValue(SMALL_ICON, ImageProvider.get("save"));
+//            putValue(SHORT_DESCRIPTION, tr("Save the current data."));
+//            putValue(NAME, tr("Save"));
+//            setEnabled(true);
+//            this.layer = layer;
+//        }
+//
+//        public void actionPerformed(ActionEvent e) {
+//            new SaveAction().doSave(layer);
+//        }
+//    }
 
-        public void actionPerformed(ActionEvent e) {
-            new SaveAction().doSave(layer);
-        }
-    }
+//    public static class LayerSaveAsAction extends AbstractAction {
+//        private Layer layer;
+//        public LayerSaveAsAction(Layer layer) {
+//            putValue(SMALL_ICON, ImageProvider.get("save_as"));
+//            putValue(SHORT_DESCRIPTION, tr("Save the current data to a new file."));
+//            putValue(NAME, tr("Save As..."));
+//            setEnabled(true);
+//            this.layer = layer;
+//        }
+//
+//        public void actionPerformed(ActionEvent e) {
+//            new SaveAsAction().doSave(layer);
+//        }
+//    }
 
-    public static class LayerSaveAsAction extends AbstractAction {
-        private Layer layer;
-        public LayerSaveAsAction(Layer layer) {
-            putValue(SMALL_ICON, ImageProvider.get("save_as"));
-            putValue(SHORT_DESCRIPTION, tr("Save the current data to a new file."));
-            putValue(NAME, tr("Save As..."));
-            setEnabled(true);
-            this.layer = layer;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            new SaveAsAction().doSave(layer);
-        }
-    }
-
-    public static class LayerGpxExportAction extends AbstractAction {
-        private Layer layer;
-        public LayerGpxExportAction(Layer layer) {
-            putValue(SMALL_ICON, ImageProvider.get("exportgpx"));
-            putValue(SHORT_DESCRIPTION, tr("Export the data to GPX file."));
-            putValue(NAME, tr("Export to GPX..."));
-            setEnabled(true);
-            this.layer = layer;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            new GpxExportAction().export(layer);
-        }
-    }
+//    public static class LayerGpxExportAction extends AbstractAction {
+//        private Layer layer;
+//        public LayerGpxExportAction(Layer layer) {
+//            putValue(SMALL_ICON, ImageProvider.get("exportgpx"));
+//            putValue(SHORT_DESCRIPTION, tr("Export the data to GPX file."));
+//            putValue(NAME, tr("Export to GPX..."));
+//            setEnabled(true);
+//            this.layer = layer;
+//        }
+//
+//        public void actionPerformed(ActionEvent e) {
+//            new GpxExportAction().export(layer);
+//        }
+//    }
 }

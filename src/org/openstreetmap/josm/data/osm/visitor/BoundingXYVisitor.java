@@ -16,6 +16,10 @@ import org.openstreetmap.josm.data.osm.RelationMember;
 import org.openstreetmap.josm.data.osm.Way;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Calculates the total bounding rectangle of a series of {@link OsmPrimitive} objects, using the
  * EastNorth values as reference.
  * @author imi

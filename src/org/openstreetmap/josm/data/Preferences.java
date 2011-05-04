@@ -5,9 +5,10 @@ import java.util.Collection;
 
 /**
  * GWT
- * 
- * FIXME
- *  stub
+ *
+ * TODO
+ *  stub - for now, all the get...(...) methods have dummy implementations
+ *         that simply return the default value
  */
 
 /**
@@ -42,17 +43,17 @@ public class Preferences {
 //     */
 //    protected final SortedMap<String, String> properties = new TreeMap<String, String>();
 //    protected final SortedMap<String, String> defaults = new TreeMap<String, String>();
-//
-//    public interface PreferenceChangeEvent{
-//        String getKey();
-//        String getOldValue();
-//        String getNewValue();
-//    }
-//
-//    public interface PreferenceChangedListener {
-//        void preferenceChanged(PreferenceChangeEvent e);
-//    }
-//
+
+    public interface PreferenceChangeEvent{
+        String getKey();
+        String getOldValue();
+        String getNewValue();
+    }
+
+    public interface PreferenceChangedListener {
+        void preferenceChanged(PreferenceChangeEvent e);
+    }
+
 //    private static class DefaultPreferenceChangeEvent implements PreferenceChangeEvent {
 //        private final String key;
 //        private final String oldValue;
@@ -168,11 +169,12 @@ public class Preferences {
 //        locations.add("/usr/lib/josm/");
 //        return locations;
 //    }
-//
-//    synchronized public boolean hasKey(final String key) {
+
+    synchronized public boolean hasKey(final String key) {
+        return false;
 //        return properties.containsKey(key);
-//    }
-//
+    }
+
     /**
      * Get settings value for a certain key.
      * @param key the identifier for the setting
@@ -272,7 +274,8 @@ public class Preferences {
 //     *  the key-value entry.
 //     * @return if true, something has changed (i.e. value is different than before)
 //     */
-//    public boolean put(final String key, String value) {
+    public boolean put(final String key, String value) {
+        return true;
 //        boolean changed = false;
 //        String oldValue = null;
 //
@@ -309,24 +312,24 @@ public class Preferences {
 //            firePreferenceChanged(key, oldValue, value);
 //        }
 //        return changed;
-//    }
-//
-//    public boolean put(final String key, final boolean value) {
-//        return put(key, Boolean.toString(value));
-//    }
-//
-//    public boolean putInteger(final String key, final Integer value) {
-//        return put(key, Integer.toString(value));
-//    }
-//
-//    public boolean putDouble(final String key, final Double value) {
-//        return put(key, Double.toString(value));
-//    }
-//
-//    public boolean putLong(final String key, final Long value) {
-//        return put(key, Long.toString(value));
-//    }
-//
+    }
+
+    public boolean put(final String key, final boolean value) {
+        return put(key, Boolean.toString(value));
+    }
+
+    public boolean putInteger(final String key, final Integer value) {
+        return put(key, Integer.toString(value));
+    }
+
+    public boolean putDouble(final String key, final Double value) {
+        return put(key, Double.toString(value));
+    }
+
+    public boolean putLong(final String key, final Long value) {
+        return put(key, Long.toString(value));
+    }
+
 //    /**
 //     * Called after every put. In case of a problem, do nothing but output the error
 //     * in log.
@@ -530,7 +533,8 @@ public class Preferences {
 //        return put("color."+colName, val != null ? ColorHelper.color2html(val) : null);
 //    }
 //
-//    synchronized public int getInteger(String key, int def) {
+    synchronized public int getInteger(String key, int def) {
+        return def;
 //        putDefault(key, Integer.toString(def));
 //        String v = get(key);
 //        if(null == v)
@@ -542,9 +546,10 @@ public class Preferences {
 //            // fall out
 //        }
 //        return def;
-//    }
-//
-//    synchronized public long getLong(String key, long def) {
+    }
+
+    synchronized public long getLong(String key, long def) {
+        return def;
 //        putDefault(key, Long.toString(def));
 //        String v = get(key);
 //        if(null == v)
@@ -556,9 +561,10 @@ public class Preferences {
 //            // fall out
 //        }
 //        return def;
-//    }
-//
-//    synchronized public double getDouble(String key, double def) {
+    }
+
+    synchronized public double getDouble(String key, double def) {
+        return def;
 //        putDefault(key, Double.toString(def));
 //        String v = get(key);
 //        if(null == v)
@@ -570,18 +576,18 @@ public class Preferences {
 //            // fall out
 //        }
 //        return def;
-//    }
-//
-//    synchronized public double getDouble(String key, String def) {
+    }
+
+    synchronized public double getDouble(String key, String def) {
 //        putDefault(key, def);
 //        String v = get(key);
 //        if(v != null && v.length() != 0) {
 //            try { return Double.parseDouble(v); } catch(NumberFormatException e) {}
 //        }
-//        try { return Double.parseDouble(def); } catch(NumberFormatException e) {}
-//        return 0.0;
-//    }
-//
+        try { return Double.parseDouble(def); } catch(NumberFormatException e) {}
+        return 0.0;
+    }
+
 //    synchronized public String getCollectionAsString(final String key) {
 //        String s = get(key);
 //        if(s != null && s.length() != 0) {
@@ -650,11 +656,12 @@ public class Preferences {
 //        a.remove(value);
 //        putCollection(key, a);
 //    }
-//
-//    synchronized public boolean putCollection(String key, Collection<String> val) {
+
+    synchronized public boolean putCollection(String key, Collection<String> val) {
+        return true;
 //        return put(key, Utils.join("\u001e", val));
-//    }
-//
+    }
+
 //    synchronized private void putCollectionDefault(String key, Collection<String> val) {
 //        putDefault(key, Utils.join("\u001e", val));
 //    }
@@ -663,9 +670,10 @@ public class Preferences {
 //     * Used to read a 2-dimensional array of strings from the preference file.
 //     * If not a single entry could be found, def is returned.
 //     */
-//    synchronized public Collection<Collection<String>> getArray(String key,
-//            Collection<Collection<String>> def)
-//    {
+    synchronized public Collection<Collection<String>> getArray(String key,
+            Collection<Collection<String>> def)
+    {
+        return def;
 //        if(def != null)
 //            putArrayDefault(key, def);
 //        key += ".";
@@ -675,7 +683,7 @@ public class Preferences {
 //            col.add(getCollection(key+num++, null));
 //        }
 //        return num == 0 ? def : col;
-//    }
+    }
 //
 //    synchronized public boolean putArray(String key, Collection<Collection<String>> val) {
 //        boolean changed = false;

@@ -7,6 +7,10 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 
+/**
+ * GWT ok
+ */
+
 public interface PaintVisitor {
     void setGraphics(Graphics2D g);
     void setNavigatableComponent(NavigatableComponent nc);

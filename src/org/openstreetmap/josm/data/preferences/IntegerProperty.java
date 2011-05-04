@@ -3,6 +3,10 @@ package org.openstreetmap.josm.data.preferences;
 
 import org.openstreetmap.josm.Main;
 
+/**
+ * GWT ok
+ */
+
 public class IntegerProperty extends AbstractProperty {
 
     protected final int defaultValue;

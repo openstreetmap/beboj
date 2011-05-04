@@ -1,18 +1,25 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.command;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
+//import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.swing.JLabel;
+//import javax.swing.JLabel;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.tools.ImageProvider;
+//import org.openstreetmap.josm.tools.ImageProvider;
+
+/**
+ * GWT
+ * 
+ * TODO
+ *  implement getDescription()
+ */
 
 /**
  * A command consisting of a sequence of other commands. Executes the other commands
@@ -89,9 +96,9 @@ public class SequenceCommand extends Command {
         }
     }
 
-    @Override public JLabel getDescription() {
-        return new JLabel(tr("Sequence")+": "+name, ImageProvider.get("data", "sequence"), JLabel.HORIZONTAL);
-    }
+//    @Override public JLabel getDescription() {
+//        return new JLabel(tr("Sequence")+": "+name, ImageProvider.get("data", "sequence"), JLabel.HORIZONTAL);
+//    }
 
     @Override
     @SuppressWarnings("unchecked")

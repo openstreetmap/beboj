@@ -6,6 +6,10 @@ import java.util.Collection;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 
 /**
+ * GWT ok
+ */
+
+/**
  * PseudoCommand is a reduced form of a command. It can be presented in a tree view
  * as subcommand of real commands but it is just an empty shell and can not be
  * executed or undone.

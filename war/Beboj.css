@@ -18,7 +18,7 @@ body {
   position: absolute;
   border: 1px solid black;
   background-color:lightgray;
-  width: 140px;
+  width: 240px;
   top: 40px;
   left: 4px;
   margin: 0;
@@ -30,7 +30,7 @@ body {
   border: 1px solid black;
   background-color: white;
   top: 40px;
-  left:150px;
+  left:250px;
   bottom:4px;
   right: 4px;
   margin: 0;
@@ -43,5 +43,10 @@ body {
 }
 
 #canvas {
-  background-color:black;
+  border: 1px solid black;
 }
+
+/* this removes the somewhat ugly dotted lines around 
+   focused button div elements in firefox (but it is useful for debugging) */
+/* :focus { outline:none; } */
+

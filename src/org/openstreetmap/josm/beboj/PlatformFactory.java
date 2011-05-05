@@ -8,6 +8,6 @@ import org.openstreetmap.josm.data.osm.visitor.paint.PaintVisitor;
  */
 public interface PlatformFactory {
 
-    public PaintVisitor getDefaultPaintVisitor();
+    PaintVisitor getDefaultPaintVisitor();
 
 }

@@ -1,8 +1,16 @@
-beboj, and all its integral parts, are released under the GNU General
-Public License v2 or later.
+Beboj, and all its integral parts (unless noted otherwise in the source file),
+are released under the GNU General Public License v2 or later.
 
 The GPL v3 is accessible here:
 http://www.gnu.org/licenses/gpl.html
 
 The GPL v2 is accessible here:
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
+
+Some parts (as noted in the source file) are released under Apache License, version 2.0
+
+The Apache License, version 2.0 is accessible here:
+http://www.apache.org/licenses/LICENSE-2.0
+
+

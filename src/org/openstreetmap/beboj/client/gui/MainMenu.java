@@ -16,7 +16,7 @@ public class MainMenu extends MenuBar {
         MenuBar fileMenu = new MenuBar(true);
         fileMenu.addItem("Update selection", c);
         fileMenu.addItem("Update data", c);
-        fileMenu.addItem("Download Primitive...", c);// new DownloadPrimitiveAction());
+        fileMenu.addItem("Download Primitive...", c);
 
         MenuBar editMenu = new MenuBar(true);
         editMenu.addItem("Undo", c);

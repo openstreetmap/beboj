@@ -10,13 +10,15 @@ import java.awt.Rectangle;
  */
 public interface CanvasView {
 
-    public int getWidth();
+    void setPresenter(CanvasPresenter p);
+    
+    int getWidth();
 
-    public int getHeight();
+    int getHeight();
 
-    public Rectangle getBounds();
+    Rectangle getBounds();
 
-    public void repaint();
+    void repaint();
 
-    public Graphics2D getGraphics2D();
+    Graphics2D getGraphics2D();
 }

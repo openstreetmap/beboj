@@ -6,5 +6,5 @@ package org.openstreetmap.josm.beboj;
  */
 public interface CanvasPresenter {
 
-    public void repaint();
+    void repaint();
 }

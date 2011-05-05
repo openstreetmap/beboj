@@ -51,6 +51,8 @@ public class Beboj implements EntryPoint {
         Main.map = new MapFrame(canvasView);
         canvasView.setPresenter(Main.map.mapView);
 
+        ui.setMapModesController(Main.map);
+
         Main.main.addLayer(new OsmDataLayer(new DataSet(), OsmDataLayer.createNewName(), null));
 
         RootPanel.get("content").add(ui);

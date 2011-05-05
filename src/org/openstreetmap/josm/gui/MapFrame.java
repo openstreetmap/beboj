@@ -13,10 +13,10 @@ package org.openstreetmap.josm.gui;
 //import java.awt.event.MouseWheelEvent;
 //import java.awt.event.MouseWheelListener;
 //import java.util.ArrayList;
-//import java.util.HashMap;
+import java.util.HashMap;
 //import java.util.List;
-//import java.util.Map;
-//import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 //import javax.swing.AbstractAction;
 //import javax.swing.AbstractButton;
@@ -39,7 +39,7 @@ package org.openstreetmap.josm.gui;
 //import org.openstreetmap.josm.actions.mapmode.DeleteAction;
 //import org.openstreetmap.josm.actions.mapmode.DrawAction;
 //import org.openstreetmap.josm.actions.mapmode.ExtrudeAction;
-//import org.openstreetmap.josm.actions.mapmode.MapMode;
+import org.openstreetmap.josm.actions.mapmode.MapMode;
 //import org.openstreetmap.josm.actions.mapmode.SelectAction;
 //import org.openstreetmap.josm.actions.mapmode.ZoomAction;
 import org.openstreetmap.josm.beboj.CanvasView;
@@ -58,16 +58,16 @@ import org.openstreetmap.josm.beboj.CanvasView;
 //import org.openstreetmap.josm.gui.dialogs.UserListDialog;
 //import org.openstreetmap.josm.gui.dialogs.ValidatorDialog;
 //import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
-//import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.Layer;
 //import org.openstreetmap.josm.gui.widgets.PopupMenuLauncher;
 //import org.openstreetmap.josm.tools.Destroyable;
 
 /**
  * GWT
- * 
+ *
  * TODO
  *  stub
- * 
+ *
  * notes
  *  new constructor that simply takes a CanvasView for forwarding to the MapView constructor
  */
@@ -79,12 +79,12 @@ import org.openstreetmap.josm.beboj.CanvasView;
  * @author imi
  */
 public class MapFrame {//extends JPanel implements Destroyable, LayerChangeListener {
-//
-//    /**
-//     * The current mode, this frame operates.
-//     */
-//    public MapMode mapMode;
-//
+
+    /**
+     * The current mode, this frame operates.
+     */
+    public MapMode mapMode;
+
 //    private final List<MapMode> mapModes = new ArrayList<MapMode>();
     /**
      * The view control displayed.
@@ -121,8 +121,8 @@ public class MapFrame {//extends JPanel implements Destroyable, LayerChangeListe
 //     * Default width of the toggle dialog area.
 //     */
 //    public static final int DEF_TOGGLE_DLG_WIDTH = 330;
-//
-//    private final Map<Layer, MapMode> lastMapMode = new HashMap<Layer, MapMode>();
+
+    private final Map<Layer, MapMode> lastMapMode = new HashMap<Layer, MapMode>();
 
     public MapFrame(CanvasView view) {
         mapView = new MapView(view);
@@ -315,25 +315,25 @@ public class MapFrame {//extends JPanel implements Destroyable, LayerChangeListe
 //            firePropertyChange("visible", old, aFlag);
 //        }
 //    }
-//
-//    /**
-//     * Change the operating map mode for the view. Will call unregister on the
-//     * old MapMode and register on the new one.
-//     * @param mapMode   The new mode to set.
-//     */
-//    public void selectMapMode(MapMode newMapMode) {
-//        MapMode oldMapMode = this.mapMode;
-//        if (newMapMode == oldMapMode)
-//            return;
-//        if (oldMapMode != null) {
-//            oldMapMode.exitMode();
-//        }
-//        this.mapMode = newMapMode;
-//        newMapMode.enterMode();
-//        lastMapMode.put(mapView.getActiveLayer(), newMapMode);
-//        fireMapModeChanged(oldMapMode, newMapMode);
-//    }
-//
+
+    /**
+     * Change the operating map mode for the view. Will call unregister on the
+     * old MapMode and register on the new one.
+     * @param mapMode   The new mode to set.
+     */
+    public void selectMapMode(MapMode newMapMode) {
+        MapMode oldMapMode = this.mapMode;
+        if (newMapMode == oldMapMode)
+            return;
+        if (oldMapMode != null) {
+            oldMapMode.exitMode();
+        }
+        this.mapMode = newMapMode;
+        newMapMode.enterMode();
+        lastMapMode.put(mapView.getActiveLayer(), newMapMode);
+        fireMapModeChanged(oldMapMode, newMapMode);
+    }
+
 //    /**
 //     * Fill the given panel by adding all necessary components to the different
 //     * locations.
@@ -426,43 +426,43 @@ public class MapFrame {//extends JPanel implements Destroyable, LayerChangeListe
 //    public int getToggleDlgWidth() {
 //        return dialogsPanel.getWidth();
 //    }
-//
-//    /**
-//     * Interface to notify listeners of the change of the mapMode.
-//     */
-//    public interface MapModeChangeListener {
-//        void mapModeChange(MapMode oldMapMode, MapMode newMapMode);
-//    }
-//
-//    /**
-//     * the mapMode listeners
-//     */
-//    private static final CopyOnWriteArrayList<MapModeChangeListener> mapModeChangeListeners = new CopyOnWriteArrayList<MapModeChangeListener>();
-//    /**
-//     * Adds a mapMode change listener
-//     *
-//     * @param listener the listener. Ignored if null or already registered.
-//     */
-//    public static void addMapModeChangeListener(MapModeChangeListener listener) {
-//        if (listener != null) {
-//            mapModeChangeListeners.addIfAbsent(listener);
-//        }
-//    }
-//    /**
-//     * Removes a mapMode change listener
-//     *
-//     * @param listener the listener. Ignored if null or already registered.
-//     */
-//    public static void removeMapModeChangeListener(MapModeChangeListener listener) {
-//        mapModeChangeListeners.remove(listener);
-//    }
-//
-//    protected static void fireMapModeChanged(MapMode oldMapMode, MapMode newMapMode) {
-//        for (MapModeChangeListener l : mapModeChangeListeners) {
-//            l.mapModeChange(oldMapMode, newMapMode);
-//        }
-//    }
-//
+
+    /**
+     * Interface to notify listeners of the change of the mapMode.
+     */
+    public interface MapModeChangeListener {
+        void mapModeChange(MapMode oldMapMode, MapMode newMapMode);
+    }
+
+    /**
+     * the mapMode listeners
+     */
+    private static final CopyOnWriteArrayList<MapModeChangeListener> mapModeChangeListeners = new CopyOnWriteArrayList<MapModeChangeListener>();
+    /**
+     * Adds a mapMode change listener
+     *
+     * @param listener the listener. Ignored if null or already registered.
+     */
+    public static void addMapModeChangeListener(MapModeChangeListener listener) {
+        if (listener != null) {
+            mapModeChangeListeners.addIfAbsent(listener);
+        }
+    }
+    /**
+     * Removes a mapMode change listener
+     *
+     * @param listener the listener. Ignored if null or already registered.
+     */
+    public static void removeMapModeChangeListener(MapModeChangeListener listener) {
+        mapModeChangeListeners.remove(listener);
+    }
+
+    protected static void fireMapModeChanged(MapMode oldMapMode, MapMode newMapMode) {
+        for (MapModeChangeListener l : mapModeChangeListeners) {
+            l.mapModeChange(oldMapMode, newMapMode);
+        }
+    }
+
 //    @Override
 //    public void activeLayerChange(Layer oldLayer, Layer newLayer) {
 //        boolean modeChanged = false;

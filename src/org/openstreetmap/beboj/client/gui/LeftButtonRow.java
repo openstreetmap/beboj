@@ -1,33 +1,55 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.beboj.client.gui;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.openstreetmap.beboj.client.gui.widgets.GroupToggleButton;
 import org.openstreetmap.beboj.client.gui.widgets.ToggleGroup;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.mapmode.MapMode;
+import org.openstreetmap.josm.gui.MapFrame;
 
 public class LeftButtonRow extends VerticalPanel {
+
+    protected MapFrame mapModesController;
+
+    protected Map<GroupToggleButton, Integer> buttons = new HashMap<GroupToggleButton, Integer>();
 
     public LeftButtonRow() {
         getElement().setId("leftButtons");
 
-        Image i1 = new Image("images/dialogs/layerlist.png");
-        Image i2 = new Image("images/dialogs/propertiesdialog.png");
-        Image i3 = new Image("images/dialogs/selectionlist.png");
+        List<MapMode> modes = Main.platformFactory.getMapModes();
 
-        GroupToggleButton t1 = new GroupToggleButton(i1);
-        GroupToggleButton t2 = new GroupToggleButton(i2);
-        GroupToggleButton t3 = new GroupToggleButton(i3);
-        
         ToggleGroup group = new ToggleGroup();
-        
-        group.add(t1);
-        group.add(t2);
-        group.add(t3);
-
-        add(t1);
-        add(t2);
-        add(t3);
+        MapModesClickHandler handler = new MapModesClickHandler();
+        for (int i=0; i<modes.size(); ++i) {
+            MapMode mode = modes.get(i);
+            Image img = new Image(mode.getImageUrl());
+            GroupToggleButton button = new GroupToggleButton(img);
+            add(button);
+            buttons.put(button, i);
+            group.add(button);
+            button.addClickHandler(handler);
+        }
     }
+
+    private class MapModesClickHandler implements ClickHandler {
+
+        @Override
+        public void onClick(ClickEvent event) {
+            int i = buttons.get((GroupToggleButton) event.getSource());
+            GWT.log("selected mapmode "+i);
+            MapMode selectedMapMode = Main.platformFactory.getMapModes().get(i);
+            mapModesController.selectMapMode(selectedMapMode);
+        }
+    }
+
 }

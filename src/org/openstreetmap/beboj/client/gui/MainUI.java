@@ -13,6 +13,7 @@ import java.awt.Rectangle;
 
 import org.openstreetmap.josm.beboj.CanvasPresenter;
 import org.openstreetmap.josm.beboj.CanvasView;
+import org.openstreetmap.josm.gui.MapFrame;
 
 public class MainUI extends Composite {
     interface Binder extends UiBinder<Widget, MainUI> {}
@@ -45,10 +46,10 @@ public class MainUI extends Composite {
     }
 
     static class CanvasViewImpl implements CanvasView {
-        
-        CanvasGraphics2D g;
-        Canvas canv;
-        CanvasPresenter p;
+
+        protected CanvasGraphics2D g;
+        protected Canvas canv;
+        protected CanvasPresenter presenter;
 
         public CanvasViewImpl(Canvas canv) {
             this.canv = canv;
@@ -58,7 +59,7 @@ public class MainUI extends Composite {
         public int getWidth() {
             return canv.getCoordinateSpaceWidth();
         }
-        
+
         @Override
         public int getHeight() {
             return canv.getCoordinateSpaceHeight();
@@ -71,14 +72,14 @@ public class MainUI extends Composite {
 
         @Override
         public void repaint() {
-            p.repaint();
+            presenter.repaint();
         }
-        
+
         @Override
-        public void setPresenter(CanvasPresenter p) {
-            this.p = p;
+        public void setPresenter(CanvasPresenter presenter) {
+            this.presenter = presenter;
         }
-        
+
         @Override
         public Graphics2D getGraphics2D() {
             if (g == null) {
@@ -86,5 +87,9 @@ public class MainUI extends Composite {
             }
             return g;
         }
+    }
+
+    public void setMapModesController(MapFrame mapModesController) {
+        leftButtons.mapModesController = mapModesController;
     }
 }

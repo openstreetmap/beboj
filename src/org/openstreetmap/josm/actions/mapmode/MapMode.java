@@ -1,18 +1,27 @@
 // License: GPL. See LICENSE file for details.
 package org.openstreetmap.josm.actions.mapmode;
 
-import java.awt.Cursor;
+//import java.awt.Cursor;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+//import java.awt.event.MouseEvent;
+//import java.awt.event.MouseListener;
+//import java.awt.event.MouseMotionListener;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.gui.MapFrame;
-import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Shortcut;
+//import org.openstreetmap.josm.gui.MapFrame;
+//import org.openstreetmap.josm.gui.layer.Layer;
+//import org.openstreetmap.josm.tools.ImageProvider;
+//import org.openstreetmap.josm.tools.Shortcut;
+
+/**
+ * GWT
+ * 
+ * TODO
+ *  simplified constructor
+ *  no cursor handling
+ *  updateStatusLine does nothing
+ */
 
 /**
  * A class implementing MapMode is able to be selected as an mode for map editing.
@@ -22,41 +31,44 @@ import org.openstreetmap.josm.tools.Shortcut;
  * MapModes should register/deregister all necessary listeners on the map's view
  * control.
  */
-abstract public class MapMode extends JosmAction implements MouseListener, MouseMotionListener {
-    protected final Cursor cursor;
+abstract public class MapMode extends JosmAction {//implements MouseListener, MouseMotionListener {
 
-    /**
-     * Constructor for mapmodes without an menu
-     */
-    public MapMode(String name, String iconName, String tooltip, Shortcut shortcut, MapFrame mapFrame, Cursor cursor) {
-        super(name, "mapmode/"+iconName, tooltip, shortcut, false);
-        this.cursor = cursor;
-        putValue("active", false);
-    }
+    abstract public String getImageUrl();
 
-    /**
-     * Constructor for mapmodes with an menu (no shortcut will be registered)
-     */
-    public MapMode(String name, String iconName, String tooltip, MapFrame mapFrame, Cursor cursor) {
-        putValue(NAME, name);
-        putValue(SMALL_ICON, ImageProvider.get("mapmode", iconName));
-        putValue(SHORT_DESCRIPTION, tooltip);
-        this.cursor = cursor;
-    }
-
+//    protected final Cursor cursor;
+//
+//    /**
+//     * Constructor for mapmodes without an menu
+//     */
+//    public MapMode(String name, String iconName, String tooltip, Shortcut shortcut, MapFrame mapFrame, Cursor cursor) {
+//        super(name, "mapmode/"+iconName, tooltip, shortcut, false);
+//        this.cursor = cursor;
+//        putValue("active", false);
+//    }
+//
+//    /**
+//     * Constructor for mapmodes with an menu (no shortcut will be registered)
+//     */
+//    public MapMode(String name, String iconName, String tooltip, MapFrame mapFrame, Cursor cursor) {
+//        putValue(NAME, name);
+//        putValue(SMALL_ICON, ImageProvider.get("mapmode", iconName));
+//        putValue(SHORT_DESCRIPTION, tooltip);
+//        this.cursor = cursor;
+//    }
+//
     public void enterMode() {
         putValue("active", true);
-        Main.map.mapView.setNewCursor(cursor, this);
+//        Main.map.mapView.setNewCursor(cursor, this);
         updateStatusLine();
     }
     public void exitMode() {
         putValue("active", false);
-        Main.map.mapView.resetCursor(this);
+//        Main.map.mapView.resetCursor(this);
     }
 
     protected void updateStatusLine() {
-        Main.map.statusLine.setHelpText(getModeHelpText());
-        Main.map.statusLine.repaint();
+//        Main.map.statusLine.setHelpText(getModeHelpText());
+//        Main.map.statusLine.repaint();
     }
 
     public String getModeHelpText() {
@@ -70,17 +82,17 @@ abstract public class MapMode extends JosmAction implements MouseListener, Mouse
             Main.map.selectMapMode(this);
     }
 
-    // By default, all tools will work with all layers. Can be overwritten to require
-    // a special type of layer
-    public boolean layerIsSupported(Layer l) {
-        return true;
-    }
-
-    public void mouseReleased(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
-    public void mousePressed(MouseEvent e) {}
-    public void mouseClicked(MouseEvent e) {}
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseMoved(MouseEvent e) {}
-    public void mouseDragged(MouseEvent e) {}
+//    // By default, all tools will work with all layers. Can be overwritten to require
+//    // a special type of layer
+//    public boolean layerIsSupported(Layer l) {
+//        return true;
+//    }
+//
+//    public void mouseReleased(MouseEvent e) {}
+//    public void mouseExited(MouseEvent e) {}
+//    public void mousePressed(MouseEvent e) {}
+//    public void mouseClicked(MouseEvent e) {}
+//    public void mouseEntered(MouseEvent e) {}
+//    public void mouseMoved(MouseEvent e) {}
+//    public void mouseDragged(MouseEvent e) {}
 }

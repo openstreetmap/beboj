@@ -5,13 +5,14 @@ import java.io.Serializable;
 
 /**
  * GWT
- * 
+ *
  * FIXME
  *  does not extend Point2D
- *  hashCode & equals not implemented
+ *  hashCode not implemented
  *
  * notes
  *  added no-arg constructor (required for RPC)
+ *  fixed equals
  */
 
 /**
@@ -71,18 +72,17 @@ abstract class Coordinate implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        throw new RuntimeException("unsupported");
-//        if (this == obj)
-//            return true;
-//        if (!super.equals(obj))
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        Coordinate other = (Coordinate) obj;
-//        if (java.lang.Double.doubleToLongBits(x) != java.lang.Double.doubleToLongBits(other.x))
-//            return false;
-//        if (java.lang.Double.doubleToLongBits(y) != java.lang.Double.doubleToLongBits(other.y))
-//            return false;
-//        return true;
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Coordinate other = (Coordinate) obj;
+        if (x != other.x)
+            return false;
+        if (y != other.y)
+            return false;
+        return true;
     }
 }

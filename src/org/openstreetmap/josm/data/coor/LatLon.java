@@ -8,12 +8,15 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
 
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+
 /**
  * GWT
- * 
+ *
  * TODO:
  *  several methods not implemented
- * 
+ *
  * note
  *  added no-arg constructor (required for RPC)
  */
@@ -139,16 +142,16 @@ public class LatLon extends Coordinate {
         return Math.abs(lat()-other.lat()) <= p && Math.abs(lon()-other.lon()) <= p;
     }
 
-//    /**
-//     * @return <code>true</code>, if the coordinate is outside the world, compared
-//     * by using lat/lon.
-//     */
-//    public boolean isOutSideWorld() {
-//        Bounds b = Main.proj.getWorldBoundsLatLon();
-//        return lat() < b.getMin().lat() || lat() > b.getMax().lat() ||
-//        lon() < b.getMin().lon() || lon() > b.getMax().lon();
-//    }
-//
+    /**
+     * @return <code>true</code>, if the coordinate is outside the world, compared
+     * by using lat/lon.
+     */
+    public boolean isOutSideWorld() {
+        Bounds b = Main.proj.getWorldBoundsLatLon();
+        return lat() < b.getMin().lat() || lat() > b.getMax().lat() ||
+        lon() < b.getMin().lon() || lon() > b.getMax().lon();
+    }
+
 //    /**
 //     * @return <code>true</code> if this is within the given bounding box.
 //     */

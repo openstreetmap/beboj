@@ -55,9 +55,9 @@ public class DragMap extends ControllerState {
         if (lastxmouse != evt.getX() || lastymouse != evt.getY()) {
             // FIXME: to be 100% exact, the calculation should be in device coordinates
             EastNorth mousePos = Main.map.mapView.getEastNorth(evt.getX(), evt.getY());
-            EastNorth center = Main.map.mapView.getCenter();
+            EastNorth center = Main.map.mapView.nav.getCenter();
             EastNorth lastMousePos = Main.map.mapView.getEastNorth(lastxmouse, lastymouse);
-            Main.map.mapView.zoomTo(new EastNorth(
+            Main.map.mapView.nav.zoomTo(new EastNorth(
                     center.east() + lastMousePos.east() - mousePos.east(),
                     center.north() + lastMousePos.north() - mousePos.north()));
 

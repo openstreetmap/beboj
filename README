@@ -22,6 +22,13 @@ I am using GWT 2.2 at the moment (but might work with other versions as well).
     should not (or as little as possible) depend on GWT specific classes
     For future synchronisation, the sources better stay as close to the original as (sensibly) possible.
 
+    This module contains classes that are not present in JOSM, but could go upstream in principle:
+     - everything in the org.openstreetmap.josm.beboj package
+     - org.openstreetmap.josm.data.osm.QBLevel
+          This is just a workaround for some GWT bug. (see QuadBuckets for details)
+     - org.openstreetmap.josm.gui.NavigationSupport & SmoothZoomNavigationSupport
+          Generalize the zoom handling.
+
     Porting Java to the GWT subset
     ------------------------------
 

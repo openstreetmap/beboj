@@ -57,7 +57,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 
 /**
  * GWT
- * 
+ *
  * TODO
  *  addLayer:
  *      no playheadmarker
@@ -75,7 +75,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
  *      enabled state of mapmode buttons not refreshed
  *      audio stuff omitted
  *      no repaint
- * 
+ *
  * notes
  *  new constructor - MapView(CanvasView view)
  *  new (shorter) implementation of repaint() (moved to the top of the file)
@@ -101,7 +101,7 @@ public class MapView extends NavigatableComponent implements CanvasPresenter, Pr
 
     @Override
     public void repaint() {
-      if (center == null)
+      if (!nav.isReady())
           return; // no data loaded yet.
       List<Layer> visibleLayers = getVisibleLayersInZOrder();
       Graphics2D g = view.getGraphics2D();
@@ -165,7 +165,7 @@ public class MapView extends NavigatableComponent implements CanvasPresenter, Pr
      * Adds an edit layer change listener
      *
      * @param listener the listener. Ignored if null or already registered.
-     * @param initialFire Fire an edit-layer-changed-event right after adding 
+     * @param initialFire Fire an edit-layer-changed-event right after adding
      * the listener in case there is an edit layer present
      */
     public static void addEditLayerChangeListener(EditLayerChangeListener listener, boolean initialFire) {
@@ -654,7 +654,7 @@ public class MapView extends NavigatableComponent implements CanvasPresenter, Pr
             box.enlargeBoundingBox();
         }
 
-        zoomTo(box.getBounds());
+        nav.zoomTo(box.getBounds());
     }
 
     /**

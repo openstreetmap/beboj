@@ -50,7 +50,7 @@ public class PanAction extends MapMode implements MouseDownHandler, MouseMoveHan
         }
         EastNorth center = Main.map.mapView.getCenter();
         EastNorth mouseCenter = Main.map.mapView.getEastNorth(e.getX(), e.getY());
-        Main.map.mapView.zoomTo(new EastNorth(
+        Main.map.mapView.nav.zoomTo(new EastNorth(
                 mousePosMove.east() + center.east() - mouseCenter.east(),
                 mousePosMove.north() + center.north() - mouseCenter.north()));
         Beboj.canvasView.repaint();

@@ -66,7 +66,7 @@ public class PanAction extends MapMode implements MouseDownHandler, MouseMoveHan
         // we may have to put some invisible
         // div on top of all, because the buttons have their own cursor property set
         // and this has precedence over the body cursor
-        // 
+        //
         // alternative: use css hint "!important" (?)
         RootPanel.get().getElement().getStyle().setCursor(Cursor.MOVE);
         e.preventDefault();

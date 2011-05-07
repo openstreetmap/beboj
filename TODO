@@ -2,3 +2,5 @@
   E.g. data.Bounds
   
 * Primitive type 'long' is expensive in gwt (simulated with 2 doubles), so we can try to replace it with int or double where this is possible.
+
+* Would there be performance gain, when cancelling mouse move listener on the canvas, whenever possible?

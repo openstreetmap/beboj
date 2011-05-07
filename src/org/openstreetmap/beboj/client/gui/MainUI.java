@@ -6,6 +6,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.awt.Graphics2D;
@@ -28,6 +29,15 @@ public class MainUI extends Composite {
     @UiField
     public LeftButtonRow leftButtons;
 
+    @UiField
+    public HTMLPanel canvas_wrapper;
+
+    @UiField
+    public HTMLPanel attribution;
+
+    @UiField
+    public HTMLPanel layers;
+
     @UiField(provided=true)
     public Canvas canv;
 
@@ -41,6 +51,13 @@ public class MainUI extends Composite {
         canv.setCoordinateSpaceWidth(600);
 
         initWidget(uiBinder.createAndBindUi(this));
+
+        canvas_wrapper.getElement().setId("canvas-wrapper");
+
+        attribution.getElement().setId("attribution");
+
+        layers.getElement().setId("layers");
+        layers.addStyleName("olControlLayerSwitcher");
 
         canvView = new CanvasViewImpl(canv);
     }

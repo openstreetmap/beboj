@@ -1,3 +1,7 @@
+img {
+  border: 0 none;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -49,4 +53,30 @@ body {
 /* this removes the somewhat ugly dotted lines around 
    focused button div elements in firefox (but it is useful for debugging) */
 /* :focus { outline:none; } */
+
+.olControlAttribution {
+  left: 5px;
+  right: inherit;
+  bottom: 5px !important; 
+}
+
+#canvas-wrapper {
+  overflow: hidden;
+  height:100%;
+  width:100%;
+  position: absolute;
+  z-index: 2000;
+}
+
+#attribution {
+  position: absolute;
+  z-index: 3000;
+  bottom: 2px;
+  left: 3px;
+}
+
+#attribution .olBingAttribution {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: black;
+}
 

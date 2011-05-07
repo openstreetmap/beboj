@@ -7,10 +7,12 @@ http://www.gnu.org/licenses/gpl.html
 The GPL v2 is accessible here:
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
+---
 
-Some parts (as noted in the source file) are released under Apache License, version 2.0
+Some parts (as noted in the source file) are released under Apache License, version 2.0.
+(http://www.apache.org/licenses/LICENSE-2.0)
 
-The Apache License, version 2.0 is accessible here:
-http://www.apache.org/licenses/LICENSE-2.0
+---
 
-
+Code that is closely related to Openlayers (as indicated in the source file) may also be distributed under Openlayers' BSD-style license.
+(http://svn.openlayers.org/trunk/openlayers/license.txt)

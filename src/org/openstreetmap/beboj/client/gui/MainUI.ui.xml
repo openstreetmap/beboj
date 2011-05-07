@@ -21,7 +21,15 @@ xmlns:my='urn:import:org.openstreetmap.beboj.client.gui'>
             <my:LeftButtonRow ui:field="leftButtons"/>
         </td>
         <td style="width:100%; vertical-align:top;">
-            <g2:Canvas ui:field="canv"/>
+            <div style="width:100%; height:100%; position: relative">
+                <g:HTMLPanel ui:field="canvas_wrapper">
+                    <g2:Canvas ui:field="canv"/>
+                    <g:HTMLPanel ui:field="attribution"/>
+                    <g:HTMLPanel ui:field="layers"/>
+                </g:HTMLPanel>
+                <div id="map" style="width:100%; height:100%; position: absolute;">
+                </div>
+            </div>
         </td>
     </tr>
 </table>

@@ -58,7 +58,7 @@ public class GroupToggleButton extends ToggleButton {
     }
 
     @Override
-    protected void onClick() {
+    public void onClick() {
         if (isDown())
             return;
         super.onClick();

@@ -1,6 +1,24 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.beboj.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.openstreetmap.beboj.client.gui.MainUI;
+import org.openstreetmap.beboj.client.imagery.OpenLayers.OLMap;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.beboj.CanvasView;
+import org.openstreetmap.josm.data.Preferences;
+import org.openstreetmap.josm.data.UndoRedoHandler;
+import org.openstreetmap.josm.data.coor.EastNorth;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.projection.Mercator;
+import org.openstreetmap.josm.gui.DiscreteZoomNavigationSupport;
+import org.openstreetmap.josm.gui.MapFrame;
+import org.openstreetmap.josm.gui.NavigationSupport.ZoomChangeListener;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,24 +31,13 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openstreetmap.beboj.client.gui.MainUI;
-import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.beboj.CanvasView;
-import org.openstreetmap.josm.data.Preferences;
-import org.openstreetmap.josm.data.UndoRedoHandler;
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.projection.Mercator;
-import org.openstreetmap.josm.gui.MapFrame;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-
 public class Beboj implements EntryPoint {
 
     public static Canvas canv;
 
     public static CanvasView canvasView;
+
+    public static OLMap olmap;
 
     /**
      * Entry point method.
@@ -53,11 +60,48 @@ public class Beboj implements EntryPoint {
 
         ui.setMapModesController(Main.map);
 
+        final DiscreteZoomNavigationSupport nav = (DiscreteZoomNavigationSupport) Main.map.mapView.nav;
+        nav.zoomTo(new LatLon(51.1254062,1.3148010));
+        nav.setZoom(14);
+
         Main.main.addLayer(new OsmDataLayer(new DataSet(), OsmDataLayer.createNewName(), null));
+
+        Main.map.mapView.nav.addZoomChangeListener(new ZoomChangeListener() {
+            @Override
+            public void zoomChanged() {
+                syncOLMap();
+                debug("zoom", nav.getZoom()+"");
+            }
+        });
+
+        configureDebugElements();
 
         RootPanel.get("content").add(ui);
 
-        configureDebugElements();
+        ui.leftButtons.buttons[0].onClick();
+        ui.leftButtons.buttons[0].setDown(true);
+    }
+
+    /**
+     * Zoom the openlayers background map, such that it fits with the data.
+     *
+     * Note that both elements can have different size due to problems when
+     * resizing the canvas dynamically.
+     *
+     * But it is assumed, that both elements have the same upper left corner.
+     *
+     * FIXME: remove canvas border, so this is true;
+     *
+     */
+    public static void syncOLMap() {
+        if (olmap == null)
+            return;
+        int width = (int) olmap.getWidth();
+        int height =  (int) olmap.getHeight();
+        EastNorth center = Main.map.mapView.getEastNorth(width / 2, height / 2);
+        int zoom = ((DiscreteZoomNavigationSupport) Main.map.mapView.nav).getZoom();
+
+        olmap.setCenterAndZoom(center.east(), center.north(), zoom);
     }
 
     /*****************

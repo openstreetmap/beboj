@@ -9,6 +9,7 @@ public class ToggleGroup {
     }
 
     public void clicked(GroupToggleButton button) {
+
         if (down != null) {
             down.setValue(false, false);
         }

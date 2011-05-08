@@ -5,15 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openstreetmap.beboj.client.actions.mapmode.DrawAction;
+import org.openstreetmap.beboj.client.actions.mapmode.EditMapMode;
 import org.openstreetmap.beboj.client.actions.mapmode.PanAction;
 import org.openstreetmap.beboj.client.gui.BebojPaintVisitor;
-import org.openstreetmap.beboj.client.actions.mapmode.EditMapMode;
 import org.openstreetmap.josm.actions.mapmode.MapMode;
 import org.openstreetmap.josm.beboj.CanvasView;
 import org.openstreetmap.josm.beboj.PlatformFactory;
 import org.openstreetmap.josm.data.osm.visitor.paint.PaintVisitor;
+import org.openstreetmap.josm.gui.DiscreteZoomNavigationSupport;
 import org.openstreetmap.josm.gui.NavigationSupport;
-import org.openstreetmap.josm.gui.SmoothZoomNavigationSupport;
 
 public class BebojPlatformFactory implements PlatformFactory {
 
@@ -42,6 +42,6 @@ public class BebojPlatformFactory implements PlatformFactory {
 
     @Override
     public NavigationSupport getNavigationSupport(CanvasView view) {
-        return new SmoothZoomNavigationSupport(view);
+        return new DiscreteZoomNavigationSupport(view);
     }
 }

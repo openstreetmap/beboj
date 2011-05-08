@@ -6,7 +6,7 @@ import com.google.gwt.core.client.JsArray;
 
 public class OpenLayers {
 
-    public static native OLMap newMap() /*-{
+    public static native OLMap newMap(int zoom, double east, double north) /*-{
         var apiKey = "AuMLnyuPu8t30kojQXLFxfpDJUvrg1d2vBsVZ-p07AZytezgQDQZ-ZMtuszAI-1i";
 
         var switcher = new $wnd.OpenLayers.Control.LayerSwitcher({
@@ -48,10 +48,7 @@ public class OpenLayers {
         map.addLayers([empty, osm, bing, bingd]);
         map.setBaseLayer(bingd);
 
-        map.setCenter(new $wnd.OpenLayers.LonLat(-71.147, 42.472).transform(
-            new $wnd.OpenLayers.Projection("EPSG:4326"),
-            map.getProjectionObject()
-        ), 12);
+        map.setCenter(new $wnd.OpenLayers.LonLat(east, north), zoom);
 
         return map;
     }-*/;

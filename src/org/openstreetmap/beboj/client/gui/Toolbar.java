@@ -9,18 +9,13 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 
 import org.openstreetmap.beboj.client.Beboj;
+import org.openstreetmap.beboj.client.data.SampleDataSet;
 import org.openstreetmap.beboj.client.imagery.OpenLayers;
-import org.openstreetmap.beboj.client.imagery.OpenLayers.OLMap;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.data.osm.Way;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.gui.DiscreteZoomNavigationSupport;
 
 public class Toolbar extends HorizontalPanel {
-
-    public OLMap map;
 
     public Toolbar () {
         Image i1 = new Image("images/download.png");
@@ -28,6 +23,8 @@ public class Toolbar extends HorizontalPanel {
         Image i2 = new Image("images/upload.png");
         Image i3 = new Image("images/preference.png");
         Image i5 = new Image("images/imagery_menu.png");
+        Image i7 = new Image("images2/zoom-in.png");
+        Image i8 = new Image("images2/zoom-out.png");
 
         PushButton t1 = new PushButton(i1, new DownloadCommand());
         PushButton t2 = new PushButton(i2, new UploadCommand());
@@ -37,29 +34,25 @@ public class Toolbar extends HorizontalPanel {
         PushButton t4 = new PushButton("Repaint", new RepaintCommand());
         PushButton t5 = new PushButton(i5, new ImageryCommand());
 
+        PushButton t6 = new PushButton("zoomToData", new ZoomToDataCommand());
+        PushButton t7 = new PushButton(i7, new ZoomInCommand());
+        PushButton t8 = new PushButton(i8, new ZoomOutCommand());
+
         add(t1);
         add(t2);
         add(t3);
         add(t4);
         add(t5);
-    }
-
-    private void loadSampleDataSet() {
-        OsmDataLayer l = Main.main.getEditLayer();
-        Node n1 = new Node(new LatLon(1.0, 2.0));
-        Node n2 = new Node(new LatLon(2.0, 3.0));
-        Way w1 = new Way();
-        w1.addNode(n1);
-        w1.addNode(n2);
-        for (OsmPrimitive osm : new OsmPrimitive[] {n1, n2, w1}) {
-            l.data.addPrimitive(osm);
-        }
+        add(t6);
+        add(t7);
+        add(t8);
     }
 
     public class DownloadCommand implements ClickHandler {
         @Override
         public void onClick(ClickEvent event) {
-            loadSampleDataSet();
+            SampleDataSet.loadSampleDataSet();
+            zoomToData();
             Beboj.canvasView.repaint();
         }
     }
@@ -86,8 +79,38 @@ public class Toolbar extends HorizontalPanel {
     public class ImageryCommand implements ClickHandler  {
         @Override
         public void onClick(ClickEvent event) {
-            map = OpenLayers.newMap();
-            GWT.log("res "+map.getResolution());
+            DiscreteZoomNavigationSupport nav = (DiscreteZoomNavigationSupport) Main.map.mapView.nav;
+            Beboj.olmap = OpenLayers.newMap(nav.getZoom(), nav.getCenter().east(), nav.getCenter().north());
+            GWT.log("res "+Beboj.olmap.getResolution());
+        }
+    }
+
+    public class ZoomToDataCommand implements ClickHandler  {
+        @Override
+        public void onClick(ClickEvent event) {
+            zoomToData();
+        }
+    }
+
+    public void zoomToData() {
+        BoundingXYVisitor bboxCalculator = new BoundingXYVisitor();
+        Main.main.getEditLayer().visitBoundingBox(bboxCalculator);
+        Main.map.mapView.recalculateCenterScale(bboxCalculator);
+    }
+
+    public class ZoomInCommand implements ClickHandler  {
+        @Override
+        public void onClick(ClickEvent event) {
+            DiscreteZoomNavigationSupport nav = (DiscreteZoomNavigationSupport) Main.map.mapView.nav;
+            nav.zoomIn();
+        }
+    }
+
+    public class ZoomOutCommand implements ClickHandler  {
+        @Override
+        public void onClick(ClickEvent event) {
+            DiscreteZoomNavigationSupport nav = (DiscreteZoomNavigationSupport) Main.map.mapView.nav;
+            nav.zoomOut();
         }
     }
 }

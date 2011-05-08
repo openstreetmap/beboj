@@ -16,38 +16,71 @@ import org.openstreetmap.josm.data.coor.LatLon;
 /**
  * GWT
  *
- * This class is not present in JOSM. The code was originally in NavigationonalComponent.java
- * and moved out to introduce other methods of zoom.
- *
- * notes
- *  zoomNoUndoTo does not trigger repaint
+ * This class is not in the JOSM code base.
  */
 
 /**
- * Support smooth (continuous) zoom.
+ * Add support for slippy map style zoom level (in contrast to JOSM's smooth zoom).
  */
-public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
+public class DiscreteZoomNavigationSupport extends AbstractNavigationSupport {
 
     public PropertyChangeSupport propertyChangeManager = new PropertyChangeSupport(this);
+
+    protected Integer zoom = 12;
+
+    protected final static double FAC = 2.0 * Math.PI * 6378137.0 / 256.0;
 
     /**
      * The scale factor in x or y-units per pixel. This means, if scale = 10,
      * every physical pixel on screen are 10 x or 10 y units in the
      * northing/easting space of the projection.
      */
-    protected double scale = Main.proj.getDefaultZoomInPPD();
-
-    public SmoothZoomNavigationSupport(CanvasView view) {
-        super(view);
+    public double getScale() {
+        return zoomToScale(zoom);
     }
 
-    public double getScale() {
-        return scale;
+    protected double zoomToScale(int zoom) {
+        if (zoom < 0)
+            throw new AssertionError();
+        return FAC / (1 << zoom);
+    }
+
+
+    protected final static double logFAC = Math.log(FAC);
+    protected final static double log2 = Math.log(2.0);
+
+    protected Integer scaleToZoom(Double s) {
+        if (s == null)
+            return null;
+        int z = (int) Math.floor((logFAC - Math.log(s)) / log2);
+        return Math.max(0, z);
+    }
+
+    public DiscreteZoomNavigationSupport(CanvasView view) {
+        super(view);
     }
 
     @Override
     public boolean isReady() {
-        return center != null && scale > 0;
+        return center != null && zoom >= 0;
+    }
+
+    public void zoomIn() {
+        zoomTo(getCenter(), zoom + 1);
+    }
+
+    public void zoomOut() {
+        if (zoom == 0)
+            return;
+        zoomTo(getCenter(), zoom - 1);
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        zoomToScale(zoom);
     }
 
     /**
@@ -55,7 +88,7 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
      * @param newCenter The center x-value (easting) to zoom to.
      * @param scale The scale to use.
      */
-    private void zoomTo(EastNorth newCenter, double newScale) {
+    private void zoomTo(EastNorth newCenter, int newZoom) {
         Bounds b = getProjection().getWorldBoundsLatLon();
         CachedLatLon cl = new CachedLatLon(newCenter);
         boolean changed = false;
@@ -75,6 +108,7 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
         EastNorth e1 = getProjection().latlon2eastNorth(l1);
         EastNorth e2 = getProjection().latlon2eastNorth(l2);
         double d = e2.north() - e1.north();
+        double newScale = zoomToScale(newZoom);
         if(d < height*newScale)
         {
             double newScaleH = d/height;
@@ -82,20 +116,20 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
             e2 = getProjection().latlon2eastNorth(new LatLon(lat, b.getMax().lon()));
             d = e2.east() - e1.east();
             if(d < width*newScale) {
-                newScale = Math.max(newScaleH, d/width);
+                newZoom = scaleToZoom(Math.max(newScaleH, d/width));
             }
         }
         else
         {
             d = d/(l1.greatCircleDistance(l2)*height*10);
             if(newScale < d) {
-                newScale = d;
+                newZoom = scaleToZoom(d);
             }
         }
 
-        if (!newCenter.equals(center) || (scale != newScale)) {
-            pushZoomUndo(center, scale);
-            zoomNoUndoTo(newCenter, newScale);
+        if (!newCenter.equals(center) || (zoom != newZoom)) {
+            pushZoomUndo(center, zoom);
+            zoomNoUndoTo(newCenter, newZoom);
         }
     }
 
@@ -104,16 +138,16 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
      * @param newCenter The center x-value (easting) to zoom to.
      * @param scale The scale to use.
      */
-    private void zoomNoUndoTo(EastNorth newCenter, double newScale) {
+    private void zoomNoUndoTo(EastNorth newCenter, int newZoom) {
         if (!newCenter.equals(center)) {
             EastNorth oldCenter = center;
             center = newCenter;
             propertyChangeManager.firePropertyChange("center", oldCenter, newCenter);
         }
-        if (scale != newScale) {
-            double oldScale = scale;
-            scale = newScale;
-            propertyChangeManager.firePropertyChange("scale", oldScale, newScale);
+        if (zoom != newZoom) {
+            double oldZoom = zoom;
+            zoom = newZoom;
+            propertyChangeManager.firePropertyChange("scale", oldZoom, newZoom);
         }
 
         view.repaint();
@@ -122,35 +156,35 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
 
     @Override
     public void zoomTo(EastNorth newCenter) {
-        zoomTo(newCenter, scale);
+        zoomTo(newCenter, zoom);
     }
 
     @Override
     public void zoomTo(LatLon newCenter) {
         if(newCenter instanceof CachedLatLon) {
-            zoomTo(((CachedLatLon)newCenter).getEastNorth(), scale);
+            zoomTo(((CachedLatLon)newCenter).getEastNorth(), zoom);
         } else {
-            zoomTo(getProjection().latlon2eastNorth(newCenter), scale);
+            zoomTo(getProjection().latlon2eastNorth(newCenter), zoom);
         }
     }
 
-    public void zoomToFactor(double x, double y, double factor) {
-        double newScale = scale*factor;
-        // New center position so that point under the mouse pointer stays the same place as it was before zooming
-        // You will get the formula by simplifying this expression: newCenter = oldCenter + mouseCoordinatesInNewZoom - mouseCoordinatesInOldZoom
-        zoomTo(new EastNorth(
-                center.east() - (x - view.getWidth()/2.0) * (newScale - scale),
-                center.north() + (y - view.getHeight()/2.0) * (newScale - scale)),
-                newScale);
-    }
+//    public void zoomToFactor(double x, double y, double factor) {
+//        double newScale = getScale()*factor;
+//        // New center position so that point under the mouse pointer stays the same place as it was before zooming
+//        // You will get the formula by simplifying this expression: newCenter = oldCenter + mouseCoordinatesInNewZoom - mouseCoordinatesInOldZoom
+//        zoomTo(new EastNorth(
+//                center.east() - (x - view.getWidth()/2.0) * (newScale - getScale()),
+//                center.north() + (y - view.getHeight()/2.0) * (newScale - getScale())),
+//                newScale);
+//    }
 
-    public void zoomToFactor(EastNorth newCenter, double factor) {
-        zoomTo(newCenter, scale*factor);
-    }
-
-    public void zoomToFactor(double factor) {
-        zoomTo(center, scale*factor);
-    }
+//    public void zoomToFactor(EastNorth newCenter, double factor) {
+//        zoomTo(newCenter, scale*factor);
+//    }
+//
+//    public void zoomToFactor(double factor) {
+//        zoomTo(center, scale*factor);
+//    }
 
     @Override
     public void zoomTo(ProjectionBounds box) {
@@ -166,9 +200,9 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
 
         double scaleX = (box.maxEast-box.minEast)/w;
         double scaleY = (box.maxNorth-box.minNorth)/h;
-        double newScale = Math.max(scaleX, scaleY);
+        int newZoom = scaleToZoom(Math.max(scaleX, scaleY));
 
-        zoomTo(box.getCenter(), newScale);
+        zoomTo(box.getCenter(), newZoom);
     }
 
     public void zoomTo(Bounds box) {
@@ -178,19 +212,19 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
 
     private class ZoomData {
         LatLon center;
-        double scale;
+        int zoom;
 
-        public ZoomData(EastNorth center, double scale) {
+        public ZoomData(EastNorth center, int zoom) {
             this.center = new CachedLatLon(center);
-            this.scale = scale;
+            this.zoom = zoom;
         }
 
         public EastNorth getCenterEastNorth() {
             return getProjection().latlon2eastNorth(center);
         }
 
-        public double getScale() {
-            return scale;
+        public int getZoom() {
+            return zoom;
         }
     }
 
@@ -198,10 +232,10 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
     private Stack<ZoomData> zoomRedoBuffer = new Stack<ZoomData>();
     private Date zoomTimestamp = new Date();
 
-    private void pushZoomUndo(EastNorth center, double scale) {
+    private void pushZoomUndo(EastNorth center, int zoom) {
         Date now = new Date();
         if ((now.getTime() - zoomTimestamp.getTime()) > (Main.pref.getDouble("zoom.undo.delay", 1.0) * 1000)) {
-            zoomUndoBuffer.push(new ZoomData(center, scale));
+            zoomUndoBuffer.push(new ZoomData(center, zoom));
             if (zoomUndoBuffer.size() > Main.pref.getInteger("zoom.undo.max", 50)) {
                 zoomUndoBuffer.remove(0);
             }
@@ -212,17 +246,17 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
 
     public void zoomPrevious() {
         if (!zoomUndoBuffer.isEmpty()) {
-            ZoomData zoom = zoomUndoBuffer.pop();
-            zoomRedoBuffer.push(new ZoomData(center, scale));
-            zoomNoUndoTo(zoom.getCenterEastNorth(), zoom.getScale());
+            ZoomData zd = zoomUndoBuffer.pop();
+            zoomRedoBuffer.push(new ZoomData(center, zoom));
+            zoomNoUndoTo(zd.getCenterEastNorth(), zoom);
         }
     }
 
     public void zoomNext() {
         if (!zoomRedoBuffer.isEmpty()) {
-            ZoomData zoom = zoomRedoBuffer.pop();
-            zoomUndoBuffer.push(new ZoomData(center, scale));
-            zoomNoUndoTo(zoom.getCenterEastNorth(), zoom.getScale());
+            ZoomData zd = zoomRedoBuffer.pop();
+            zoomUndoBuffer.push(new ZoomData(center, zoom));
+            zoomNoUndoTo(zd.getCenterEastNorth(), zd.getZoom());
         }
     }
 
@@ -233,4 +267,5 @@ public class SmoothZoomNavigationSupport extends AbstractNavigationSupport {
     public boolean hasZoomRedoEntries() {
         return !zoomRedoBuffer.isEmpty();
     }
+
 }

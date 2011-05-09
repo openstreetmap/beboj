@@ -14,7 +14,7 @@
   <inherits name='org.openstreetmap.josm.JOSM'/>
   <inherits name='org.openlayers.OpenLayers'/>
   
-  <script src='openlayers-full.js'/>
+  <script src='openlayers-minimal.js'/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='org.openstreetmap.beboj.client.Beboj'/>

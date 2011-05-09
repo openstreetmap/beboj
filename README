@@ -26,8 +26,8 @@ I am using GWT 2.2 at the moment (but might work with other versions as well).
      - everything in the org.openstreetmap.josm.beboj package
      - org.openstreetmap.josm.data.osm.QBLevel
           This is just a workaround for some GWT bug. (see QuadBuckets for details)
-     - org.openstreetmap.josm.gui.NavigationSupport & SmoothZoomNavigationSupport
-          Generalize the zoom handling.
+     - org.openstreetmap.josm.gui.NavigationSupport & sub classes
+          Generalizes the zoom handling.
 
     Porting Java to the GWT subset
     ------------------------------
@@ -45,6 +45,14 @@ I am using GWT 2.2 at the moment (but might work with other versions as well).
     The code from this module will only run in web mode. In development mode, normal JRE classes are used instead.
     This is a limitation of the GWT framework. For workaround, one can rename the packages, so they no longer match classpath.
 
+ * OpenLayers (org.openstreetmap.openlayers.OpenLayers)
+    Openlayers library
+    
+    Include this module to get the openlayers library into the public path (will be copied to war folder).
+    There is a config file (beboj.cfg), to reduce the size of the library in a custom build (openlayers-minimal.js).
+    If you add more imagery sources / controls, it probably has to be adapted. (For convenience, there is also 
+    a full version of the OpenLayers lib in the repository.)
+    At time of writing, the lib is based on svn.openlayers.org r11949.
 
   References
   ==========
@@ -53,5 +61,5 @@ Obviously, most of the code is taken from the JOSM project (http://josm.openstre
 
 EditMode Mouse Handling is very much inspired by Potlatch 2 (http://www.geowiki.co.uk/).
 
-
+Includes the Openlayers library (http://openlayers.org/).
 

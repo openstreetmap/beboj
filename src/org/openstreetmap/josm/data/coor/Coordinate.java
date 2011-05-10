@@ -1,6 +1,7 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.coor;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 /**
@@ -27,7 +28,7 @@ import java.io.Serializable;
  *
  * @author imi
  */
-abstract class Coordinate implements Serializable {
+abstract class Coordinate implements Serializable, IsSerializable {
 
     protected double x;
     protected double y;

@@ -6,16 +6,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * GWT
  *
  * TODO
  *  uidCounter: long to int or double
  *  missing methods: loadRelicensingInformation
- * 
+ *
  * changelog
  *  uidCounter: AtomicLong -> long
  *  eliminated String.format
+ *  made class gwt-serializable 
+ *   - fields 'names', 'uid': private final -> public
+ *   - added no arg constructor
  */
 
 /**
@@ -27,9 +32,9 @@ import java.util.List;
  *
  *
  */
-public class User {
-    
-    static private long uidCounter = 0;    
+public class User implements IsSerializable {
+
+    static private long uidCounter = 0;
 
     /**
      * the map of known users
@@ -175,9 +180,9 @@ public class User {
     }
 
     /** the user name */
-    private final HashSet<String> names = new HashSet<String>();
+    public /* private final */ HashSet<String> names = new HashSet<String>();
     /** the user id */
-    private final long uid;
+    public /* private final */ long uid;
 
     public static final int STATUS_UNKNOWN = 0;
     public static final int STATUS_AGREED = 1;
@@ -248,6 +253,10 @@ public class User {
      */
     public long getId() {
         return uid;
+    }
+
+    /** no arg constructor for GWT RPC serialization */
+    private User() {
     }
 
     /** private constructor, only called from get method. */

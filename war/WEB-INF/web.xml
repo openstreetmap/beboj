@@ -8,4 +8,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <welcome-file-list>
     <welcome-file>Beboj.html</welcome-file>
   </welcome-file-list>
+  
+  <servlet>
+    <servlet-name>apiServlet</servlet-name>
+    <servlet-class>org.openstreetmap.beboj.server.APIImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>apiServlet</servlet-name>
+    <url-pattern>/beboj/api</url-pattern>
+  </servlet-mapping>
+
 </web-app>

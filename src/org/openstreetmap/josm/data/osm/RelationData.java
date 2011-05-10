@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  optimization for gwt-serialization:
+ *    field 'members': List -> ArrayList
  */
 
 public class RelationData extends PrimitiveData {
 
-    private List<RelationMemberData> members = new ArrayList<RelationMemberData>();
+    public /* private */ ArrayList<RelationMemberData> members = new ArrayList<RelationMemberData>();
 
     public RelationData() {
 

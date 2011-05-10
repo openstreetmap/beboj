@@ -6,9 +6,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * GWT
  *
+ * changelog
+ *  made class gwt-serializable
+ *   field 'keys': private final -> public
+ *                 Set -> HashSet
+ *   other fields: private -> public
+ *  
  * TODO
  *  missing method: getFilteredList
  */
@@ -20,7 +28,7 @@ import java.util.Map;
  * reported by events
  *
  */
-public abstract class PrimitiveData implements Tagged, PrimitiveId {
+public abstract class PrimitiveData implements Tagged, PrimitiveId, IsSerializable {
 
     // Useful?
     //private boolean disabled;
@@ -44,16 +52,16 @@ public abstract class PrimitiveData implements Tagged, PrimitiveId {
         this.incomplete = data.incomplete;
     }
 
-    private final Map<String, String> keys = new HashMap<String, String>();
-    private boolean modified;
-    private boolean visible = true;
-    private boolean deleted;
-    private boolean incomplete;
-    private long id;
-    private User user;
-    private int version;
-    private Date timestamp = new Date();
-    private int changesetId;
+    public /* private final */ HashMap<String, String> keys = new HashMap<String, String>();
+    public /* private */ boolean modified;
+    public /* private */ boolean visible = true;
+    public /* private */ boolean deleted;
+    public /* private */ boolean incomplete;
+    public /* private */ long id;
+    public /* private */ User user;
+    public /* private */ int version;
+    public /* private */ Date timestamp = new Date();
+    public /* private */ int changesetId;
 
     public boolean isModified() {
         return modified;

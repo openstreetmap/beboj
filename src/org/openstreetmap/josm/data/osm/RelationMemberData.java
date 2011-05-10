@@ -1,15 +1,27 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.data.osm;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  made class gwt-serializable 
+ *   - fields 'role', 'memberId', 'memberType': private final -> public
+ *   - added no arg constructor
  */
 
-public class RelationMemberData implements PrimitiveId {
+public class RelationMemberData implements IsSerializable, PrimitiveId {
 
-    private final String role;
-    private final long memberId;
-    private final OsmPrimitiveType memberType;
+    public /* private final */ String role;
+    public /* private final */ long memberId;
+    public /* private final */ OsmPrimitiveType memberType;
+
+    /** no arg constructor for GWT RPC serialization */
+    @SuppressWarnings("unused")
+    private RelationMemberData() {
+    }
 
     public RelationMemberData(String role, OsmPrimitiveType type, long id) {
         this.role = role == null?"":role;

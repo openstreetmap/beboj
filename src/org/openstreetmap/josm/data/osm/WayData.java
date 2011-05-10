@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  made class gwt-serializable
+ *   field 'nodes': private -> public
+ *                  List -> ArrayList
  */
 
 public class WayData extends PrimitiveData {
 
-    private List<Long> nodes = new ArrayList<Long>();
+    public /* private */ ArrayList<Long> nodes = new ArrayList<Long>();
 
     public WayData() {
 

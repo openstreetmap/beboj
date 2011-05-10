@@ -5,12 +5,23 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.projection.Projection;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  made class gwt-serializable 
+ *   - fields 'eastNorth', 'proj' not required -> transient
+ *   - added no arg constructor
+ * 
  */
 
 public class CachedLatLon extends LatLon {
-    private EastNorth eastNorth;
-    private Projection proj;
+    transient private EastNorth eastNorth;
+    transient private Projection proj;
+
+    /** no arg constructor for GWT RPC serialization */
+    @SuppressWarnings("unused")
+    private CachedLatLon() {
+    }
 
     public CachedLatLon(double lat, double lon) {
         super(lat, lon);

@@ -6,12 +6,16 @@ import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  made class gwt-serializable 
+ *   - field 'coor': private final -> public
  */
 
 public class NodeData extends PrimitiveData {
 
-    private final CachedLatLon coor = new CachedLatLon(0, 0);
+    public /* private final */ CachedLatLon coor = new CachedLatLon(0, 0);
 
     public NodeData() {
 

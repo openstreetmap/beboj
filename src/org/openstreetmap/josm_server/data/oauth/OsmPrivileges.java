@@ -1,6 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm_server.data.oauth;
 
+/**
+ * GWT ok
+ */
+
 public class OsmPrivileges {
     private boolean allowWriteApi;
     private boolean allowWriteGpx;

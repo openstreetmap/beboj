@@ -17,7 +17,11 @@ import java.util.zip.InflaterInputStream;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
+
+/**
+ * GWT ok
+ */
 
 /**
  * This DataReader reads directly from the REST API of the osm server.

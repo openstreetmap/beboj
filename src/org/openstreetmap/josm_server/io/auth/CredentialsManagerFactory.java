@@ -2,6 +2,10 @@
 package org.openstreetmap.josm_server.io.auth;
 
 /**
+ * GWT ok
+ */
+
+/**
  * CredentialManagerFactory is a factory for the single credential manager used.
  *
  * Currently, it defaults to replying an instance of {@see JosmPreferencesCredentialManager}.

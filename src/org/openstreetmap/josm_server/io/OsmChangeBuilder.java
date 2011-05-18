@@ -11,6 +11,10 @@ import org.openstreetmap.josm.data.osm.Changeset;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Creates an OsmChange document from JOSM edits.
  * See http://wiki.openstreetmap.org/index.php/OsmChange for a documentation of the
  * OsmChange format.

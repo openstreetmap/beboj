@@ -2,6 +2,10 @@
 package org.openstreetmap.josm_server.io;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+/**
+ * GWT ok
+ */
+
 public class OsmApiException extends OsmTransferException {
 
     private int responseCode;

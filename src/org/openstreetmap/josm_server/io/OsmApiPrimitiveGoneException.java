@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Represents an exception thrown by the OSM API if JOSM tries to update or delete a primitive
  * which is already deleted on the server.
  *

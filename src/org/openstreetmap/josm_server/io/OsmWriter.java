@@ -23,7 +23,11 @@ import org.openstreetmap.josm.data.osm.RelationMember;
 import org.openstreetmap.josm.data.osm.Tagged;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.osm.visitor.Visitor;
-import org.openstreetmap.josm.tools.DateUtils;
+import org.openstreetmap.josm_server.tools.DateUtils;
+
+/**
+ * GWT ok
+ */
 
 /**
  * Save the dataset into a stream as osm intern xml format. This is not using any

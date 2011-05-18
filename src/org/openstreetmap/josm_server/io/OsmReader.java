@@ -34,16 +34,20 @@ import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
 import org.openstreetmap.josm.data.osm.User;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.osm.WayData;
-import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm_server.gui.progress.NullProgressMonitor;
+import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
-import org.openstreetmap.josm.tools.DateUtils;
+import org.openstreetmap.josm_server.tools.DateUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+/**
+ * GWT ok
+ */
 
 /**
  * Parser for the Osm Api. Read from an input stream and construct a dataset out of it.

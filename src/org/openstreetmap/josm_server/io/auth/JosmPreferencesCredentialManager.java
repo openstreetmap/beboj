@@ -7,9 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.oauth.OAuthToken;
-import org.openstreetmap.josm.gui.io.CredentialDialog;
-import org.openstreetmap.josm.gui.preferences.server.ProxyPreferencesPanel;
+import org.openstreetmap.josm_server.data.oauth.OAuthToken;
+//import org.openstreetmap.josm.gui.io.CredentialDialog;
+//import org.openstreetmap.josm.gui.preferences.server.ProxyPreferencesPanel;
+
+/**
+ * GWT
+ *
+ * FIXME
+ *  CredentialDialog is commented out.
+ *  This means, authenticated requests don't work at the moment.
+ *  RPC communication is needed, to inform the user about rejected credentials.
+ *  and let them reenter the username and password.
+ *
+ * note
+ *  proxy stuff is commented out (probably not needed)
+ */
 
 /**
  * This is the default credential manager in JOSM. It keeps username and password for both
@@ -35,11 +48,12 @@ public class JosmPreferencesCredentialManager implements CredentialsManager {
                 return null;
             return new PasswordAuthentication(user, password == null ? new char[0] : password.toCharArray());
         case PROXY:
-            user = Main.pref.get(ProxyPreferencesPanel.PROXY_USER, null);
-            password = Main.pref.get(ProxyPreferencesPanel.PROXY_PASS, null);
-            if (user == null)
-                return null;
-            return new PasswordAuthentication(user, password == null ? new char[0] : password.toCharArray());
+            throw new UnsupportedOperationException();
+//            user = Main.pref.get(ProxyPreferencesPanel.PROXY_USER, null);
+//            password = Main.pref.get(ProxyPreferencesPanel.PROXY_PASS, null);
+//            if (user == null)
+//                return null;
+//            return new PasswordAuthentication(user, password == null ? new char[0] : password.toCharArray());
         }
         return null;
     }
@@ -60,13 +74,14 @@ public class JosmPreferencesCredentialManager implements CredentialsManager {
             }
             break;
         case PROXY:
-            Main.pref.put(ProxyPreferencesPanel.PROXY_USER, credentials.getUserName());
-            if (credentials.getPassword() == null) {
-                Main.pref.put(ProxyPreferencesPanel.PROXY_PASS, null);
-            } else {
-                Main.pref.put(ProxyPreferencesPanel.PROXY_PASS, String.valueOf(credentials.getPassword()));
-            }
-            break;
+            throw new UnsupportedOperationException();
+//            Main.pref.put(ProxyPreferencesPanel.PROXY_USER, credentials.getUserName());
+//            if (credentials.getPassword() == null) {
+//                Main.pref.put(ProxyPreferencesPanel.PROXY_PASS, null);
+//            } else {
+//                Main.pref.put(ProxyPreferencesPanel.PROXY_PASS, String.valueOf(credentials.getPassword()));
+//            }
+//            break;
         }
     }
 
@@ -101,30 +116,33 @@ public class JosmPreferencesCredentialManager implements CredentialsManager {
          * (noSuccessWithLastResponse == true).
          */
         } else if (noSuccessWithLastResponse || username.equals("") || password.equals("")) {
-            CredentialDialog dialog = null;
-            switch(requestorType) {
-            case SERVER: dialog = CredentialDialog.getOsmApiCredentialDialog(username, password); break;
-            case PROXY: dialog = CredentialDialog.getHttpProxyCredentialDialog(username, password); break;
-            }
-            dialog.setVisible(true);
-            response.setCanceled(dialog.isCanceled());
-            if (dialog.isCanceled())
-                return response;
-            response.setUsername(dialog.getUsername());
-            response.setPassword(dialog.getPassword());
-            if (dialog.isSaveCredentials()) {
-                store(requestorType, new PasswordAuthentication(
-                        response.getUsername(),
-                        response.getPassword()
-                ));
-            /*
-             * User decides not to save credentials to file. Keep it
-             * in memory so we don't have to ask over and over again.
-             */
-            } else {
-                PasswordAuthentication pa = new PasswordAuthentication(dialog.getUsername(), dialog.getPassword());
-                memoryCredentialsCache.put(requestorType, pa);
-            }
+            //FIXME
+//            CredentialDialog dialog = null;
+//            switch(requestorType) {
+//            case SERVER: dialog = CredentialDialog.getOsmApiCredentialDialog(username, password); break;
+//            case PROXY:
+//                throw new UnsupportedOperationException();
+//                //dialog = CredentialDialog.getHttpProxyCredentialDialog(username, password); break;
+//            }
+//            dialog.setVisible(true);
+//            response.setCanceled(dialog.isCanceled());
+//            if (dialog.isCanceled())
+//                return response;
+//            response.setUsername(dialog.getUsername());
+//            response.setPassword(dialog.getPassword());
+//            if (dialog.isSaveCredentials()) {
+//                store(requestorType, new PasswordAuthentication(
+//                        response.getUsername(),
+//                        response.getPassword()
+//                ));
+//            /*
+//             * User decides not to save credentials to file. Keep it
+//             * in memory so we don't have to ask over and over again.
+//             */
+//            } else {
+//                PasswordAuthentication pa = new PasswordAuthentication(dialog.getUsername(), dialog.getPassword());
+//                memoryCredentialsCache.put(requestorType, pa);
+//            }
         /*
          * We got it from file.
          */

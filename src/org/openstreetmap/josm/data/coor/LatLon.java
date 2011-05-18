@@ -1,6 +1,8 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm.data.coor;
 
+import static org.openstreetmap.josm.tools.I18n.trc;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.asin;
 import static java.lang.Math.cos;
@@ -16,8 +18,11 @@ import org.openstreetmap.josm.data.Bounds;
  *
  * TODO:
  *  several methods not implemented
+ *     latToString, lonToString: very rudimentary support
+ *     hashCode not implemented
  *
  * note
+ *  adapted equals
  *  added no-arg constructor (required for RPC)
  */
 
@@ -104,33 +109,45 @@ public class LatLon extends Coordinate {
         return y;
     }
 
-//    public final static String SOUTH = trc("compass", "S");
-//    public final static String NORTH = trc("compass", "N");
-//    public String latToString(CoordinateFormat d) {
-//        switch(d) {
-//        case DECIMAL_DEGREES: return cDdFormatter.format(y);
-//        case DEGREES_MINUTES_SECONDS: return dms(y) + ((y < 0) ? SOUTH : NORTH);
-//        case NAUTICAL: return dm(y) + ((y < 0) ? SOUTH : NORTH);
-//        case EAST_NORTH: return cDdFormatter.format(Main.proj.latlon2eastNorth(this).north());
-//        default: return "ERR";
-//        }
-//    }
+    public final static String SOUTH = trc("compass", "S");
+    public final static String NORTH = trc("compass", "N");
+    public String latToString(CoordinateFormat d) {
+        switch(d) {
+        case DECIMAL_DEGREES:
+//            return cDdFormatter.format(y);
+            return y + "";  // FIXME
+        case DEGREES_MINUTES_SECONDS:
+//            return dms(y) + ((y < 0) ? SOUTH : NORTH);
+        case NAUTICAL:
+//            return dm(y) + ((y < 0) ? SOUTH : NORTH);
+        case EAST_NORTH:
+//            return cDdFormatter.format(Main.proj.latlon2eastNorth(this).north());
+            throw new UnsupportedOperationException("gwt: implement me");
+        default: return "ERR";
+        }
+    }
 
     public double lon() {
         return x;
     }
 
-//    public final static String WEST = trc("compass", "W");
-//    public final static String EAST = trc("compass", "E");
-//    public String lonToString(CoordinateFormat d) {
-//        switch(d) {
-//        case DECIMAL_DEGREES: return cDdFormatter.format(x);
-//        case DEGREES_MINUTES_SECONDS: return dms(x) + ((x < 0) ? WEST : EAST);
-//        case NAUTICAL: return dm(x) + ((x < 0) ? WEST : EAST);
-//        case EAST_NORTH: return cDdFormatter.format(Main.proj.latlon2eastNorth(this).east());
-//        default: return "ERR";
-//        }
-//    }
+    public final static String WEST = trc("compass", "W");
+    public final static String EAST = trc("compass", "E");
+    public String lonToString(CoordinateFormat d) {
+        switch(d) {
+        case DECIMAL_DEGREES:
+//            return cDdFormatter.format(x);
+            return x + ""; // FIXME
+        case DEGREES_MINUTES_SECONDS:
+//            return dms(x) + ((x < 0) ? WEST : EAST);
+        case NAUTICAL:
+//            return dm(x) + ((x < 0) ? WEST : EAST);
+        case EAST_NORTH:
+//            return cDdFormatter.format(Main.proj.latlon2eastNorth(this).east());
+            throw new UnsupportedOperationException("gwt: implement me");
+        default: return "ERR";
+        }
+    }
 
     /**
      * @return <code>true</code> if the other point has almost the same lat/lon
@@ -242,8 +259,9 @@ public class LatLon extends Coordinate {
         );
     }
 
-//    @Override
-//    public int hashCode() {
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("gwt: write me");
 //        final int prime = 31;
 //        int result = super.hashCode();
 //        long temp;
@@ -252,21 +270,17 @@ public class LatLon extends Coordinate {
 //        temp = java.lang.Double.doubleToLongBits(y);
 //        result = prime * result + (int) (temp ^ (temp >>> 32));
 //        return result;
-//    }
+    }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj)
-//            return true;
-//        if (!super.equals(obj))
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        Coordinate other = (Coordinate) obj;
-//        if (java.lang.Double.doubleToLongBits(x) != java.lang.Double.doubleToLongBits(other.x))
-//            return false;
-//        if (java.lang.Double.doubleToLongBits(y) != java.lang.Double.doubleToLongBits(other.y))
-//            return false;
-//        return true;
-//    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Coordinate other = (Coordinate) obj;
+        return x == other.x && y == other.y;
+    }
 }

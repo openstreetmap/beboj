@@ -8,11 +8,18 @@ import java.text.MessageFormat;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * GWT
  *
  * TODO
  *  some methods missing
+ *
+ * changelog
+ *  made class gwt-serializable
+ *   - fields minLat, minLon, maxLat, maxLon: private -> public
+ *   - added no arg constructor
  */
 
 /**
@@ -21,11 +28,15 @@ import org.openstreetmap.josm.tools.CheckParameterUtil;
  *
  * @author imi
  */
-public class Bounds {
+public class Bounds implements IsSerializable {
     /**
      * The minimum and maximum coordinates.
      */
-    private double minLat, minLon, maxLat, maxLon;
+    public /* private */ double minLat, minLon, maxLat, maxLon;
+
+    /* for GWT serialization */
+    protected Bounds() {
+    }
 
     public LatLon getMin() {
         return new LatLon(minLat, minLon);

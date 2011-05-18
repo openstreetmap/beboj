@@ -7,8 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 
-import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm_server.gui.progress.NullProgressMonitor;
+import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
+
+/**
+ * GWT ok
+ */
 
 /**
  * Read from an other reader and increment an progress counter while on the way.

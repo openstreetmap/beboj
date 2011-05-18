@@ -17,8 +17,10 @@ import org.openstreetmap.beboj.client.io.API;
 import org.openstreetmap.beboj.client.io.APIAsync;
 import org.openstreetmap.beboj.shared.data.osm.SimpleDataSet;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.DiscreteZoomNavigationSupport;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 
 public class Toolbar extends HorizontalPanel {
 
@@ -58,17 +60,21 @@ public class Toolbar extends HorizontalPanel {
         @Override
         public void onClick(ClickEvent event) {
             APIAsync as = GWT.create(API.class);
-            as.greetServer("hoho", new AsyncCallback<SimpleDataSet>() {
-
-                @Override
-                public void onSuccess(SimpleDataSet result) {
-                    Window.alert("RPC success "+ result);
-
-                }
+            as.downloadOsmData(
+                    51.1284616, 1.3162029, 51.1288925, 1.3168412,
+                    new AsyncCallback<SimpleDataSet>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    Window.alert("RPC failure");
+                    Window.alert("downloadOsmData/RPC failure");
+                }
+
+                @Override
+                public void onSuccess(SimpleDataSet result) {
+                    Window.alert("downloadOsmData/RPC success "+ result);
+                    OsmDataLayer target = Main.main.getEditLayer();
+                    DataSet newData = result.toDataSet();
+                    target.mergeFrom(newData);
                 }
             });
         }

@@ -18,6 +18,10 @@ import org.openstreetmap.josm.data.conflict.ConflictCollection;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 
 /**
+ * GWT ok
+ */
+
+/**
  * A dataset merger which takes a target and a source dataset and merges the source data set
  * onto the target dataset.
  *

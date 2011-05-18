@@ -3,6 +3,10 @@ package org.openstreetmap.josm_server.tools;
 
 import java.nio.ByteBuffer;
 
+/**
+ * GWT ok
+ */
+
 public class Base64 {
 
     private static String encDefault = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

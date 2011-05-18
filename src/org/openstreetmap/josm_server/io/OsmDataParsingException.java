@@ -6,6 +6,10 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
+/**
+ * GWT ok
+ */
+
 public class OsmDataParsingException extends SAXException {
     private int columnNumber;
     private int lineNumber;

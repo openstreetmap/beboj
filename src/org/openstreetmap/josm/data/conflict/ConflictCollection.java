@@ -15,6 +15,10 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 
 /**
+ * GWT ok
+ */
+
+/**
  * This is a collection of {@see Conflict}s. This collection is {@see Iterable}, i.e.
  * it can be used in <code>for</code>-loops as follows:
  * <pre>

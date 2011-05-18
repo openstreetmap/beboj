@@ -39,16 +39,16 @@ import org.openstreetmap.josm.Main;
 //import org.openstreetmap.josm.actions.RenameLayerAction;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.SelectionChangedListener;
-//import org.openstreetmap.josm.data.conflict.Conflict;
-//import org.openstreetmap.josm.data.conflict.ConflictCollection;
+import org.openstreetmap.josm.data.conflict.Conflict;
+import org.openstreetmap.josm.data.conflict.ConflictCollection;
 //import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
 //import org.openstreetmap.josm.data.gpx.GpxData;
 //import org.openstreetmap.josm.data.gpx.ImmutableGpxTrack;
 //import org.openstreetmap.josm.data.gpx.WayPoint;
-//import org.openstreetmap.josm.data.osm.DataIntegrityProblemException;
+import org.openstreetmap.josm.data.osm.DataIntegrityProblemException;
 import org.openstreetmap.josm.data.osm.DataSet;
-//import org.openstreetmap.josm.data.osm.DataSetMerger;
+import org.openstreetmap.josm.data.osm.DataSetMerger;
 import org.openstreetmap.josm.data.osm.DataSource;
 //import org.openstreetmap.josm.data.osm.DatasetConsistencyTest;
 import org.openstreetmap.josm.data.osm.Node;
@@ -79,7 +79,12 @@ import org.openstreetmap.josm.tools.FilteredCollection;
  * GWT
  *
  * TODO
- *  partly implemented: mergeFrom, paint, getToolTipText
+ *  partly implemented:
+ *      - mergeFrom
+ *          omitted check, if new area is within old
+ *          no real warning in case of conflict
+ *      - paint
+ *      - getToolTipText
  *  not implemented at all: parts that are commented out
  */
 
@@ -168,10 +173,10 @@ public class OsmDataLayer extends Layer implements Listener, SelectionChangedLis
      */
     public final DataSet data;
 
-//    /**
-//     * the collection of conflicts detected in this layer
-//     */
-//    private ConflictCollection conflicts;
+    /**
+     * the collection of conflicts detected in this layer
+     */
+    private ConflictCollection conflicts;
 
 //    /**
 //     * a paint texture for non-downloaded area
@@ -213,7 +218,7 @@ public class OsmDataLayer extends Layer implements Listener, SelectionChangedLis
         super(name);
         this.data = data;
 //        this.setAssociatedFile(associatedFile);
-//        conflicts = new ConflictCollection();
+        conflicts = new ConflictCollection();
         data.addDataSetListener(new DataSetListenerAdapter(this));
         DataSet.addSelectionListener(this);
     }
@@ -297,62 +302,61 @@ public class OsmDataLayer extends Layer implements Listener, SelectionChangedLis
     }
 
     @Override public void mergeFrom(final Layer from) {
-        throw new RuntimeException("gwt - implement me");
-//        mergeFrom(((OsmDataLayer)from).data);
+        mergeFrom(((OsmDataLayer)from).data);
     }
 
-//    /**
-//     * merges the primitives in dataset <code>from</code> into the dataset of
-//     * this layer
-//     *
-//     * @param from  the source data set
-//     */
-//    public void mergeFrom(final DataSet from) {
-//        final DataSetMerger visitor = new DataSetMerger(data,from);
-//        try {
-//            visitor.merge();
-//        } catch (DataIntegrityProblemException e) {
-//            GWT.log("merge error");
+    /**
+     * merges the primitives in dataset <code>from</code> into the dataset of
+     * this layer
+     *
+     * @param from  the source data set
+     */
+    public void mergeFrom(final DataSet from) {
+        final DataSetMerger visitor = new DataSetMerger(data,from);
+        try {
+            visitor.merge();
+        } catch (DataIntegrityProblemException e) {
+            System.err.println("merge error");
 //            JOptionPane.showMessageDialog(
 //                    Main.parent,
 //                    e.getMessage(),
 //                    tr("Error"),
 //                    JOptionPane.ERROR_MESSAGE
 //            );
-//            return;
-//
-//        }
-//
+            return;
+
+        }
+
 //        Area a = data.getDataSourceArea();
-//
-//        // copy the merged layer's data source info;
-//        // only add source rectangles if they are not contained in the
-//        // layer already.
-//        for (DataSource src : from.dataSources) {
+
+        // copy the merged layer's data source info;
+        // only add source rectangles if they are not contained in the
+        // layer already.
+        for (DataSource src : from.dataSources) {
 //            if (a == null || !a.contains(src.bounds.asRect())) {
-//                data.dataSources.add(src);
-////            }
-//        }
-//
-//        // copy the merged layer's API version, downgrade if required
-//        if (data.getVersion() == null) {
-//            data.setVersion(from.getVersion());
-//        } else if ("0.5".equals(data.getVersion()) ^ "0.5".equals(from.getVersion())) {
-//            System.err.println(tr("Warning: mixing 0.6 and 0.5 data results in version 0.5"));
-//            data.setVersion("0.5");
-//        }
-//
-//        int numNewConflicts = 0;
-//        for (Conflict<?> c : visitor.getConflicts()) {
-//            if (!conflicts.hasConflict(c)) {
-//                numNewConflicts++;
-//                conflicts.add(c);
+                data.dataSources.add(src);
 //            }
-//        }
-//        // repaint to make sure new data is displayed properly.
-//        Main.map.mapView.repaint();
+        }
+
+        // copy the merged layer's API version, downgrade if required
+        if (data.getVersion() == null) {
+            data.setVersion(from.getVersion());
+        } else if ("0.5".equals(data.getVersion()) ^ "0.5".equals(from.getVersion())) {
+            System.err.println(tr("Warning: mixing 0.6 and 0.5 data results in version 0.5"));
+            data.setVersion("0.5");
+        }
+
+        int numNewConflicts = 0;
+        for (Conflict<?> c : visitor.getConflicts()) {
+            if (!conflicts.hasConflict(c)) {
+                numNewConflicts++;
+                conflicts.add(c);
+            }
+        }
+        // repaint to make sure new data is displayed properly.
+        Main.map.mapView.repaint();
 //        warnNumNewConflicts(numNewConflicts);
-//    }
+    }
 
 //    /**
 //     * Warns the user about the number of detected conflicts
@@ -582,14 +586,14 @@ public class OsmDataLayer extends Layer implements Listener, SelectionChangedLis
         return layer_bounds_point;
     }
 
-//    /**
-//     * replies the set of conflicts currently managed in this layer
-//     *
-//     * @return the set of conflicts currently managed in this layer
-//     */
-//    public ConflictCollection getConflicts() {
-//        return conflicts;
-//    }
+    /**
+     * replies the set of conflicts currently managed in this layer
+     *
+     * @return the set of conflicts currently managed in this layer
+     */
+    public ConflictCollection getConflicts() {
+        return conflicts;
+    }
 
     /**
      * Replies true if the data managed by this layer needs to be uploaded to

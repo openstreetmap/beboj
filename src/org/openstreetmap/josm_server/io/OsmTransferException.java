@@ -1,6 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm_server.io;
 
+/**
+ * GWT ok
+ */
+
 public class OsmTransferException extends Exception {
 
     private String url = OsmApi.getOsmApi().getBaseUrl();

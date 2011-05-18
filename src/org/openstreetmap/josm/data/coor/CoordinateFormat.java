@@ -4,6 +4,10 @@ package org.openstreetmap.josm.data.coor;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
+ * GWT ok
+ */
+
+/**
  * An enumeration  of coordinate formats
  *
  */

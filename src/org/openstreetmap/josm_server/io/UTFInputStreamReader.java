@@ -8,6 +8,10 @@ import java.io.PushbackInputStream;
 import java.io.UnsupportedEncodingException;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Detects the different UTF encodings from byte order mark
  */
 public class UTFInputStreamReader extends InputStreamReader {

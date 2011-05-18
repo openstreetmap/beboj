@@ -10,6 +10,10 @@ import java.util.logging.Logger;
 import org.openstreetmap.josm.Main;
 
 /**
+ * GWT ok
+ */
+
+/**
  * This is the default authenticator used in JOSM. It delegates lookup of credentials
  * for the OSM API and an optional proxy server to the currently configured
  * {@see CredentialsManager}.

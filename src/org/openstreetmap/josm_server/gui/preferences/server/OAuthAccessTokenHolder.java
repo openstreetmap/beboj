@@ -6,11 +6,14 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.util.logging.Logger;
 
 import org.openstreetmap.josm.data.Preferences;
-import org.openstreetmap.josm.data.oauth.OAuthToken;
-import org.openstreetmap.josm.io.auth.CredentialsManager;
-import org.openstreetmap.josm.io.auth.CredentialsManagerException;
+import org.openstreetmap.josm_server.data.oauth.OAuthToken;
+import org.openstreetmap.josm_server.io.auth.CredentialsManager;
+import org.openstreetmap.josm_server.io.auth.CredentialsManagerException;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 
+/**
+ * GWT ok
+ */
 
 public class OAuthAccessTokenHolder {
     @SuppressWarnings("unused")

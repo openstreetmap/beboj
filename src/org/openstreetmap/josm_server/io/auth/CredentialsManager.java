@@ -4,7 +4,11 @@ package org.openstreetmap.josm_server.io.auth;
 import java.net.PasswordAuthentication;
 import java.net.Authenticator.RequestorType;
 
-import org.openstreetmap.josm.data.oauth.OAuthToken;
+import org.openstreetmap.josm_server.data.oauth.OAuthToken;
+
+/**
+ * GWT ok
+ */
 
 /**
  * A CredentialManager manages two credentials:

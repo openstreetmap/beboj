@@ -10,6 +10,10 @@ import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 
 /**
+ * GWT ok
+ */
+
+/**
  * This class manages a set of OAuth parameters.
  *
  */

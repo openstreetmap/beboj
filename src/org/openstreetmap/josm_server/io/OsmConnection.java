@@ -16,12 +16,16 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.exception.OAuthException;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.oauth.OAuthParameters;
-import org.openstreetmap.josm.gui.preferences.server.OAuthAccessTokenHolder;
-import org.openstreetmap.josm.io.auth.CredentialsManagerException;
-import org.openstreetmap.josm.io.auth.CredentialsManagerFactory;
-import org.openstreetmap.josm.io.auth.CredentialsManagerResponse;
-import org.openstreetmap.josm.tools.Base64;
+import org.openstreetmap.josm_server.data.oauth.OAuthParameters;
+import org.openstreetmap.josm_server.gui.preferences.server.OAuthAccessTokenHolder;
+import org.openstreetmap.josm_server.io.auth.CredentialsManagerException;
+import org.openstreetmap.josm_server.io.auth.CredentialsManagerFactory;
+import org.openstreetmap.josm_server.io.auth.CredentialsManagerResponse;
+import org.openstreetmap.josm_server.tools.Base64;
+
+/**
+ * GWT ok
+ */
 
 /**
  * Base class that handles common things like authentication for the reader and writer

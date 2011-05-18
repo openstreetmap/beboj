@@ -2,6 +2,10 @@
 package org.openstreetmap.josm_server.io.auth;
 
 /**
+ * GWT ok
+ */
+
+/**
  * CredentialsManagerResponse represents the response from {@see CredentialsManager#getCredentials(java.net.Authenticator.RequestorType, boolean)}.
  *
  * The response consists of the username and the password the requested credentials consists of.

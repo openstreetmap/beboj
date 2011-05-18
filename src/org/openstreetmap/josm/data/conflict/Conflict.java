@@ -5,6 +5,10 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.PrimitiveId;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Represents a conflict between two {@see OsmPrimitive}s. It is represented as
  * a pair of {@see OsmPrimitive}s where one element of the pair has the role <em>my</em>
  * and the other has the role <em>their</em>.

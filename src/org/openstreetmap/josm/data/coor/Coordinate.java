@@ -12,8 +12,10 @@ import java.io.Serializable;
  *  hashCode not implemented
  *
  * notes
- *  added no-arg constructor (required for RPC)
  *  fixed equals
+ *  made class gwt-serializable
+ *   - class: package private -> public
+ *   - fields x, y: protected -> public
  */
 
 /**
@@ -28,10 +30,10 @@ import java.io.Serializable;
  *
  * @author imi
  */
-abstract class Coordinate implements Serializable, IsSerializable {
+public abstract class Coordinate implements Serializable, IsSerializable {
 
-    protected double x;
-    protected double y;
+    public /* protected */ double x;
+    public /* protected */ double y;
 
     /**
      * Construct the point with latitude / longitude values.

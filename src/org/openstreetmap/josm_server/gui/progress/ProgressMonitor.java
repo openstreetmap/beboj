@@ -2,6 +2,10 @@
 package org.openstreetmap.josm_server.gui.progress;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Typical use case is:
  * <pre>
  *   monitor.beginTask()

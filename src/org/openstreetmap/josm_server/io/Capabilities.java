@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Represents the server capabilities
  *
  * Example capabilites document:

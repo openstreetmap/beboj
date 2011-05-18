@@ -6,12 +6,12 @@ import org.openstreetmap.josm.data.projection.Projection;
 
 /**
  * GWT
- * 
+ *
  * changelog
- *  made class gwt-serializable 
+ *  made class gwt-serializable
  *   - fields 'eastNorth', 'proj' not required -> transient
  *   - added no arg constructor
- * 
+ *
  */
 
 public class CachedLatLon extends LatLon {
@@ -19,8 +19,7 @@ public class CachedLatLon extends LatLon {
     transient private Projection proj;
 
     /** no arg constructor for GWT RPC serialization */
-    @SuppressWarnings("unused")
-    private CachedLatLon() {
+    protected CachedLatLon() {
     }
 
     public CachedLatLon(double lat, double lon) {

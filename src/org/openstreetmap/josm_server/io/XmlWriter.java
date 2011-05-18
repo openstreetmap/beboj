@@ -5,6 +5,10 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 /**
+ * GWT ok
+ */
+
+/**
  * Helper class to use for xml outputting classes.
  *
  * @author imi

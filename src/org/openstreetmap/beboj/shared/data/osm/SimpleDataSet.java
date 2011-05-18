@@ -18,10 +18,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class SimpleDataSet implements IsSerializable {
 
-    public ArrayList<NodeData> nd;
-    public ArrayList<WayData> wd;
-    public ArrayList<RelationData> rd;
+    public ArrayList<NodeData> nodes;
+    public ArrayList<WayData> ways;
+    public ArrayList<RelationData> relations;
     public String version;
+
 //    /**
 //     * All data sources of this DataSet.
 //     */
@@ -32,34 +33,29 @@ public class SimpleDataSet implements IsSerializable {
 
     public SimpleDataSet(String input) {
         version = input;
-        nd = new ArrayList<NodeData>();
-        wd = new ArrayList<WayData>();
-        rd = new ArrayList<RelationData>();
-
-//        ArrayList<RelationMemberData> memberData = new ArrayList<RelationMemberData>();
-//        memberData.add(new RelationMemberData("outer", OsmPrimitiveType.WAY, 123l));
-//        memberData.add(new RelationMemberData("inner", OsmPrimitiveType.WAY, 1234l));
-//        rd.setMembers(memberData);
+        nodes = new ArrayList<NodeData>();
+        ways = new ArrayList<WayData>();
+        relations = new ArrayList<RelationData>();
     }
 
     public static SimpleDataSet fromDataSet(DataSet ds) {
         SimpleDataSet s = new SimpleDataSet();
 
-        s.nd = new ArrayList<NodeData>();
-        s.wd = new ArrayList<WayData>();
-        s.rd = new ArrayList<RelationData>();
+        s.nodes = new ArrayList<NodeData>();
+        s.ways = new ArrayList<WayData>();
+        s.relations = new ArrayList<RelationData>();
 
         for (Node n : ds.getNodes()) {
             NodeData nd = n.save();
-            s.nd.add(nd);
+            s.nodes.add(nd);
         }
         for (Way w : ds.getWays()) {
             WayData wd = w.save();
-            s.wd.add(wd);
+            s.ways.add(wd);
         }
         for (Relation r : ds.getRelations()) {
             RelationData rd = r.save();
-            s.rd.add(rd);
+            s.relations.add(rd);
         }
 
         s.version = ds.getVersion();
@@ -68,11 +64,27 @@ public class SimpleDataSet implements IsSerializable {
     }
 
     public DataSet toDataSet() {
-        return null;
+        DataSet ds = new DataSet();
+        for (NodeData nd : nodes) {
+            Node n = new Node(nd.getUniqueId());
+            ds.addPrimitive(n);
+            n.load(nd);
+        }
+        for (WayData wd : ways) {
+            Way w = new Way(wd.getUniqueId());
+            ds.addPrimitive(w);
+            w.load(wd);
+        }
+        for (RelationData rd : relations) {
+            Relation r = new Relation(rd.getUniqueId());
+            ds.addPrimitive(r);
+            r.load(rd);
+        }
+        return ds;
     }
 
     @Override
     public String toString() {
-        return version+nd.size();//data+" "+keys+" "+d+" "+u+" WAY: "+wd+" RELATION: "+rd;
+        return version+nodes.size()+"|";
     }
 }

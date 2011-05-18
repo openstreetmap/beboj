@@ -5,6 +5,10 @@ import oauth.signpost.OAuthConsumer;
 
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 
+/**
+ * GWT ok
+ */
+
 public class OAuthToken {
 
     /**

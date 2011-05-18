@@ -12,6 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * GWT ok
+ */
+
+/**
  * A ChangesetClosedException is thrown if the server replies with a HTTP
  * return code 409 (Conflict) with the error header {@see #ERROR_HEADER_PATTERN}.
  *

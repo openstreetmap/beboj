@@ -20,6 +20,7 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
+import org.openstreetmap.josm.io.DiffResultEntry;
 import org.openstreetmap.josm_server.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
@@ -30,15 +31,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * GWT ok
+ * GWT
+ *
+ * changelog
+ *  moved inner class DiffResultEntry to sperate file in package org.openstreetmap.josm.io
  */
 
 public class DiffResultProcessor  {
-
-    static private class DiffResultEntry {
-        public long new_id;
-        public int new_version;
-    }
 
     /**
      * mapping from old id to new id and version, the result of parsing the diff result

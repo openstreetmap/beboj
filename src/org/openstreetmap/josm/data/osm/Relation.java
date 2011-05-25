@@ -17,6 +17,7 @@ import org.openstreetmap.josm.tools.CopyList;
  *
  * changelog
  *  eliminated String.format
+ *  protected constructor now public: quick hack needed for serialization
  */
 
 /**
@@ -155,7 +156,7 @@ public final class Relation extends OsmPrimitive {
         visitor.visit(this);
     }
 
-    protected Relation(long id, boolean allowNegative) {
+    public Relation(long id, boolean allowNegative) {
         super(id, allowNegative);
     }
 

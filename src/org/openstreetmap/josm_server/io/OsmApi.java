@@ -22,6 +22,7 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,10 +32,13 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.osm.Changeset;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
+import org.openstreetmap.josm.data.osm.PrimitiveId;
+import org.openstreetmap.josm.io.DiffResultEntry;
 //import org.openstreetmap.josm.gui.layer.Layer;
 //import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm_server.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm_server.io.auth.CredentialsManagerResponse;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -43,9 +47,13 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * GWT
- * 
+ *
  * note
  *  special handling for blacklisted imagery is commented out
+ * 
+ * changelog
+ *  explicit passing of credientials && return diffResults
+ *  see OsmServerWriter for details
  */
 
 /**
@@ -170,7 +178,7 @@ public class OsmApi extends OsmConnection {
             return;
         cancel = false;
         try {
-            String s = sendRequest("GET", "capabilities", null, monitor, false, fastFail);
+            String s = sendRequest("GET", "capabilities", null, monitor, false, null, fastFail);
             InputSource inputSource = new InputSource(new StringReader(s));
             SAXParserFactory.newInstance().newSAXParser().parse(inputSource, new CapabilitiesParser());
             if (capabilities.supportsVersion("0.6")) {
@@ -286,12 +294,12 @@ public class OsmApi extends OsmConnection {
      * @param osm the primitive
      * @throws OsmTransferException if something goes wrong
      */
-    public void createPrimitive(OsmPrimitive osm, ProgressMonitor monitor) throws OsmTransferException {
+    public void createPrimitive(OsmPrimitive osm, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         String ret = "";
         try {
             ensureValidChangeset();
             initialize(monitor);
-            ret = sendRequest("PUT", OsmPrimitiveType.from(osm).getAPIName()+"/create", toXml(osm, true),monitor);
+            ret = sendRequest("PUT", OsmPrimitiveType.from(osm).getAPIName()+"/create", toXml(osm, true), credentials, monitor);
             osm.setOsmId(Long.parseLong(ret.trim()), 1);
             osm.setChangesetId(getChangeset().getId());
         } catch(NumberFormatException e){
@@ -306,13 +314,13 @@ public class OsmApi extends OsmConnection {
      * @param monitor the progress monitor
      * @throws OsmTransferException if something goes wrong
      */
-    public void modifyPrimitive(OsmPrimitive osm, ProgressMonitor monitor) throws OsmTransferException {
+    public void modifyPrimitive(OsmPrimitive osm, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         String ret = null;
         try {
             ensureValidChangeset();
             initialize(monitor);
             // normal mode (0.6 and up) returns new object version.
-            ret = sendRequest("PUT", OsmPrimitiveType.from(osm).getAPIName()+"/" + osm.getId(), toXml(osm, true), monitor);
+            ret = sendRequest("PUT", OsmPrimitiveType.from(osm).getAPIName()+"/" + osm.getId(), toXml(osm, true), credentials, monitor);
             osm.setOsmId(osm.getId(), Integer.parseInt(ret.trim()));
             osm.setChangesetId(getChangeset().getId());
             osm.setVisible(true);
@@ -326,14 +334,14 @@ public class OsmApi extends OsmConnection {
      * @param osm the primitive
      * @throws OsmTransferException if something goes wrong
      */
-    public void deletePrimitive(OsmPrimitive osm, ProgressMonitor monitor) throws OsmTransferException {
+    public void deletePrimitive(OsmPrimitive osm, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         ensureValidChangeset();
         initialize(monitor);
         // can't use a the individual DELETE method in the 0.6 API. Java doesn't allow
         // submitting a DELETE request with content, the 0.6 API requires it, however. Falling back
         // to diff upload.
         //
-        uploadDiff(Collections.singleton(osm), monitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false));
+        uploadDiff(Collections.singleton(osm), credentials, monitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false));
     }
 
     /**
@@ -348,14 +356,14 @@ public class OsmApi extends OsmConnection {
      * @throws OsmTransferException signifying a non-200 return code, or connection errors
      * @throws IllegalArgumentException thrown if changeset is null
      */
-    public void openChangeset(Changeset changeset, ProgressMonitor progressMonitor) throws OsmTransferException {
+    public void openChangeset(Changeset changeset, CredentialsManagerResponse credentials, ProgressMonitor progressMonitor) throws OsmTransferException {
         CheckParameterUtil.ensureParameterNotNull(changeset, "changeset");
         try {
             progressMonitor.beginTask((tr("Creating changeset...")));
             initialize(progressMonitor);
             String ret = "";
             try {
-                ret = sendRequest("PUT", "changeset/create", toXml(changeset),progressMonitor);
+                ret = sendRequest("PUT", "changeset/create", toXml(changeset), credentials, progressMonitor);
                 changeset.setId(Integer.parseInt(ret.trim()));
                 changeset.setOpen(true);
             } catch(NumberFormatException e){
@@ -379,7 +387,7 @@ public class OsmApi extends OsmConnection {
      * @throws IllegalArgumentException if changeset.getId() <= 0
      *
      */
-    public void updateChangeset(Changeset changeset, ProgressMonitor monitor) throws OsmTransferException {
+    public void updateChangeset(Changeset changeset, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         CheckParameterUtil.ensureParameterNotNull(changeset, "changeset");
         if (monitor == null) {
             monitor = NullProgressMonitor.INSTANCE;
@@ -394,6 +402,7 @@ public class OsmApi extends OsmConnection {
                     "PUT",
                     "changeset/" + changeset.getId(),
                     toXml(changeset),
+                    credentials,
                     monitor
             );
         } catch(ChangesetClosedException e) {
@@ -419,7 +428,7 @@ public class OsmApi extends OsmConnection {
      * @throws IllegalArgumentException thrown if changeset is null
      * @throws IllegalArgumentException thrown if changeset.getId() <= 0
      */
-    public void closeChangeset(Changeset changeset, ProgressMonitor monitor) throws OsmTransferException {
+    public void closeChangeset(Changeset changeset, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         CheckParameterUtil.ensureParameterNotNull(changeset, "changeset");
         if (monitor == null) {
             monitor = NullProgressMonitor.INSTANCE;
@@ -431,7 +440,7 @@ public class OsmApi extends OsmConnection {
             initialize(monitor);
             /* send "\r\n" instead of empty string, so we don't send zero payload - works around bugs
                in proxy software */
-            sendRequest("PUT", "changeset" + "/" + changeset.getId() + "/close", "\r\n", monitor);
+            sendRequest("PUT", "changeset" + "/" + changeset.getId() + "/close", "\r\n", credentials, monitor);
             changeset.setOpen(false);
         } finally {
             monitor.finishTask();
@@ -446,7 +455,7 @@ public class OsmApi extends OsmConnection {
      * @return list of processed primitives
      * @throws OsmTransferException if something is wrong
      */
-    public Collection<OsmPrimitive> uploadDiff(Collection<OsmPrimitive> list, ProgressMonitor monitor) throws OsmTransferException {
+    public Map<PrimitiveId, DiffResultEntry> uploadDiff(Collection<OsmPrimitive> list, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         try {
             monitor.beginTask("", list.size() * 2);
             if (changeset == null)
@@ -467,16 +476,17 @@ public class OsmApi extends OsmConnection {
             //
             monitor.indeterminateSubTask(
                     trn("Uploading {0} object...", "Uploading {0} objects...", list.size(), list.size()));
-            String diffUploadResponse = sendRequest("POST", "changeset/" + changeset.getId() + "/upload", diffUploadRequest,monitor);
+            String diffUploadResponse = sendRequest("POST", "changeset/" + changeset.getId() + "/upload", diffUploadRequest, credentials, monitor);
 
             // Process the response from the server
             //
             DiffResultProcessor reader = new DiffResultProcessor(list);
             reader.parse(diffUploadResponse, monitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false));
-            return reader.postProcess(
+            reader.postProcess(
                     getChangeset(),
                     monitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false)
             );
+            return reader.getDiffResults();
         } catch(OsmTransferException e) {
             throw e;
         } catch(OsmDataParsingException e) {
@@ -516,12 +526,12 @@ public class OsmApi extends OsmConnection {
         return authMethod.equals("oauth");
     }
 
-    private String sendRequest(String requestMethod, String urlSuffix,String requestBody, ProgressMonitor monitor) throws OsmTransferException {
-        return sendRequest(requestMethod, urlSuffix, requestBody, monitor, true, false);
+    private String sendRequest(String requestMethod, String urlSuffix,String requestBody, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
+        return sendRequest(requestMethod, urlSuffix, requestBody, monitor, true, credentials, false);
     }
 
-    private String sendRequest(String requestMethod, String urlSuffix,String requestBody, ProgressMonitor monitor, boolean doAuth) throws OsmTransferException {
-        return sendRequest(requestMethod, urlSuffix, requestBody, monitor, doAuth, false);
+    private String sendRequest(String requestMethod, String urlSuffix,String requestBody, CredentialsManagerResponse credentials, ProgressMonitor monitor, boolean doAuth) throws OsmTransferException {
+        return sendRequest(requestMethod, urlSuffix, requestBody, monitor, doAuth, credentials, false);
     }
 
     /**
@@ -543,7 +553,8 @@ public class OsmApi extends OsmConnection {
      * @exception OsmTransferException if the HTTP return code was not 200 (and retries have
      *    been exhausted), or rewrapping a Java exception.
      */
-    private String sendRequest(String requestMethod, String urlSuffix,String requestBody, ProgressMonitor monitor, boolean doAuthenticate, boolean fastFail) throws OsmTransferException {
+    private String sendRequest(String requestMethod, String urlSuffix,String requestBody, ProgressMonitor monitor,
+            boolean doAuthenticate, CredentialsManagerResponse credentials, boolean fastFail) throws OsmTransferException {
         StringBuffer responseBody = new StringBuffer();
         int retries = getMaxRetries();
 
@@ -555,7 +566,7 @@ public class OsmApi extends OsmConnection {
                 activeConnection.setConnectTimeout(fastFail ? 1000 : 15000);
                 activeConnection.setRequestMethod(requestMethod);
                 if (doAuthenticate) {
-                    addAuth(activeConnection);
+                    addAuth(activeConnection, credentials);
                 }
 
                 if (requestMethod.equals("PUT") || requestMethod.equals("POST") || requestMethod.equals("DELETE")) {

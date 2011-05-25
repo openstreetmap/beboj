@@ -5,6 +5,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import org.openstreetmap.josm.Main;
 
+/**
+ * GWT
+ * 
+ * changelog
+ *  commented out legacy code (not needed and causes further dependencies)
+ */
+
 public enum UploadStrategy {
     /**
      * Uploads the objects individually, one request per object
@@ -64,25 +71,25 @@ public enum UploadStrategy {
      */
     public static UploadStrategy getFromPreferences() {
         String v = Main.pref.get("osm-server.upload-strategy", null);
-        if (v == null) {
-            // legacy support. Until 12/2009 we had osm-server.atomic-upload only.
-            // If we still find "osm-server.atomic-upload" we use it and remove it.
-            // When the preferences are saved the next time, "osm-server.upload-strategy"
-            // will be inserted.
-            v = Main.pref.get("osm-server.atomic-upload", null);
-            if (v != null) {
-                Main.pref.removeFromCollection("osm-server.atomic-upload", v);
-            } else {
-                v = "";
-            }
-            v = v.trim().toLowerCase();
-            if (v.equals("true"))
-                return SINGLE_REQUEST_STRATEGY;
-            else if (v.equals("false"))
-                return INDIVIDUAL_OBJECTS_STRATEGY;
-            else
-                return DEFAULT_UPLOAD_STRATEGY;
-        }
+//        if (v == null) {
+//            // legacy support. Until 12/2009 we had osm-server.atomic-upload only.
+//            // If we still find "osm-server.atomic-upload" we use it and remove it.
+//            // When the preferences are saved the next time, "osm-server.upload-strategy"
+//            // will be inserted.
+//            v = Main.pref.get("osm-server.atomic-upload", null);
+//            if (v != null) {
+//                Main.pref.removeFromCollection("osm-server.atomic-upload", v);
+//            } else {
+//                v = "";
+//            }
+//            v = v.trim().toLowerCase();
+//            if (v.equals("true"))
+//                return SINGLE_REQUEST_STRATEGY;
+//            else if (v.equals("false"))
+//                return INDIVIDUAL_OBJECTS_STRATEGY;
+//            else
+//                return DEFAULT_UPLOAD_STRATEGY;
+//        }
         UploadStrategy strategy = fromPreference(v);
         if (strategy == null) {
             System.err.println(tr("Warning: unexpected value for key ''{0}'' in preferences, got ''{1}''", "osm-server.upload-strategy", v ));

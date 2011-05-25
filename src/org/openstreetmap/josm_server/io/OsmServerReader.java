@@ -20,7 +20,10 @@ import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * TODO
+ *  cannot authenticate read request (requires explicit credentials)
  */
 
 /**
@@ -74,7 +77,8 @@ public abstract class OsmServerReader extends OsmConnection {
             }
 
             if (doAuthenticate) {
-                addAuth(activeConnection);
+                throw new RuntimeException("not implemented");
+//                addAuth(activeConnection);
             }
             if (cancel)
                 throw new OsmTransferCancelledException();

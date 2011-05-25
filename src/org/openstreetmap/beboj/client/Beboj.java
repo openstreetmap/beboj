@@ -37,7 +37,13 @@ public class Beboj implements EntryPoint {
 
     public static CanvasView canvasView;
 
+    // the background map
     public static OLMap olmap;
+
+    // store username & password, so it doesn't have to be entered twice
+    public static String username;
+    public static String password;
+    public static String comment;
 
     /**
      * Entry point method.
@@ -62,7 +68,7 @@ public class Beboj implements EntryPoint {
 
         final DiscreteZoomNavigationSupport nav = (DiscreteZoomNavigationSupport) Main.map.mapView.nav;
         nav.zoomTo(new LatLon(51.1254062,1.3148010));
-        nav.setZoom(14);
+        nav.setZoom(16);
 
         Main.main.addLayer(new OsmDataLayer(new DataSet(), OsmDataLayer.createNewName(), null));
 

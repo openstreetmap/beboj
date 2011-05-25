@@ -35,6 +35,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * changelog
  *  moved inner class DiffResultEntry to sperate file in package org.openstreetmap.josm.io
+*   added getter for diffResults
  */
 
 public class DiffResultProcessor  {
@@ -178,5 +179,9 @@ public class DiffResultProcessor  {
                 throw new OsmDataParsingException(e).rememberLocation(locator);
             }
         }
+    }
+
+    public Map<PrimitiveId, DiffResultEntry> getDiffResults() {
+        return diffResults;
     }
 }

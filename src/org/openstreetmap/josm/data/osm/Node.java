@@ -11,6 +11,7 @@ import org.openstreetmap.josm.data.osm.visitor.Visitor;
  *
  * changelog
  *  eliminated String.format(...)
+ *  protected constructor now public: quick hack needed for serialization
  */
 
 /**
@@ -74,7 +75,7 @@ public final class Node extends OsmPrimitive {
         }
     }
 
-    protected Node(long id, boolean allowNegative) {
+    public Node(long id, boolean allowNegative) {
         super(id, allowNegative);
     }
 

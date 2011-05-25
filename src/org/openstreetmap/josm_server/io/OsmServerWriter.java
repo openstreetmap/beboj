@@ -1,24 +1,44 @@
 // License: GPL. Copyright 2007 by Immanuel Scholz and others
 package org.openstreetmap.josm_server.io;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
+//import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
-import static org.openstreetmap.josm.tools.I18n.trn;
+//import static org.openstreetmap.josm.tools.I18n.trn;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openstreetmap.josm.data.osm.Changeset;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
-import org.openstreetmap.josm.gui.io.UploadStrategySpecification;
-import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+//import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
+import org.openstreetmap.josm.data.osm.PrimitiveId;
+import org.openstreetmap.josm.io.DiffResultEntry;
+import org.openstreetmap.josm_server.gui.io.UploadStrategySpecification;
+import org.openstreetmap.josm_server.gui.progress.NullProgressMonitor;
+import org.openstreetmap.josm_server.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm_server.io.auth.CredentialsManagerResponse;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
+
+/**
+ * GWT
+ * 
+ * TODO
+ *  only one upload method implemented
+ * 
+ * changelog
+ *  - We have to send the result of the upload from server to client. Consequently
+ *      we cannot update the OsmPrimitives in place, but have to send the diff results, 
+ *      so the client can update its dataset later. Therefore it does not suffice to
+ *      save the processed primitives, but we need to keep more info.
+ *  - No Authenticator is installed, to avoid problems where multiple client logins
+ *      are mixed up.
+ *      Instead, the credentials are always passed explicitly as parameter.
+ */
 
 /**
  * Class that uploads all changes to the osm server.
@@ -38,7 +58,13 @@ public class OsmServerWriter {
      * If a server connection error occurs, this may contain fewer entries
      * than where passed in the list to upload*.
      */
-    private Collection<OsmPrimitive> processed;
+//    private Collection<OsmPrimitive> processed;
+
+    private Collection<OsmPrimitive> primitives;
+
+    private Map<PrimitiveId, DiffResultEntry> diffResults;
+
+    private CredentialsManagerResponse credentials;
 
     private OsmApi api = OsmApi.getOsmApi();
     private boolean canceled = false;
@@ -68,47 +94,47 @@ public class OsmServerWriter {
         return time_left_str;
     }
 
-    /**
-     * Uploads the changes individually. Invokes one API call per uploaded primitmive.
-     *
-     * @param primitives the collection of primitives to upload
-     * @param progressMonitor the progress monitor
-     * @throws OsmTransferException thrown if an exception occurs
-     */
-    protected void uploadChangesIndividually(Collection<OsmPrimitive> primitives, ProgressMonitor progressMonitor) throws OsmTransferException {
-        try {
-            progressMonitor.beginTask(tr("Starting to upload with one request per primitive ..."));
-            progressMonitor.setTicksCount(primitives.size());
-            uploadStartTime = System.currentTimeMillis();
-            for (OsmPrimitive osm : primitives) {
-                int progress = progressMonitor.getTicks();
-                String time_left_str = timeLeft(progress, primitives.size());
-                String msg = "";
-                switch(OsmPrimitiveType.from(osm)) {
-                case NODE: msg = marktr("{0}% ({1}/{2}), {3} left. Uploading node ''{4}'' (id: {5})"); break;
-                case WAY: msg = marktr("{0}% ({1}/{2}), {3} left. Uploading way ''{4}'' (id: {5})"); break;
-                case RELATION: msg = marktr("{0}% ({1}/{2}), {3} left. Uploading relation ''{4}'' (id: {5})"); break;
-                }
-                progressMonitor.subTask(
-                        tr(msg,
-                                Math.round(100.0*progress/primitives.size()),
-                                progress,
-                                primitives.size(),
-                                time_left_str,
-                                osm.getName() == null ? osm.getId() : osm.getName(),
-                                        osm.getId()));
-                makeApiRequest(osm,progressMonitor);
-                processed.add(osm);
-                progressMonitor.worked(1);
-            }
-        } catch(OsmTransferException e) {
-            throw e;
-        } catch(Exception e) {
-            throw new OsmTransferException(e);
-        } finally {
-            progressMonitor.finishTask();
-        }
-    }
+//    /**
+//     * Uploads the changes individually. Invokes one API call per uploaded primitmive.
+//     *
+//     * @param primitives the collection of primitives to upload
+//     * @param progressMonitor the progress monitor
+//     * @throws OsmTransferException thrown if an exception occurs
+//     */
+//    protected void uploadChangesIndividually(Collection<OsmPrimitive> primitives, ProgressMonitor progressMonitor) throws OsmTransferException {
+//        try {
+//            progressMonitor.beginTask(tr("Starting to upload with one request per primitive ..."));
+//            progressMonitor.setTicksCount(primitives.size());
+//            uploadStartTime = System.currentTimeMillis();
+//            for (OsmPrimitive osm : primitives) {
+//                int progress = progressMonitor.getTicks();
+//                String time_left_str = timeLeft(progress, primitives.size());
+//                String msg = "";
+//                switch(OsmPrimitiveType.from(osm)) {
+//                case NODE: msg = marktr("{0}% ({1}/{2}), {3} left. Uploading node ''{4}'' (id: {5})"); break;
+//                case WAY: msg = marktr("{0}% ({1}/{2}), {3} left. Uploading way ''{4}'' (id: {5})"); break;
+//                case RELATION: msg = marktr("{0}% ({1}/{2}), {3} left. Uploading relation ''{4}'' (id: {5})"); break;
+//                }
+//                progressMonitor.subTask(
+//                        tr(msg,
+//                                Math.round(100.0*progress/primitives.size()),
+//                                progress,
+//                                primitives.size(),
+//                                time_left_str,
+//                                osm.getName() == null ? osm.getId() : osm.getName(),
+//                                        osm.getId()));
+//                makeApiRequest(osm,progressMonitor);
+//                processed.add(osm);
+//                progressMonitor.worked(1);
+//            }
+//        } catch(OsmTransferException e) {
+//            throw e;
+//        } catch(Exception e) {
+//            throw new OsmTransferException(e);
+//        } finally {
+//            progressMonitor.finishTask();
+//        }
+//    }
 
     /**
      * Upload all changes in one diff upload
@@ -118,9 +144,10 @@ public class OsmServerWriter {
      * @throws OsmTransferException thrown if an exception occurs
      */
     protected void uploadChangesAsDiffUpload(Collection<OsmPrimitive> primitives, ProgressMonitor progressMonitor) throws OsmTransferException {
+        this.primitives = primitives;
         try {
             progressMonitor.beginTask(tr("Starting to upload in one request ..."));
-            processed.addAll(api.uploadDiff(primitives, progressMonitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false)));
+            diffResults = api.uploadDiff(primitives, credentials, progressMonitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false));
         } catch(OsmTransferException e) {
             throw e;
         } finally {
@@ -128,46 +155,46 @@ public class OsmServerWriter {
         }
     }
 
-    /**
-     * Upload all changes in one diff upload
-     *
-     * @param primitives the collection of primitives to upload
-     * @param progressMonitor  the progress monitor
-     * @param chunkSize the size of the individual upload chunks. > 0 required.
-     * @throws IllegalArgumentException thrown if chunkSize <= 0
-     * @throws OsmTransferException thrown if an exception occurs
-     */
-    protected void uploadChangesInChunks(Collection<OsmPrimitive> primitives, ProgressMonitor progressMonitor, int chunkSize) throws OsmTransferException, IllegalArgumentException {
-        if (chunkSize <=0)
-            throw new IllegalArgumentException(tr("Value >0 expected for parameter ''{0}'', got {1}", "chunkSize", chunkSize));
-        try {
-            progressMonitor.beginTask(tr("Starting to upload in chunks..."));
-            List<OsmPrimitive> chunk = new ArrayList<OsmPrimitive>(chunkSize);
-            Iterator<OsmPrimitive> it = primitives.iterator();
-            int numChunks = (int)Math.ceil((double)primitives.size() / (double)chunkSize);
-            int i= 0;
-            while(it.hasNext()) {
-                i++;
-                if (canceled) return;
-                int j = 0;
-                chunk.clear();
-                while(it.hasNext() && j < chunkSize) {
-                    if (canceled) return;
-                    j++;
-                    chunk.add(it.next());
-                }
-                progressMonitor.setCustomText(
-                        trn("({0}/{1}) Uploading {2} object...",
-                                "({0}/{1}) Uploading {2} objects...",
-                                chunk.size(), i, numChunks, chunk.size()));
-                processed.addAll(api.uploadDiff(chunk, progressMonitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false)));
-            }
-        } catch(OsmTransferException e) {
-            throw e;
-        } finally {
-            progressMonitor.finishTask();
-        }
-    }
+//    /**
+//     * Upload all changes in one diff upload
+//     *
+//     * @param primitives the collection of primitives to upload
+//     * @param progressMonitor  the progress monitor
+//     * @param chunkSize the size of the individual upload chunks. > 0 required.
+//     * @throws IllegalArgumentException thrown if chunkSize <= 0
+//     * @throws OsmTransferException thrown if an exception occurs
+//     */
+//    protected void uploadChangesInChunks(Collection<OsmPrimitive> primitives, ProgressMonitor progressMonitor, int chunkSize) throws OsmTransferException, IllegalArgumentException {
+//        if (chunkSize <=0)
+//            throw new IllegalArgumentException(tr("Value >0 expected for parameter ''{0}'', got {1}", "chunkSize", chunkSize));
+//        try {
+//            progressMonitor.beginTask(tr("Starting to upload in chunks..."));
+//            List<OsmPrimitive> chunk = new ArrayList<OsmPrimitive>(chunkSize);
+//            Iterator<OsmPrimitive> it = primitives.iterator();
+//            int numChunks = (int)Math.ceil((double)primitives.size() / (double)chunkSize);
+//            int i= 0;
+//            while(it.hasNext()) {
+//                i++;
+//                if (canceled) return;
+//                int j = 0;
+//                chunk.clear();
+//                while(it.hasNext() && j < chunkSize) {
+//                    if (canceled) return;
+//                    j++;
+//                    chunk.add(it.next());
+//                }
+//                progressMonitor.setCustomText(
+//                        trn("({0}/{1}) Uploading {2} object...",
+//                                "({0}/{1}) Uploading {2} objects...",
+//                                chunk.size(), i, numChunks, chunk.size()));
+//                processed.addAll(api.uploadDiff(chunk, credentials, progressMonitor.createSubTaskMonitor(ProgressMonitor.ALL_TICKS, false)));
+//            }
+//        } catch(OsmTransferException e) {
+//            throw e;
+//        } finally {
+//            progressMonitor.finishTask();
+//        }
+//    }
 
     /**
      * Send the dataset to the server.
@@ -180,30 +207,30 @@ public class OsmServerWriter {
      * @throws IllegalArgumentException thrown if strategy is null
      * @throws OsmTransferException thrown if something goes wrong
      */
-    public void uploadOsm(UploadStrategySpecification strategy, Collection<OsmPrimitive> primitives, Changeset changeset, ProgressMonitor monitor) throws OsmTransferException {
+    public void uploadOsm(UploadStrategySpecification strategy, Collection<OsmPrimitive> primitives, Changeset changeset, CredentialsManagerResponse credentials, ProgressMonitor monitor) throws OsmTransferException {
         CheckParameterUtil.ensureParameterNotNull(changeset, "changeset");
-        processed = new LinkedList<OsmPrimitive>();
+        this.credentials = credentials;
         monitor = monitor == null ? NullProgressMonitor.INSTANCE : monitor;
         monitor.beginTask(tr("Uploading data ..."));
         try {
             api.initialize(monitor);
             // check whether we can use diff upload
             if (changeset.getId() == 0) {
-                api.openChangeset(changeset,monitor.createSubTaskMonitor(0, false));
+                api.openChangeset(changeset, credentials, monitor.createSubTaskMonitor(0, false));
             } else {
-                api.updateChangeset(changeset,monitor.createSubTaskMonitor(0, false));
+                api.updateChangeset(changeset, credentials, monitor.createSubTaskMonitor(0, false));
             }
             api.setChangeset(changeset);
             switch(strategy.getStrategy()) {
             case SINGLE_REQUEST_STRATEGY:
                 uploadChangesAsDiffUpload(primitives,monitor.createSubTaskMonitor(0,false));
                 break;
-            case INDIVIDUAL_OBJECTS_STRATEGY:
-                uploadChangesIndividually(primitives,monitor.createSubTaskMonitor(0,false));
-                break;
-            case CHUNKED_DATASET_STRATEGY:
-                uploadChangesInChunks(primitives,monitor.createSubTaskMonitor(0,false), strategy.getChunkSize());
-                break;
+//            case INDIVIDUAL_OBJECTS_STRATEGY:
+//                uploadChangesIndividually(primitives,monitor.createSubTaskMonitor(0,false));
+//                break;
+//            case CHUNKED_DATASET_STRATEGY:
+//                uploadChangesInChunks(primitives,monitor.createSubTaskMonitor(0,false), strategy.getChunkSize());
+//                break;
             }
         } catch(OsmTransferException e) {
             throw e;
@@ -215,11 +242,11 @@ public class OsmServerWriter {
 
     void makeApiRequest(OsmPrimitive osm, ProgressMonitor progressMonitor) throws OsmTransferException {
         if (osm.isDeleted()) {
-            api.deletePrimitive(osm, progressMonitor);
+            api.deletePrimitive(osm, credentials, progressMonitor);
         } else if (osm.isNew()) {
-            api.createPrimitive(osm, progressMonitor);
+            api.createPrimitive(osm, credentials, progressMonitor);
         } else {
-            api.modifyPrimitive(osm,progressMonitor);
+            api.modifyPrimitive(osm, credentials, progressMonitor);
         }
     }
 
@@ -236,6 +263,17 @@ public class OsmServerWriter {
      * @return the collection of successfully processed primitives
      */
     public Collection<OsmPrimitive> getProcessedPrimitives() {
+        List<OsmPrimitive> processed = new LinkedList<OsmPrimitive>();
+        for (OsmPrimitive osm : primitives) {
+            if (diffResults.containsKey(osm)) {
+                processed.add(osm);
+            }
+        }
         return processed;
     }
+
+    public Map<PrimitiveId, DiffResultEntry> getDiffResults() {
+        return diffResults;
+    }
+
 }

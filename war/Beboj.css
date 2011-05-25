@@ -80,3 +80,8 @@ body {
   color: black;
 }
 
+/* fix GWT widgets z-index (outbid OpenLayers divs) */
+
+.gwt-MenuBarPopup, .gwt-DialogBox {
+	z-index: 5000;
+}

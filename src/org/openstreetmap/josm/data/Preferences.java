@@ -2,13 +2,19 @@
 package org.openstreetmap.josm.data;
 
 import java.util.Collection;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * GWT
  *
  * TODO
- *  stub - for now, all the get...(...) methods have dummy implementations
- *         that simply return the default value
+ *  stub - for now, some get...(...) methods have dummy implementations
+ *        and simply return the default value
+ * 
+ * changelog
+ *  'put' does not save the prefs permanently
  */
 
 /**
@@ -37,12 +43,12 @@ public class Preferences {
 //     * @see #getPreferencesDirFile()
 //     */
 //    private File preferencesDirFile = null;
-//
-//    /**
-//     * Map the property name to the property object. Does not contain null or "" values.
-//     */
-//    protected final SortedMap<String, String> properties = new TreeMap<String, String>();
-//    protected final SortedMap<String, String> defaults = new TreeMap<String, String>();
+
+    /**
+     * Map the property name to the property object. Does not contain null or "" values.
+     */
+    protected final SortedMap<String, String> properties = new TreeMap<String, String>();
+    protected final SortedMap<String, String> defaults = new TreeMap<String, String>();
 
     public interface PreferenceChangeEvent{
         String getKey();
@@ -54,53 +60,53 @@ public class Preferences {
         void preferenceChanged(PreferenceChangeEvent e);
     }
 
-//    private static class DefaultPreferenceChangeEvent implements PreferenceChangeEvent {
-//        private final String key;
-//        private final String oldValue;
-//        private final String newValue;
-//
-//        public DefaultPreferenceChangeEvent(String key, String oldValue, String newValue) {
-//            this.key = key;
-//            this.oldValue = oldValue;
-//            this.newValue = newValue;
-//        }
-//
-//        public String getKey() {
-//            return key;
-//        }
-//        public String getOldValue() {
-//            return oldValue;
-//        }
-//        public String getNewValue() {
-//            return newValue;
-//        }
-//    }
-//
+    private static class DefaultPreferenceChangeEvent implements PreferenceChangeEvent {
+        private final String key;
+        private final String oldValue;
+        private final String newValue;
+
+        public DefaultPreferenceChangeEvent(String key, String oldValue, String newValue) {
+            this.key = key;
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+
+        public String getKey() {
+            return key;
+        }
+        public String getOldValue() {
+            return oldValue;
+        }
+        public String getNewValue() {
+            return newValue;
+        }
+    }
+
 //    public interface ColorKey {
 //        String getColorName();
 //        String getSpecialName();
 //        Color getDefault();
 //    }
-//
-//    private final CopyOnWriteArrayList<PreferenceChangedListener> listeners = new CopyOnWriteArrayList<PreferenceChangedListener>();
-//
-//    public void addPreferenceChangeListener(PreferenceChangedListener listener) {
-//        if (listener != null) {
-//            listeners.addIfAbsent(listener);
-//        }
-//    }
-//
-//    public void removePreferenceChangeListener(PreferenceChangedListener listener) {
-//        listeners.remove(listener);
-//    }
-//
-//    protected void firePreferenceChanged(String key, String oldValue, String newValue) {
-//        PreferenceChangeEvent evt = new DefaultPreferenceChangeEvent(key, oldValue, newValue);
-//        for (PreferenceChangedListener l : listeners) {
-//            l.preferenceChanged(evt);
-//        }
-//    }
-//
+
+    private final CopyOnWriteArrayList<PreferenceChangedListener> listeners = new CopyOnWriteArrayList<PreferenceChangedListener>();
+
+    public void addPreferenceChangeListener(PreferenceChangedListener listener) {
+        if (listener != null) {
+            listeners.addIfAbsent(listener);
+        }
+    }
+
+    public void removePreferenceChangeListener(PreferenceChangedListener listener) {
+        listeners.remove(listener);
+    }
+
+    protected void firePreferenceChanged(String key, String oldValue, String newValue) {
+        PreferenceChangeEvent evt = new DefaultPreferenceChangeEvent(key, oldValue, newValue);
+        for (PreferenceChangedListener l : listeners) {
+            l.preferenceChanged(evt);
+        }
+    }
+
 //    /**
 //     * Return the location of the user defined preferences file
 //     */
@@ -171,8 +177,7 @@ public class Preferences {
 //    }
 
     synchronized public boolean hasKey(final String key) {
-        return false;
-//        return properties.containsKey(key);
+        return properties.containsKey(key);
     }
 
     /**
@@ -182,11 +187,10 @@ public class Preferences {
      *  the corresponding value otherwise. The result is not null.
      */
     synchronized public String get(final String key) {
-        return null; // GWT fix
-//        putDefault(key, null);
-//        if (!properties.containsKey(key))
-//            return "";
-//        return properties.get(key);
+        putDefault(key, null);
+        if (!properties.containsKey(key))
+            return "";
+        return properties.get(key);
     }
 
     /**
@@ -198,12 +202,11 @@ public class Preferences {
      *  def otherwise
      */
     synchronized public String get(final String key, final String def) {
-        return def; // GWT fix
-//        putDefault(key, def);
-//        final String prop = properties.get(key);
-//        if (prop == null || prop.equals(""))
-//            return def;
-//        return prop;
+        putDefault(key, def);
+        final String prop = properties.get(key);
+        if (prop == null || prop.equals(""))
+            return def;
+        return prop;
     }
 //
 //    synchronized public Map<String, String> getAllPrefix(final String prefix) {
@@ -244,15 +247,15 @@ public class Preferences {
 //    synchronized public Map<String, String> getDefaults() {
 //        return defaults;
 //    }
-//
-//    synchronized public void putDefault(final String key, final String def) {
-//        if(!defaults.containsKey(key) || defaults.get(key) == null) {
-//            defaults.put(key, def);
-//        } else if(def != null && !defaults.get(key).equals(def)) {
-//            System.out.println("Defaults for " + key + " differ: " + def + " != " + defaults.get(key));
-//        }
-//    }
-//
+
+    synchronized public void putDefault(final String key, final String def) {
+        if(!defaults.containsKey(key) || defaults.get(key) == null) {
+            defaults.put(key, def);
+        } else if(def != null && !defaults.get(key).equals(def)) {
+            System.out.println("Defaults for " + key + " differ: " + def + " != " + defaults.get(key));
+        }
+    }
+
     synchronized public boolean getBoolean(final String key) {
         return false; // GWT fix
 //        putDefault(key, null);
@@ -264,54 +267,53 @@ public class Preferences {
 //        putDefault(key, Boolean.toString(def));
 //        return properties.containsKey(key) ? Boolean.parseBoolean(properties.get(key)) : def;
     }
-//
-//    /**
-//     * Set a value for a certain setting. The changed setting is saved
-//     * to the preference file immediately. Due to caching mechanisms on modern
-//     * operating systems and hardware, this shouldn't be a performance problem.
-//     * @param key the unique identifier for the setting
-//     * @param value the value of the setting. Can be null or "" wich both removes
-//     *  the key-value entry.
-//     * @return if true, something has changed (i.e. value is different than before)
-//     */
+
+    /**
+     * Set a value for a certain setting. The changed setting is saved
+     * to the preference file immediately. Due to caching mechanisms on modern
+     * operating systems and hardware, this shouldn't be a performance problem.
+     * @param key the unique identifier for the setting
+     * @param value the value of the setting. Can be null or "" wich both removes
+     *  the key-value entry.
+     * @return if true, something has changed (i.e. value is different than before)
+     */
     public boolean put(final String key, String value) {
-        return true;
-//        boolean changed = false;
-//        String oldValue = null;
-//
-//        synchronized (this) {
-//            oldValue = properties.get(key);
-//            if(value != null && value.length() == 0) {
-//                value = null;
-//            }
-//            // value is the same as before - no need to save anything
-//            boolean equalValue = oldValue != null && oldValue.equals(value);
-//            // The setting was previously unset and we are supposed to put a
-//            // value that equals the default value. This is not necessary because
-//            // the default value is the same throughout josm. In addition we like
-//            // to have the possibility to change the default value from version
-//            // to version, which would not work if we wrote it to the preference file.
-//            boolean unsetIsDefault = oldValue == null && (value == null || value.equals(defaults.get(key)));
-//
-//            if (!(equalValue || unsetIsDefault)) {
-//                if (value == null) {
-//                    properties.remove(key);
-//                } else {
-//                    properties.put(key, value);
-//                }
+        boolean changed = false;
+        String oldValue = null;
+
+        synchronized (this) {
+            oldValue = properties.get(key);
+            if(value != null && value.length() == 0) {
+                value = null;
+            }
+            // value is the same as before - no need to save anything
+            boolean equalValue = oldValue != null && oldValue.equals(value);
+            // The setting was previously unset and we are supposed to put a
+            // value that equals the default value. This is not necessary because
+            // the default value is the same throughout josm. In addition we like
+            // to have the possibility to change the default value from version
+            // to version, which would not work if we wrote it to the preference file.
+            boolean unsetIsDefault = oldValue == null && (value == null || value.equals(defaults.get(key)));
+
+            if (!(equalValue || unsetIsDefault)) {
+                if (value == null) {
+                    properties.remove(key);
+                } else {
+                    properties.put(key, value);
+                }
 //                try {
 //                    save();
 //                } catch(IOException e){
 //                    System.out.println(tr("Warning: failed to persist preferences to ''{0}''", getPreferenceFile().getAbsoluteFile()));
 //                }
-//                changed = true;
-//            }
-//        }
-//        if (changed) {
-//            // Call outside of synchronized section in case some listener wait for other thread that wait for preference lock
-//            firePreferenceChanged(key, oldValue, value);
-//        }
-//        return changed;
+                changed = true;
+            }
+        }
+        if (changed) {
+            // Call outside of synchronized section in case some listener wait for other thread that wait for preference lock
+            firePreferenceChanged(key, oldValue, value);
+        }
+        return changed;
     }
 
     public boolean put(final String key, final boolean value) {

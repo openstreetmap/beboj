@@ -4,12 +4,21 @@ package org.openstreetmap.josm.data.osm;
 import java.io.Serializable;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  made GWT-serializable
+ *    - commented out final
+ *    - no arg constructor
  */
 
 public class SimplePrimitiveId implements PrimitiveId, Serializable {
-    private final long id;
-    private final OsmPrimitiveType type;
+    private /* final */ long id;
+    private /* final */ OsmPrimitiveType type;
+
+    @SuppressWarnings("unused")
+    private SimplePrimitiveId() {
+    }
 
     public SimplePrimitiveId(long id, OsmPrimitiveType type) {
         this.id = id;

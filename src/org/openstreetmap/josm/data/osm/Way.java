@@ -14,7 +14,10 @@ import org.openstreetmap.josm.tools.CopyList;
 import org.openstreetmap.josm.tools.Pair;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * changelog
+ *  protected constructor now public: quick hack needed for serialization
  */
 
 /**
@@ -139,7 +142,7 @@ public final class Way extends OsmPrimitive {
         visitor.visit(this);
     }
 
-    protected Way(long id, boolean allowNegative) {
+    public Way(long id, boolean allowNegative) {
         super(id, allowNegative);
     }
 

@@ -35,7 +35,6 @@ public class Toolbar extends HorizontalPanel {
         PushButton t1 = new PushButton(i1, new DownloadCommand());
         PushButton t1a = new PushButton("Load sample dataset", new SampleDataSetCommand());
         PushButton t2 = new PushButton(i2, new UploadCommand());
-        t2.setEnabled(false);
         PushButton t3 = new PushButton(i3, new PrefCommand());
         t3.setEnabled(false);
         PushButton t4 = new PushButton("Repaint", new RepaintCommand());
@@ -92,6 +91,7 @@ public class Toolbar extends HorizontalPanel {
     public class UploadCommand implements ClickHandler  {
         @Override
         public void onClick(ClickEvent event) {
+            new UploadDialog().show();
         }
     }
 

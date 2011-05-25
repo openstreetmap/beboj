@@ -4,7 +4,7 @@ package org.openstreetmap.josm_server.io;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.net.HttpURLConnection;
-import java.net.Authenticator.RequestorType;
+//import java.net.Authenticator.RequestorType;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -18,13 +18,19 @@ import oauth.signpost.exception.OAuthException;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm_server.data.oauth.OAuthParameters;
 import org.openstreetmap.josm_server.gui.preferences.server.OAuthAccessTokenHolder;
-import org.openstreetmap.josm_server.io.auth.CredentialsManagerException;
-import org.openstreetmap.josm_server.io.auth.CredentialsManagerFactory;
+//import org.openstreetmap.josm_server.io.auth.CredentialsManagerException;
+//import org.openstreetmap.josm_server.io.auth.CredentialsManagerFactory;
 import org.openstreetmap.josm_server.io.auth.CredentialsManagerResponse;
 import org.openstreetmap.josm_server.tools.Base64;
 
 /**
- * GWT ok
+ * GWT
+ * 
+ * TODO
+ *  addOAuthAuthorizationHeader not really supported
+ * 
+ * changelog
+ *  addAuth requires explicit credentials
  */
 
 /**
@@ -78,32 +84,17 @@ public class OsmConnection {
      * @param con the connection
      * @throws OsmTransferException thrown if something went wrong. Check for nested exceptions
      */
-    protected void addBasicAuthorizationHeader(HttpURLConnection con) throws OsmTransferException {
+    protected void addBasicAuthorizationHeader(HttpURLConnection con, CredentialsManagerResponse credentials) throws OsmTransferException {
         CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
-        CredentialsManagerResponse response;
         String token;
+        String username= credentials.getUsername() == null ? "" : credentials.getUsername();
+        String password = credentials.getPassword() == null ? "" : String.valueOf(credentials.getPassword());
+        token = username + ":" + password;
         try {
-            synchronized (CredentialsManagerFactory.getCredentialManager()) {
-                response = CredentialsManagerFactory.getCredentialManager().getCredentials(RequestorType.SERVER, false /* don't know yet whether the credentials will succeed */);
-            }
-        } catch (CredentialsManagerException e) {
+            ByteBuffer bytes = encoder.encode(CharBuffer.wrap(token));
+            con.addRequestProperty("Authorization", "Basic "+Base64.encode(bytes));
+        } catch(CharacterCodingException e) {
             throw new OsmTransferException(e);
-        }
-        if (response == null) {
-            token = ":";
-        } else if (response.isCanceled()) {
-            cancel = true;
-            return;
-        } else {
-            String username= response.getUsername() == null ? "" : response.getUsername();
-            String password = response.getPassword() == null ? "" : String.valueOf(response.getPassword());
-            token = username + ":" + password;
-            try {
-                ByteBuffer bytes = encoder.encode(CharBuffer.wrap(token));
-                con.addRequestProperty("Authorization", "Basic "+Base64.encode(bytes));
-            } catch(CharacterCodingException e) {
-                throw new OsmTransferException(e);
-            }
         }
     }
 
@@ -131,10 +122,10 @@ public class OsmConnection {
         }
     }
 
-    protected void addAuth(HttpURLConnection connection) throws OsmTransferException {
+    protected void addAuth(HttpURLConnection connection, CredentialsManagerResponse credentials) throws OsmTransferException {
         String authMethod = Main.pref.get("osm-server.auth-method", "basic");
         if (authMethod.equals("basic")) {
-            addBasicAuthorizationHeader(connection);
+            addBasicAuthorizationHeader(connection, credentials);
         } else if (authMethod.equals("oauth")) {
             addOAuthAuthorizationHeader(connection);
         } else {

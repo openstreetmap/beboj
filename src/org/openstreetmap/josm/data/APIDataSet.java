@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import org.openstreetmap.josm.actions.upload.CyclicUploadDependencyException;
 import org.openstreetmap.josm.data.conflict.Conflict;
@@ -23,6 +23,14 @@ import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.RelationMember;
 import org.openstreetmap.josm.data.osm.Way;
+import org.openstreetmap.josm.tools.SubclassFilteredCollection;
+
+/**
+ * GWT
+ * 
+ * changelog
+ *  use SubclassFilteredCollection instead of OsmPrimitive.getFilteredList (should be equivalent)
+ */
 
 /**
  * Represents a collection of {@see OsmPrimitive}s which should be uploaded to the
@@ -285,10 +293,11 @@ public class APIDataSet {
      */
     public void adjustRelationUploadOrder() throws CyclicUploadDependencyException{
         LinkedList<OsmPrimitive> newToAdd = new LinkedList<OsmPrimitive>();
-        newToAdd.addAll(OsmPrimitive.getFilteredList(toAdd, Node.class));
-        newToAdd.addAll(OsmPrimitive.getFilteredList(toAdd, Way.class));
+        newToAdd.addAll(new SubclassFilteredCollection<OsmPrimitive, Node>(toAdd, OsmPrimitive.nodePredicate));
+        newToAdd.addAll(new SubclassFilteredCollection<OsmPrimitive, Way>(toAdd, OsmPrimitive.wayPredicate));
 
-        List<Relation> relationsToAdd = OsmPrimitive.getFilteredList(toAdd, Relation.class);
+        List<Relation> relationsToAdd = new LinkedList<Relation>();
+        relationsToAdd.addAll(new SubclassFilteredCollection<OsmPrimitive, Relation>(toAdd, OsmPrimitive.relationPredicate));
         List<Relation> noProblemRelations = filterRelationsNotReferringToNewRelations(relationsToAdd);
         newToAdd.addAll(noProblemRelations);
         relationsToAdd.removeAll(noProblemRelations);
@@ -329,8 +338,8 @@ public class APIDataSet {
      *
      */
     private class RelationUploadDependencyGraph {
-        @SuppressWarnings("unused")
-        private final Logger logger = Logger.getLogger(RelationUploadDependencyGraph.class.getName());
+//        @SuppressWarnings("unused")
+//        private final Logger logger = Logger.getLogger(RelationUploadDependencyGraph.class.getName());
         private HashMap<Relation, Set<Relation>> children;
         private Collection<Relation> relations;
         private Set<Relation> visited;

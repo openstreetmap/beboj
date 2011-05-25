@@ -412,29 +412,29 @@ public class OsmDataLayer extends Layer implements Listener, SelectionChangedLis
         }
     }
 
-//    /**
-//     * Clean out the data behind the layer. This means clearing the redo/undo lists,
-//     * really deleting all deleted objects and reset the modified flags. This should
-//     * be done after an upload, even after a partial upload.
-//     *
-//     * @param processed A list of all objects that were actually uploaded.
-//     *         May be <code>null</code>, which means nothing has been uploaded
-//     */
-//    public void cleanupAfterUpload(final Collection<OsmPrimitive> processed) {
-//        // return immediately if an upload attempt failed
-//        if (processed == null || processed.isEmpty())
-//            return;
-//
-//        Main.main.undoRedo.clean(this);
-//
-//        // if uploaded, clean the modified flags as well
-//        data.cleanupDeletedPrimitives();
-//        for (OsmPrimitive p: data.allPrimitives()) {
-//            if (processed.contains(p)) {
-//                p.setModified(false);
-//            }
-//        }
-//    }
+    /**
+     * Clean out the data behind the layer. This means clearing the redo/undo lists,
+     * really deleting all deleted objects and reset the modified flags. This should
+     * be done after an upload, even after a partial upload.
+     *
+     * @param processed A list of all objects that were actually uploaded.
+     *         May be <code>null</code>, which means nothing has been uploaded
+     */
+    public void cleanupAfterUpload(final Collection<OsmPrimitive> processed) {
+        // return immediately if an upload attempt failed
+        if (processed == null || processed.isEmpty())
+            return;
+
+        Main.main.undoRedo.clean(this);
+
+        // if uploaded, clean the modified flags as well
+        data.cleanupDeletedPrimitives();
+        for (OsmPrimitive p: data.allPrimitives()) {
+            if (processed.contains(p)) {
+                p.setModified(false);
+            }
+        }
+    }
 
 
 //    @Override public Object getInfoComponent() {

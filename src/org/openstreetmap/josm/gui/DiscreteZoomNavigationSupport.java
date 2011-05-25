@@ -79,8 +79,12 @@ public class DiscreteZoomNavigationSupport extends AbstractNavigationSupport {
         return zoom;
     }
 
-    public void setZoom(int zoom) {
-        zoomToScale(zoom);
+    public void setZoom(int newZoom) {
+        if (zoom != newZoom) {
+            zoom = newZoom;
+            pushZoomUndo(center, zoom);
+            zoomNoUndoTo(center, newZoom);
+        }
     }
 
     /**

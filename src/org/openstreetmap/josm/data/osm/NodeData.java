@@ -4,6 +4,7 @@ package org.openstreetmap.josm.data.osm;
 import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 
 /**
  * GWT
@@ -13,7 +14,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *   - field 'coor': private final -> public
  */
 
-public class NodeData extends PrimitiveData {
+public class NodeData extends PrimitiveData implements INode {
 
     public /* private final */ CachedLatLon coor = new CachedLatLon(0, 0);
 
@@ -21,32 +22,27 @@ public class NodeData extends PrimitiveData {
 
     }
 
-    public NodeData(double lat, double lon, String... keys) {
-        setCoor(new LatLon(lat, lon));
-        setKeysAsList(keys);
-    }
-
-    public NodeData(String... keys) {
-        setKeysAsList(keys);
-    }
-
     public NodeData(NodeData data) {
         super(data);
         setCoor(data.getCoor());
     }
 
+    @Override
     public LatLon getCoor() {
         return coor;
     }
 
+    @Override
     public void setCoor(LatLon coor) {
         this.coor.setCoor(coor);
     }
 
+    @Override
     public EastNorth getEastNorth() {
         return this.coor.getEastNorth();
     }
 
+    @Override
     public void setEastNorth(EastNorth eastNorth) {
         this.coor.setEastNorth(eastNorth);
     }
@@ -65,4 +61,15 @@ public class NodeData extends PrimitiveData {
     public OsmPrimitiveType getType() {
         return OsmPrimitiveType.NODE;
     }
+    
+    @Override 
+    public void visit(PrimitiveVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public String getDisplayName(NameFormatter formatter) {
+        return formatter.format(this);
+    }
+
 }

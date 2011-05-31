@@ -193,10 +193,10 @@ public class Bounds implements IsSerializable {
      * the interior but the closure. (">=" instead of ">")
      */
     public boolean intersects(Bounds b) {
-        return b.getMax().lat() >= minLat &&
-        b.getMax().lon() >= minLon &&
-        b.getMin().lat() <= maxLat &&
-        b.getMin().lon() <= maxLon;
+        return b.maxLat >= minLat &&
+        b.maxLon >= minLon &&
+        b.minLat <= maxLat &&
+        b.minLon <= maxLon;
     }
 
 
@@ -220,8 +220,19 @@ public class Bounds implements IsSerializable {
         return sb.toString();
     }
 
-//    @Override
-//    public int hashCode() {
+    /**
+     * <p>Replies true, if this bounds are <em>collapsed</em>, i.e. if the min
+     * and the max corner are equal.</p>
+     * 
+     * @return true, if this bounds are <em>collapsed</em>
+     */
+    public boolean isCollapsed() {
+        return getMin().equals(getMax());
+    }
+
+    @Override
+    public int hashCode() {
+      throw new UnsupportedOperationException("gwt implement me");
 //        final int prime = 31;
 //        int result = 1;
 //        long temp;
@@ -234,10 +245,11 @@ public class Bounds implements IsSerializable {
 //        temp = Double.doubleToLongBits(minLon);
 //        result = prime * result + (int) (temp ^ (temp >>> 32));
 //        return result;
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      throw new UnsupportedOperationException("gwt implement me");
 //        if (this == obj)
 //            return true;
 //        if (obj == null)
@@ -254,7 +266,7 @@ public class Bounds implements IsSerializable {
 //        if (Double.doubleToLongBits(minLon) != Double.doubleToLongBits(other.minLon))
 //            return false;
 //        return true;
-//    }
+    }
 
     /**
      * Returns the value rounded to OSM precisions, i.e. to

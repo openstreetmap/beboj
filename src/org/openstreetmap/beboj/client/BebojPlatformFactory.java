@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.beboj.client;
 
+import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,20 +12,25 @@ import org.openstreetmap.beboj.client.gui.BebojPaintVisitor;
 import org.openstreetmap.josm.actions.mapmode.MapMode;
 import org.openstreetmap.josm.beboj.CanvasView;
 import org.openstreetmap.josm.beboj.PlatformFactory;
-import org.openstreetmap.josm.data.osm.visitor.paint.PaintVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.Rendering;
 import org.openstreetmap.josm.gui.DiscreteZoomNavigationSupport;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigationSupport;
 
 public class BebojPlatformFactory implements PlatformFactory {
 
-    protected PaintVisitor paintVisitor;
+    protected BebojPaintVisitor paintVisitor;
     protected List<MapMode> modes;
 
     @Override
-    public PaintVisitor getDefaultPaintVisitor() {
+    public Rendering createActiveRenderer(Graphics2D g, MapView mv, boolean inactive) {
         if (paintVisitor == null) {
             paintVisitor = new BebojPaintVisitor();
         }
+        paintVisitor.setGraphics(g);
+        paintVisitor.setNavigatableComponent(mv);
+        paintVisitor.setInactive(inactive);
+
         return paintVisitor;
     }
 

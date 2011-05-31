@@ -24,12 +24,13 @@ import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.RelationMember;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.tools.SubclassFilteredCollection;
+//import org.openstreetmap.josm.tools.Utils;
 
 /**
  * GWT
- * 
+ *
  * changelog
- *  use SubclassFilteredCollection instead of OsmPrimitive.getFilteredList (should be equivalent)
+ *  use SubclassFilteredCollection instead of Utils.filteredCollection (should be equivalent)
  */
 
 /**
@@ -78,6 +79,7 @@ public class APIDataSet {
         }
         sortDeleted();
         sortNew();
+        sortUpdated();
     }
 
     /**
@@ -139,6 +141,34 @@ public class APIDataSet {
                 }
         );
     }
+    /*
+     * Sort list of updated elements, so it looks neat in the confirmation dialog.
+     */
+    protected void sortUpdated() {
+        Collections.sort(
+                toUpdate,
+                new Comparator<OsmPrimitive>() {
+                    public int compare(OsmPrimitive o1, OsmPrimitive o2) {
+                        if (o1 instanceof Node && o2 instanceof Node)
+                            return 0;
+                        else if (o1 instanceof Node)
+                            return -1;
+                        else if (o2 instanceof Node)
+                            return 1;
+
+                        if (o1 instanceof Way && o2 instanceof Way)
+                            return 0;
+                        else if (o1 instanceof Way && o2 instanceof Relation)
+                            return -1;
+                        else if (o2 instanceof Way && o1 instanceof Relation)
+                            return 1;
+
+                        return 0;
+                    }
+                }
+        );
+    }
+
     /**
      * initializes the API data set with the modified primitives in <code>ds</code>
      *
@@ -293,9 +323,12 @@ public class APIDataSet {
      */
     public void adjustRelationUploadOrder() throws CyclicUploadDependencyException{
         LinkedList<OsmPrimitive> newToAdd = new LinkedList<OsmPrimitive>();
+//        newToAdd.addAll(Utils.filteredCollection(toAdd, Node.class));
+//        newToAdd.addAll(Utils.filteredCollection(toAdd, Way.class));
         newToAdd.addAll(new SubclassFilteredCollection<OsmPrimitive, Node>(toAdd, OsmPrimitive.nodePredicate));
         newToAdd.addAll(new SubclassFilteredCollection<OsmPrimitive, Way>(toAdd, OsmPrimitive.wayPredicate));
 
+//        List<Relation> relationsToAdd = new ArrayList<Relation>(Utils.filteredCollection(toAdd, Relation.class));
         List<Relation> relationsToAdd = new LinkedList<Relation>();
         relationsToAdd.addAll(new SubclassFilteredCollection<OsmPrimitive, Relation>(toAdd, OsmPrimitive.relationPredicate));
         List<Relation> noProblemRelations = filterRelationsNotReferringToNewRelations(relationsToAdd);

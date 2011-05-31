@@ -18,6 +18,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.SelectionChangedListener;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -87,7 +88,7 @@ import org.openstreetmap.josm.tools.SubclassFilteredCollection;
  *
  * Note that it is not necessary to call beginUpdate/endUpdate for every dataset modification - dataset will get locked
  * automatically.
- * 
+ *
  * Note that locks cannot be upgraded - if one threads use read lock and and then write lock, dead lock will occur - see #5814 for
  * sample ticket
  *
@@ -142,6 +143,27 @@ public class DataSet implements Cloneable {
      */
     public int getHighlightUpdateCount() {
         return highlightUpdateCount;
+    }
+
+     /**
+     * History of selections - shared by plugins and SelectionListDialog
+     */
+    private final LinkedList<Collection<? extends OsmPrimitive>> selectionHistory = new LinkedList<Collection<? extends OsmPrimitive>>();
+
+    /**
+     * Replies the history of JOSM selections
+     *
+     * @return
+     */
+    public LinkedList<Collection<? extends OsmPrimitive>> getSelectionHistory() {
+        return selectionHistory;
+    }
+
+    /**
+     * Clears selection history list
+     */
+    public void clearSelectionHistory() {
+        selectionHistory.clear();
     }
 
 //    /**
@@ -1030,5 +1052,27 @@ public class DataSet implements Cloneable {
                 primitive.setDeleted(true);
             }
         }
+    }
+
+    /**
+     * <p>Replies the list of data source bounds.</p>
+     *
+     * <p>Dataset maintains a list of data sources which have been merged into the
+     * data set. Each of these sources can optionally declare a bounding box of the
+     * data it supplied to the dataset.</p>
+     *
+     * <p>This method replies the list of defined (non {@code null}) bounding boxes.</p>
+     *
+     * @return the list of data source bounds. An empty list, if no non-null data source
+     * bounds are defined.
+     */
+    public List<Bounds> getDataSourceBounds() {
+        List<Bounds> ret = new ArrayList<Bounds>(dataSources.size());
+        for (DataSource ds : dataSources) {
+            if (ds.bounds != null) {
+                ret.add(ds.bounds);
+            }
+        }
+        return ret;
     }
 }

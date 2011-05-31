@@ -16,7 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.openstreetmap.josm.data.osm.Changeset;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
@@ -49,11 +49,11 @@ public class DiffResultProcessor  {
      * the set of processed primitives *after* the new id, the new version and the new changeset id
      * is set
      */
-    private Set<OsmPrimitive> processed;
+    private Set<IPrimitive> processed;
     /**
      * the collection of primitives being uploaded
      */
-    private Collection<OsmPrimitive> primitives;
+    private Collection<? extends IPrimitive> primitives;
 
     /**
      * Creates a diff result reader
@@ -61,12 +61,12 @@ public class DiffResultProcessor  {
      * @param primitives the collection of primitives which have been uploaded. If null,
      * assumes an empty collection.
      */
-    public DiffResultProcessor(Collection<OsmPrimitive> primitives) {
+    public DiffResultProcessor(Collection<? extends IPrimitive> primitives) {
         if (primitives == null) {
             primitives = Collections.emptyList();
         }
         this.primitives = primitives;
-        this.processed = new HashSet<OsmPrimitive>();
+        this.processed = new HashSet<IPrimitive>();
     }
 
     /**
@@ -111,7 +111,7 @@ public class DiffResultProcessor  {
      * @param monitor the progress monitor. Set to {@see NullProgressMonitor#INSTANCE} if null
      * @return the collection of processed primitives
      */
-    protected Set<OsmPrimitive> postProcess(Changeset cs,ProgressMonitor monitor) {
+    protected Set<IPrimitive> postProcess(Changeset cs, ProgressMonitor monitor) {
         if (monitor == null) {
             monitor = NullProgressMonitor.INSTANCE;
         }
@@ -119,7 +119,7 @@ public class DiffResultProcessor  {
             monitor.beginTask("Postprocessing uploaded data ...");
             monitor.setTicksCount(primitives.size());
             monitor.setTicks(0);
-            for (OsmPrimitive p: primitives) {
+            for (IPrimitive p : primitives) {
                 monitor.worked(1);
                 DiffResultEntry entry = diffResults.get(p.getPrimitiveId());
                 if (entry == null) {

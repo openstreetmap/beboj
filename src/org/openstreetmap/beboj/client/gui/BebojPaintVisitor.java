@@ -15,10 +15,10 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.Way;
-import org.openstreetmap.josm.data.osm.visitor.paint.PaintVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.Rendering;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 
-public class BebojPaintVisitor implements PaintVisitor {
+public class BebojPaintVisitor implements Rendering {
     /**
      * The environment to paint to.
      */
@@ -33,24 +33,21 @@ public class BebojPaintVisitor implements PaintVisitor {
 
     public boolean inactive;
 
-    @Override
     public void setGraphics(Graphics2D g) {
         this.g = g;
     }
 
-    @Override
     public void setNavigatableComponent(NavigatableComponent nc) {
         this.nc = nc;
     }
 
-    @Override
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
     }
 
     static int d = 0;
     @Override
-    public void visitAll(DataSet data, boolean virtual, Bounds bounds) {
+    public void render(DataSet data, boolean virtual, Bounds bounds) {
         if (Beboj.tb.isDown()) {
             GWT.log(" - visitAll - ");
         }

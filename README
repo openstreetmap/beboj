@@ -5,9 +5,8 @@
 
 I am using GWT 2.2 at the moment (but might work with other versions as well).
 
-
- Modules
- =======
+  Modules
+  =======
 
  * Beboj (org.openstreetmap.beboj.Beboj)
     The main module.
@@ -19,15 +18,27 @@ I am using GWT 2.2 at the moment (but might work with other versions as well).
 
     inherits JavaEmulation
 
-    should not (or as little as possible) depend on GWT specific classes
-    For future synchronisation, the sources better stay as close to the original as (sensibly) possible.
+    In sync with
+        ____________
+       |            |
+       | JOSM r4105 |
+       |____________|
+
+    At the moment, the update to a later JOSM version is quite some tedious fiddling,
+    so the sources better stay as close to the original as (sensibly) possible
+
+    Should not (or as little as possible) depend on GWT specific classes.
 
     This module contains classes that are not present in JOSM, but could go upstream in principle:
      - everything in the org.openstreetmap.josm.beboj package
      - org.openstreetmap.josm.data.osm.QBLevel
-          This is just a workaround for some GWT bug. (see QuadBuckets for details)
+          This is a inner class from QuadBuckets originally. Moved to an extra file as workaround
+          for some GWT bug. (see QuadBuckets for details)
      - org.openstreetmap.josm.gui.NavigationSupport & sub classes
           Generalizes the zoom handling.
+     - org.openstreetmap.josm.io.DiffResultEntry
+          Originally an inner class of DiffResultProcessor. Moved to separate file due to
+          client / server code splitting.
 
     Porting Java to the GWT subset
     ------------------------------
@@ -47,15 +58,35 @@ I am using GWT 2.2 at the moment (but might work with other versions as well).
 
  * OpenLayers (org.openstreetmap.openlayers.OpenLayers)
     Openlayers library
-    
+
     Include this module to get the openlayers library into the public path (will be copied to war folder).
     There is a config file (beboj.cfg), to reduce the size of the library in a custom build (openlayers-minimal.js).
-    If you add more imagery sources / controls, it probably has to be adapted. (For convenience, there is also 
+    If you add more imagery sources / controls, it probably has to be adapted. (For convenience, there is also
     a full version of the OpenLayers lib in the repository.)
     At time of writing, the lib is based on svn.openlayers.org r11949.
 
-  References
-  ==========
+
+  Server Code
+  ===========
+
+Apart from the modules, there is code that runs on the server, only. It is located in org.openstreetmap.beboj.server
+and org.openstreetmap.josm_server.
+
+For the latter, package names of the original JOSM classes are changed (josm -> josm_server). In principle,
+one could have both, client and server code, in separate source folders and keep the package names. However,
+the Eclipse GWT plugin has a bug that shows bogus warnings when it finds server and client code in the same
+package. Renaming the packages turned out to be the less annoying alternative.
+
+Significant changes:
+ * Credentials are passed explicitly as parameter, no Authenticator is installed.
+ * In upload code, diff results are returned, not just the processed primitives.
+      (We have to send the result of the upload from server to client. Consequently
+      we cannot update the OsmPrimitives in place, but have to send the diff results,
+      so the client can update its dataset later.)
+
+
+  Credits
+  =======
 
 Obviously, most of the code is taken from the JOSM project (http://josm.openstreetmap.de/).
 

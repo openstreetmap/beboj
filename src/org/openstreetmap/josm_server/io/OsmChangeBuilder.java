@@ -8,7 +8,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 
 import org.openstreetmap.josm.data.osm.Changeset;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 
 /**
  * GWT ok
@@ -41,7 +41,7 @@ public class OsmChangeBuilder {
         osmwriter.setChangeset(changeset);
     }
 
-    protected void write(OsmPrimitive p) {
+    protected void write(IPrimitive p) {
         if (p.isDeleted()) {
             switchMode("delete");
             osmwriter.setWithBody(false);
@@ -84,24 +84,24 @@ public class OsmChangeBuilder {
     }
 
     /**
-     * Appends a collection of {@see OsmPrimitive}s to the OsmChange document.
+     * Appends a collection of Primitives to the OsmChange document.
      *
      * @param primitives the collection of primitives. Ignored if null.
      * @throws IllegalStateException thrown if the prologs has not been written yet
      * @see #start()
-     * @see #append(OsmPrimitive)
+     * @see #append(IPrimitive)
      */
-    public void append(Collection<OsmPrimitive> primitives) throws IllegalStateException{
+    public void append(Collection<? extends IPrimitive> primitives) throws IllegalStateException{
         if (primitives == null) return;
         if (!prologWritten)
             throw new IllegalStateException(tr("Prolog of OsmChange document not written yet. Please write frst."));
-        for (OsmPrimitive p : primitives) {
+        for (IPrimitive p : primitives) {
             write(p);
         }
     }
 
     /**
-     * Appends an {@see OsmPrimitive} to the OsmChange document.
+     * Appends an Primitive to the OsmChange document.
      *
      * @param p the primitive. Ignored if null.
      * @throws IllegalStateException thrown if the prologs has not been written yet
@@ -109,7 +109,7 @@ public class OsmChangeBuilder {
      * @see #append(Collection)
 
      */
-    public void append(OsmPrimitive p) {
+    public void append(IPrimitive p) {
         if (p == null) return;
         if (!prologWritten)
             throw new IllegalStateException(tr("Prolog of OsmChange document not written yet. Please write frst."));

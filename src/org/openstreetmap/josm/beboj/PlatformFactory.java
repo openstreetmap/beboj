@@ -1,10 +1,12 @@
 // License: GPL. See LICENSE file for details.
 package org.openstreetmap.josm.beboj;
 
+import java.awt.Graphics2D;
 import java.util.List;
 
 import org.openstreetmap.josm.actions.mapmode.MapMode;
-import org.openstreetmap.josm.data.osm.visitor.paint.PaintVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.Rendering;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigationSupport;
 
 /**
@@ -12,7 +14,7 @@ import org.openstreetmap.josm.gui.NavigationSupport;
  */
 public interface PlatformFactory {
 
-    PaintVisitor getDefaultPaintVisitor();
+    Rendering createActiveRenderer(Graphics2D g, MapView mv, boolean inactive);
 
     List<MapMode> getMapModes();
 

@@ -4,6 +4,8 @@ package org.openstreetmap.josm.data.osm;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
+
 /**
  * GWT
  * 
@@ -12,7 +14,7 @@ import java.util.List;
  *    field 'members': List -> ArrayList
  */
 
-public class RelationData extends PrimitiveData {
+public class RelationData extends PrimitiveData implements IRelation {
 
     public /* private */ ArrayList<RelationMemberData> members = new ArrayList<RelationMemberData>();
 
@@ -34,6 +36,26 @@ public class RelationData extends PrimitiveData {
     }
 
     @Override
+    public int getMembersCount() {
+        return members.size();
+    }
+
+    @Override
+    public long getMemberId(int idx) {
+        return members.get(idx).getMemberId();
+    }
+
+    @Override
+    public String getRole(int idx) {
+        return members.get(idx).getRole();
+    }
+
+    @Override
+    public OsmPrimitiveType getMemberType(int idx) {
+        return members.get(idx).getMemberType();
+    }
+
+    @Override
     public RelationData makeCopy() {
         return new RelationData(this);
     }
@@ -47,4 +69,15 @@ public class RelationData extends PrimitiveData {
     public OsmPrimitiveType getType() {
         return OsmPrimitiveType.RELATION;
     }
+    
+    @Override 
+    public void visit(PrimitiveVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public String getDisplayName(NameFormatter formatter) {
+        return formatter.format(this);
+    }
+
 }

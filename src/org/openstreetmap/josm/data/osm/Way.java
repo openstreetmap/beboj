@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 import org.openstreetmap.josm.data.osm.visitor.Visitor;
 import org.openstreetmap.josm.tools.CopyList;
 import org.openstreetmap.josm.tools.Pair;
@@ -25,7 +26,7 @@ import org.openstreetmap.josm.tools.Pair;
  *
  * @author imi
  */
-public final class Way extends OsmPrimitive {
+public final class Way extends OsmPrimitive implements IWay {
 
     /**
      * All way nodes in this way
@@ -64,7 +65,7 @@ public final class Way extends OsmPrimitive {
             } else {
                 this.nodes = nodes.toArray(new Node[nodes.size()]);
             }
-            for (Node node:this.nodes) {
+            for (Node node: this.nodes) {
                 node.addReferrer(this);
             }
 
@@ -76,11 +77,31 @@ public final class Way extends OsmPrimitive {
     }
 
     /**
+     * Prevent directly following identical nodes in ways.
+     */
+    private List<Node> removeDouble(List<Node> nodes) {
+        Node last = null;
+        int count = nodes.size();
+        for(int i = 0; i < count && count > 2;) {
+            Node n = nodes.get(i);
+            if(last == n) {
+                nodes.remove(i);
+                --count;
+            } else {
+                last = n;
+                ++i;
+            }
+        }
+        return nodes;
+    }
+
+    /**
      * Replies the number of nodes in this ways.
      *
      * @return the number of nodes in this ways.
      * @since 1862
      */
+    @Override
     public int getNodesCount() {
         return nodes.length;
     }
@@ -96,6 +117,11 @@ public final class Way extends OsmPrimitive {
      */
     public Node getNode(int index) {
         return nodes[index];
+    }
+
+    @Override
+    public long getNodeId(int idx) {
+        return nodes[idx].getUniqueId();
     }
 
     /**
@@ -139,6 +165,10 @@ public final class Way extends OsmPrimitive {
     }
 
     @Override public void visit(Visitor visitor) {
+        visitor.visit(this);
+    }
+    
+    @Override public void visit(PrimitiveVisitor visitor) {
         visitor.visit(this);
     }
 
@@ -262,6 +292,7 @@ public final class Way extends OsmPrimitive {
         return true;
     }
 
+    @Override
     public int compareTo(OsmPrimitive o) {
         if (o instanceof Relation)
             return 1;
@@ -284,7 +315,7 @@ public final class Way extends OsmPrimitive {
             } else if (i >= 2 && i <= 3 && copy.get(0) == copy.get(i-1)) {
                 copy.remove(i-1);
             }
-            setNodes(copy);
+            setNodes(removeDouble(copy));
         } finally {
             writeUnlock(locked);
         }
@@ -309,7 +340,7 @@ public final class Way extends OsmPrimitive {
             } else if (i >= 2 && i <= 3 && copy.get(0) == copy.get(i-1)) {
                 copy.remove(i-1);
             }
-            setNodes(copy);
+            setNodes(removeDouble(copy));
         } finally {
             writeUnlock(locked);
         }
@@ -389,6 +420,7 @@ public final class Way extends OsmPrimitive {
         }
     }
 
+    @Override
     public boolean isClosed() {
         if (isIncomplete()) return false;
 
@@ -431,6 +463,7 @@ public final class Way extends OsmPrimitive {
         return formatter.format(this);
     }
 
+    @Override
     public OsmPrimitiveType getType() {
         return OsmPrimitiveType.WAY;
     }

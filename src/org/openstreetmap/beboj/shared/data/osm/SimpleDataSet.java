@@ -2,6 +2,8 @@
 package org.openstreetmap.beboj.shared.data.osm;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
@@ -60,6 +62,14 @@ public class SimpleDataSet implements IsSerializable {
         s.version = ds.getVersion();
 
         return s;
+    }
+
+    public Collection<PrimitiveData> allPrimitives() {
+        List<PrimitiveData> all = new ArrayList<PrimitiveData>();
+        all.addAll(nodes);
+        all.addAll(ways);
+        all.addAll(relations);
+        return all;
     }
 
     public DataSet toDataSet() {

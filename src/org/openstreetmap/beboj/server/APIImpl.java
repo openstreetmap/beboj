@@ -55,9 +55,6 @@ public class APIImpl extends RemoteServiceServlet implements API {
     @Override
     public UploadResponseData uploadOsmData(UploadRequestData request) {
         initialize();
-        OsmServerWriter writer = new OsmServerWriter();
-        DataSet dsInput = request.data.toDataSet();
-        APIDataSet apiData = new APIDataSet(dsInput);
         Map<String, String> csTags = new HashMap<String, String>();
         csTags.put("comment", request.changeSetComment);
         csTags.put("created_by", "Beboj alpha");
@@ -72,10 +69,11 @@ public class APIImpl extends RemoteServiceServlet implements API {
 
         Map<PrimitiveId, DiffResultEntry> diffResults = null;
 
+        OsmServerWriter writer = new OsmServerWriter();
         try {
             writer.uploadOsm(
                     new UploadStrategySpecification(),
-                    apiData.getPrimitives(),
+                    request.data.allPrimitives(),
                     cs,
                     credentials,
                     NullProgressMonitor.INSTANCE

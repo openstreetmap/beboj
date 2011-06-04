@@ -21,10 +21,14 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -37,6 +41,8 @@ public class Beboj implements EntryPoint {
 
     public static CanvasView canvasView;
 
+    public static DivElement mapview;
+
     // the background map
     public static OLMap olmap;
 
@@ -48,6 +54,7 @@ public class Beboj implements EntryPoint {
     /**
      * Entry point method.
      */
+    @Override
     public void onModuleLoad() {
 
         Main.platformFactory = new BebojPlatformFactory();
@@ -61,6 +68,7 @@ public class Beboj implements EntryPoint {
 
         canv = ui.canv;
         canvasView = ui.canvView;
+        mapview = ui.mapview_div;
         Main.map = new MapFrame(canvasView);
         canvasView.setPresenter(Main.map.mapView);
 
@@ -86,6 +94,32 @@ public class Beboj implements EntryPoint {
 
         ui.leftButtons.buttons[0].onClick();
         ui.leftButtons.buttons[0].setDown(true);
+
+        updateCanvasSize();
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                updateCanvasSize();
+                log("R");
+                canvasView.repaint();
+            }
+        });
+    }
+
+    /**
+     * Manually set the canvas size to the size of the enclosing div element.
+     *
+     * There is no way to integrate a canvas into the layout, such that it resizes
+     * automatically. The CSS property 'width' is different from the coordinate
+     * space width and scales the canvas.
+     */
+    private static void updateCanvasSize() {
+        if (mapview.getClientWidth() != canv.getCoordinateSpaceWidth()) {
+            canv.setCoordinateSpaceWidth(mapview.getClientWidth());
+        }
+        if (mapview.getClientHeight() != canv.getCoordinateSpaceHeight()) {
+            canv.setCoordinateSpaceHeight(mapview.getClientHeight());
+        }
     }
 
     /**

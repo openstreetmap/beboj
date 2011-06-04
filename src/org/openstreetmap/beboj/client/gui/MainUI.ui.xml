@@ -4,13 +4,13 @@ xmlns:g='urn:import:com.google.gwt.user.client.ui'
 xmlns:g2='urn:import:com.google.gwt.canvas.client'
 xmlns:my='urn:import:org.openstreetmap.beboj.client.gui'>
 
- <ui:style>
+<ui:style>
     .toolbar { 
         border: 1px solid black;
         background-color:lightgray;
         z-index: 3100;
-       }
-  </ui:style>
+    }
+</ui:style>
 
 <g:HTMLPanel>
     <my:MainMenu ui:field="menu"/>

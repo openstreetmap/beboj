@@ -4,34 +4,30 @@ xmlns:g='urn:import:com.google.gwt.user.client.ui'
 xmlns:g2='urn:import:com.google.gwt.canvas.client'
 xmlns:my='urn:import:org.openstreetmap.beboj.client.gui'>
 
+ <ui:style>
+    .toolbar { 
+        border: 1px solid black;
+        background-color:lightgray;
+        z-index: 3100;
+       }
+  </ui:style>
+
 <g:HTMLPanel>
-<table cellspacing="0" cellpadding="0" style="width:100%; height:100%">
-    <tr>
-        <td colspan="2">
-            <my:MainMenu ui:field="menu"/>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" style="background-color:lightGray; padding:2px;">
-            <my:Toolbar ui:field="toolbar"/>
-        </td>
-    </tr>
-    <tr style="width:100%; height:100%">
-        <td style="background-color:lightGray; padding:2px; vertical-align:top;">
-            <my:LeftButtonRow ui:field="leftButtons"/>
-        </td>
-        <td style="width:100%; vertical-align:top;">
-            <div style="width:100%; height:100%; position: relative">
-                <g:HTMLPanel ui:field="canvas_wrapper">
-                    <g2:Canvas ui:field="canv"/>
-                    <g:HTMLPanel ui:field="attribution"/>
-                    <g:HTMLPanel ui:field="layers"/>
-                </g:HTMLPanel>
-                <div id="map" style="width:100%; height:100%; position: absolute;">
-                </div>
-            </div>
-        </td>
-    </tr>
-</table>
+    <my:MainMenu ui:field="menu"/>
+    <div class='{style.toolbar}' style='position: relative;'>
+        <my:Toolbar ui:field="toolbar"/>
+    </div>
+    <div class='{style.toolbar}' style='position: absolute;'>
+        <my:LeftButtonRow ui:field="leftButtons"/>
+    </div>
+    <div ui:field="mapview_div" style='position: absolute; left: 0; right: 0; top: 60px; bottom: 0;'>
+        <g:HTMLPanel ui:field="canvas_wrapper">
+            <g2:Canvas ui:field="canv"/>
+            <g:HTMLPanel ui:field="attribution"/>
+            <g:HTMLPanel ui:field="layers"/>
+        </g:HTMLPanel>
+        <div id="map" style="width:100%; height:100%; position: absolute;">
+        </div>
+    </div>
 </g:HTMLPanel>
 </ui:UiBinder>

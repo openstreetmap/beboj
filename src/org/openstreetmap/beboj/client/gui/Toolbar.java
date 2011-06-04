@@ -25,6 +25,8 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 public class Toolbar extends HorizontalPanel {
 
     public Toolbar () {
+        setSpacing(2);
+
         Image i1 = new Image("images/download.png");
         Image i2 = new Image("images/upload.png");
         Image i3 = new Image("images/preference.png");

@@ -3,6 +3,8 @@ package org.openstreetmap.beboj.client.gui;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -33,6 +35,9 @@ public class MainUI extends Composite {
     public HTMLPanel canvas_wrapper;
 
     @UiField
+    public DivElement mapview_div;
+
+    @UiField
     public HTMLPanel attribution;
 
     @UiField
@@ -60,6 +65,8 @@ public class MainUI extends Composite {
         layers.addStyleName("olControlLayerSwitcher");
 
         canvView = new CanvasViewImpl(canv);
+
+        mapview_div.getStyle().setTop(62, Unit.PX);
     }
 
     static class CanvasViewImpl implements CanvasView {

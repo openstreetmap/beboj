@@ -23,6 +23,7 @@ public class LeftButtonRow extends VerticalPanel {
 
     public LeftButtonRow() {
         getElement().setId("leftButtons");
+        setSpacing(2);
 
         List<MapMode> modes = Main.platformFactory.getMapModes();
 
